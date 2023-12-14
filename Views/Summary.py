@@ -8,27 +8,15 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
-    QCursor, QFont, QFontDatabase, QGradient,
-    QIcon, QImage, QKeySequence, QLinearGradient,
-    QPainter, QPalette, QPixmap, QRadialGradient,
-    QTransform)
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect, Qt)
+from PySide6.QtGui import (QAction, QBrush, QColor, QFont)
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
-from PySide6.QtWidgets import (QApplication, QFrame, QGraphicsView, QGroupBox,
-    QLCDNumber, QLabel, QMainWindow, QMenu,
-    QMenuBar, QProgressBar, QPushButton, QSizePolicy,
-    QStatusBar, QTextEdit, QWidget)
+from PySide6.QtWidgets import (QFrame, QGraphicsView, QGroupBox, QLCDNumber, 
+    QLabel, QMenu, QMenuBar, QProgressBar, QPushButton, QStatusBar, QTextEdit, 
+    QWidget)
+from .IMU import IMU_MainWindow
 
 class Ui_MainWindow(object):
-    # def __init__(self, QMainWindowObj):
-    #     super().__init__()
-    #     self.setupUi(self)
-    #     self.setWindowTitle("Test title")
-
-
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
@@ -54,6 +42,7 @@ class Ui_MainWindow(object):
         self.lcdNumber = QLCDNumber(self.frame)
         self.lcdNumber.setObjectName(u"lcdNumber")
         self.lcdNumber.setGeometry(QRect(30, 130, 201, 41))
+        self.lcdNumber.display(5000.9986)
         self.lcdNumber_2 = QLCDNumber(self.frame)
         self.lcdNumber_2.setObjectName(u"lcdNumber_2")
         self.lcdNumber_2.setGeometry(QRect(30, 310, 201, 41))
@@ -66,42 +55,50 @@ class Ui_MainWindow(object):
         self.lcdNumber_5 = QLCDNumber(self.frame)
         self.lcdNumber_5.setObjectName(u"lcdNumber_5")
         self.lcdNumber_5.setGeometry(QRect(30, 620, 201, 41))
-        self.label_3 = QLabel(self.frame)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setGeometry(QRect(30, 100, 121, 31))
+
+        self.roll_label = QLabel(self.frame)
+        self.roll_label.setObjectName(u"label_3")
+        self.roll_label.setGeometry(QRect(30, 100, 121, 31))
         font1 = QFont()
         font1.setFamilies([u"Arial"])
         font1.setPointSize(12)
-        self.label_3.setFont(font1)
-        self.label_4 = QLabel(self.frame)
-        self.label_4.setObjectName(u"label_4")
-        self.label_4.setGeometry(QRect(30, 190, 121, 31))
-        self.label_4.setFont(font1)
-        self.label_5 = QLabel(self.frame)
-        self.label_5.setObjectName(u"label_5")
-        self.label_5.setGeometry(QRect(30, 280, 121, 31))
-        self.label_5.setFont(font1)
-        self.groupBox = QGroupBox(self.frame)
-        self.groupBox.setObjectName(u"groupBox")
-        self.groupBox.setGeometry(QRect(20, 70, 231, 321))
+        self.roll_label.setFont(font1)
+
+        self.pitch_label = QLabel(self.frame)
+        self.pitch_label.setObjectName(u"label_4")
+        self.pitch_label.setGeometry(QRect(30, 190, 121, 31))
+        self.pitch_label.setFont(font1)
+
+        self.yaw_label = QLabel(self.frame)
+        self.yaw_label.setObjectName(u"label_5")
+        self.yaw_label.setGeometry(QRect(30, 280, 121, 31))
+        self.yaw_label.setFont(font1)
+
+        self.orientation_groupBox = QGroupBox(self.frame)
+        self.orientation_groupBox.setObjectName(u"groupBox")
+        self.orientation_groupBox.setGeometry(QRect(20, 70, 231, 321))
         font2 = QFont()
         font2.setFamilies([u"Arial"])
         font2.setPointSize(14)
-        self.groupBox.setFont(font2)
-        self.groupBox_2 = QGroupBox(self.frame)
-        self.groupBox_2.setObjectName(u"groupBox_2")
-        self.groupBox_2.setGeometry(QRect(20, 430, 221, 271))
-        self.groupBox_2.setFont(font2)
-        self.label_6 = QLabel(self.groupBox_2)
-        self.label_6.setObjectName(u"label_6")
-        self.label_6.setGeometry(QRect(10, 50, 121, 31))
-        self.label_6.setFont(font1)
-        self.label_7 = QLabel(self.groupBox_2)
+        self.orientation_groupBox.setFont(font2)
+
+        self.parameter_groupBox = QGroupBox(self.frame)
+        self.parameter_groupBox.setObjectName(u"groupBox_2")
+        self.parameter_groupBox.setGeometry(QRect(20, 430, 221, 271))
+        self.parameter_groupBox.setFont(font2)
+
+        self.temperature = QLabel(self.parameter_groupBox)
+        self.temperature.setObjectName(u"label_6")
+        self.temperature.setGeometry(QRect(10, 50, 121, 31))
+        self.temperature.setFont(font1)
+
+        self.label_7 = QLabel(self.parameter_groupBox)
         self.label_7.setObjectName(u"label_7")
         self.label_7.setGeometry(QRect(10, 160, 161, 31))
         self.label_7.setFont(font1)
-        self.groupBox_2.raise_()
-        self.groupBox.raise_()
+        
+        self.parameter_groupBox.raise_()
+        self.orientation_groupBox.raise_()
         self.textEdit.raise_()
         self.label.raise_()
         self.lcdNumber.raise_()
@@ -109,9 +106,9 @@ class Ui_MainWindow(object):
         self.lcdNumber_3.raise_()
         self.lcdNumber_4.raise_()
         self.lcdNumber_5.raise_()
-        self.label_3.raise_()
-        self.label_4.raise_()
-        self.label_5.raise_()
+        self.roll_label.raise_()
+        self.pitch_label.raise_()
+        self.yaw_label.raise_()
         self.graphicsView = QGraphicsView(self.centralwidget)
         self.graphicsView.setObjectName(u"graphicsView")
         self.graphicsView.setGeometry(QRect(330, 10, 571, 491))
@@ -230,36 +227,23 @@ class Ui_MainWindow(object):
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.menubar = QMenuBar(MainWindow)
-        self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1265, 21))
-        self.menuSummary = QMenu(self.menubar)
-        self.menuSummary.setObjectName(u"menuSummary")
-        self.menuIMU = QMenu(self.menubar)
-        self.menuIMU.setObjectName(u"menuIMU")
-        self.menuDocking = QMenu(self.menubar)
-        self.menuDocking.setObjectName(u"menuDocking")
-        MainWindow.setMenuBar(self.menubar)
-
-        self.menubar.addAction(self.menuSummary.menuAction())
-        self.menubar.addAction(self.menuIMU.menuAction())
-        self.menubar.addAction(self.menuDocking.menuAction())
-
-
+    
+        # self.menubarCollection(MainWindow)
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
+    
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Satellite overview", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Roll", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Pitch", None))
-        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Yaw", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Orientation", None))
-        self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Other Parameters", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Temperature", None))
+        self.roll_label.setText(QCoreApplication.translate("MainWindow", u"Roll", None))
+        self.pitch_label.setText(QCoreApplication.translate("MainWindow", u"Pitch", None))
+        self.yaw_label.setText(QCoreApplication.translate("MainWindow", u"Yaw", None))
+        self.orientation_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Orientation", None))
+        self.parameter_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Other Parameters", None))
+        self.temperature.setText(QCoreApplication.translate("MainWindow", u"Temperature", None))
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Angular Velocity", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Connection Overview", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Battery", None))
@@ -273,8 +257,11 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Voltage", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"V", None))
-        self.menuSummary.setTitle(QCoreApplication.translate("MainWindow", u"Summary", None))
-        self.menuIMU.setTitle(QCoreApplication.translate("MainWindow", u"IMU", None))
-        self.menuDocking.setTitle(QCoreApplication.translate("MainWindow", u"Docking", None))
+
     # retranslateUi
+
+
+    def close(self):
+        pass
+
 
