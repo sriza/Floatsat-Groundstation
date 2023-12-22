@@ -8,13 +8,14 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect, Qt)
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect, Qt, QSize)
 from PySide6.QtGui import (QAction, QBrush, QColor, QFont)
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 from PySide6.QtWidgets import (QFrame, QGraphicsView, QGroupBox, QLCDNumber, 
     QLabel, QMenu, QMenuBar, QProgressBar, QPushButton, QStatusBar, QTextEdit, 
-    QWidget)
-from .IMU import IMU_MainWindow
+    QWidget, QHBoxLayout, QWidgetItem)
+import pyqtgraph as pg
+from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -26,6 +27,7 @@ class Ui_MainWindow(object):
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
         self.frame.setGeometry(QRect(30, 10, 261, 721))
+        # self.centralwidget.setStyleSheet(u"background-color: rgb(26, 29, 56);")
         self.frame.setAutoFillBackground(True)
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
@@ -109,6 +111,7 @@ class Ui_MainWindow(object):
         self.roll_label.raise_()
         self.pitch_label.raise_()
         self.yaw_label.raise_()
+
         self.graphicsView = QGraphicsView(self.centralwidget)
         self.graphicsView.setObjectName(u"graphicsView")
         self.graphicsView.setGeometry(QRect(330, 10, 571, 491))
@@ -131,6 +134,7 @@ class Ui_MainWindow(object):
         brush2 = QBrush(QColor(255, 124, 234, 255))
         brush2.setStyle(Qt.NoBrush)
         self.graphicsView_5.setBackgroundBrush(brush2)
+
         self.satelliteVisualization = QOpenGLWidget(self.centralwidget)
         self.satelliteVisualization.setObjectName(u"satelliteVisualization")
         self.satelliteVisualization.setGeometry(QRect(330, 530, 271, 200))
@@ -172,10 +176,10 @@ class Ui_MainWindow(object):
         self.label_9.setObjectName(u"label_9")
         self.label_9.setGeometry(QRect(20, 140, 161, 31))
         self.label_9.setFont(font1)
-        self.lcdNumber_6 = QLCDNumber(self.groupBox_3)
+        self.lcdNumber_6 = QTextEdit(self.groupBox_3)
         self.lcdNumber_6.setObjectName(u"lcdNumber_6")
         self.lcdNumber_6.setGeometry(QRect(10, 80, 201, 41))
-        self.lcdNumber_7 = QLCDNumber(self.groupBox_3)
+        self.lcdNumber_7 = QTextEdit(self.groupBox_3)
         self.lcdNumber_7.setObjectName(u"lcdNumber_7")
         self.lcdNumber_7.setGeometry(QRect(20, 180, 201, 41))
         self.pushButton_2 = QPushButton(self.centralwidget)
@@ -183,22 +187,36 @@ class Ui_MainWindow(object):
         self.pushButton_2.setGeometry(QRect(950, 670, 231, 41))
         self.pushButton_2.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(50, 107, 29);")
-        self.graphicsView_6 = QGraphicsView(self.centralwidget)
-        self.graphicsView_6.setObjectName(u"graphicsView_6")
-        self.graphicsView_6.setGeometry(QRect(630, 530, 271, 201))
-        self.graphicsView_6.setAutoFillBackground(True)
-        self.graphicsView_6.setStyleSheet(u"background-color: rgb(225, 225, 225);")
-        brush3 = QBrush(QColor(255, 124, 234, 255))
-        brush3.setStyle(Qt.NoBrush)
-        self.graphicsView_6.setBackgroundBrush(brush3)
-        self.label_11 = QLabel(self.centralwidget)
-        self.label_11.setObjectName(u"label_11")
-        self.label_11.setGeometry(QRect(330, 500, 191, 31))
-        self.label_11.setFont(font1)
-        self.label_12 = QLabel(self.centralwidget)
-        self.label_12.setObjectName(u"label_12")
-        self.label_12.setGeometry(QRect(630, 500, 191, 31))
-        self.label_12.setFont(font1)
+        self.orientation_visualizer_label = QLabel(self.centralwidget)
+        self.orientation_visualizer_label.setObjectName(u"label_11")
+        self.orientation_visualizer_label.setGeometry(QRect(330, 500, 191, 31))
+        self.orientation_visualizer_label.setFont(font1)
+
+        self.pfd = QPrimaryFlightDisplay(self.centralwidget) 
+        self.pfd.zoom = 0.3
+        self.pfd.setGeometry(QRect(330, 530, 270, 200))
+        self.pfd.setMinimumSize(QSize(270, 200))
+        self.pfd.show()
+
+        # self.visualization = QHBoxLayout(self.centralwidget)
+
+        self.temp_visualizer = QLabel(self.centralwidget)
+        self.temp_visualizer.setObjectName(u"temp_visualizer")
+        self.temp_visualizer.setGeometry(QRect(630, 500, 191, 31))
+        self.temp_visualizer.setFont(font1)
+
+        # temperature graph
+        self.graphWidget = pg.PlotWidget(self.centralwidget)
+        self.graphWidget.setGeometry(QRect(630,530,270,200))
+        self.graphWidget.setMinimumSize(QSize(270, 200))
+        # self.graphWidget.setMaximumSize(QSize(500, 16777215))
+        hour = [1,2,3,4,5,6,7,8,9,10]
+        temperature = [30,32,34,32,33,31,29,32,35,45]
+
+        self.graphWidget.setBackground('w')
+        self.graphWidget.plot(hour, temperature)   
+
+
         self.label_13 = QLabel(self.centralwidget)
         self.label_13.setObjectName(u"label_13")
         self.label_13.setGeometry(QRect(440, 150, 191, 31))
@@ -223,6 +241,7 @@ class Ui_MainWindow(object):
         self.label_15.setObjectName(u"label_15")
         self.label_15.setGeometry(QRect(1150, 190, 21, 31))
         self.label_15.setFont(font1)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -232,6 +251,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
+        self.updateData()
     # setupUi
     
 
@@ -249,14 +269,18 @@ class Ui_MainWindow(object):
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Battery", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Connection Parameters", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Baud Rate", None))
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Angular Velocity", None))
+        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Port", None))
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
-        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
-        self.label_12.setText(QCoreApplication.translate("MainWindow", u"Temperature Visualizer", None))
+        self.orientation_visualizer_label.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
+        self.temp_visualizer.setText(QCoreApplication.translate("MainWindow", u"Temperature Visualizer", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"View from Camera", None))
         self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Voltage", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"V", None))
+    
+    def updateData(self):
+        pass
+
 
     # retranslateUi
 
