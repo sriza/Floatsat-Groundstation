@@ -58,20 +58,21 @@ class OrbitTransformController(QObject):
 class OrientationVisualizer(Qt3DExtras.Qt3DWindow):
     def __init__(self):
         super().__init__()
+        pass
 
         # Camera
-        self.camera().lens().setPerspectiveProjection(45, 16 / 9, 0.1, 1000)
-        self.camera().setPosition(QVector3D(0, 0, 40))
-        self.camera().setViewCenter(QVector3D(0, 0, 0))
+        # self.camera().lens().setPerspectiveProjection(45, 16 / 9, 0.1, 1000)
+        # self.camera().setPosition(QVector3D(0, 0, 40))
+        # self.camera().setViewCenter(QVector3D(0, 0, 0))
 
-        # For camera controls
-        self.createScene()
-        self.camController = Qt3DExtras.QOrbitCameraController(self.rootEntity)
-        self.camController.setLinearSpeed(50)
-        self.camController.setLookSpeed(180)
-        self.camController.setCamera(self.camera())
+        # # For camera controls
+        # self.createScene()
+        # self.camController = Qt3DExtras.QOrbitCameraController(self.rootEntity)
+        # self.camController.setLinearSpeed(50)
+        # self.camController.setLookSpeed(180)
+        # self.camController.setCamera(self.camera())
 
-        self.setRootEntity(self.rootEntity)
+        # self.setRootEntity(self.rootEntity)
 
     def createScene(self):
         # Root entity
@@ -120,8 +121,8 @@ class OrientationVisualizer(Qt3DExtras.Qt3DWindow):
         self.sphereEntity.addComponent(self.material)
 
 
-# if __name__ == '__main__':
-#     app = QGuiApplication(sys.argv)
-#     view = Window()
-#     view.show()
-#     sys.exit(app.exec())
+if __name__ == '__main__':
+    app = QGuiApplication(sys.argv)
+    view = OrientationVisualizer()
+    view.show()
+    sys.exit(app.exec())

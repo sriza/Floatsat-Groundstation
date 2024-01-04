@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QLCDNumber,
     QPushButton, QSizePolicy, QStatusBar, QTextEdit,
     QWidget)
 from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
+from Views.CustomWidgets.YawVisualizer import YawVisualizer
 from Views.CustomWidgets.OrientationVisualizer import OrientationVisualizer
 
 class IMU_MainWindow(object):
@@ -226,7 +227,7 @@ class IMU_MainWindow(object):
         self.pfd_heading.show()
 
 
-        self.pfd_tilt = QPrimaryFlightDisplay(self.centralwidget) 
+        self.pfd_tilt = YawVisualizer(self.centralwidget) 
         self.pfd_tilt.zoom = 0.3
         self.pfd_tilt.setGeometry(QRect(890, 280, 341, 201))
         self.pfd_tilt.setMinimumSize(QSize(270, 200))

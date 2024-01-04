@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (QFrame, QGraphicsView, QGroupBox, QLCDNumber,
     QWidget, QHBoxLayout, QWidgetItem)
 import pyqtgraph as pg
 from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
+from Views.CustomWidgets.YawVisualizer import YawVisualizer
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -192,7 +193,7 @@ class Ui_MainWindow(object):
         self.orientation_visualizer_label.setGeometry(QRect(330, 500, 191, 31))
         self.orientation_visualizer_label.setFont(font1)
 
-        self.pfd = QPrimaryFlightDisplay(self.centralwidget) 
+        self.pfd = YawVisualizer(self.centralwidget) 
         self.pfd.zoom = 0.3
         self.pfd.setGeometry(QRect(330, 530, 270, 200))
         self.pfd.setMinimumSize(QSize(270, 200))
