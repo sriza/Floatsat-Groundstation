@@ -26,7 +26,8 @@ from Views.CustomWidgets.YawVisualizer import YawVisualizer
 from Views.CustomWidgets.OrientationVisualizer import OrientationVisualizer
 
 class IMU_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, data):
+        self.data = data
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         # MainWindow.resize(1700, 1000)
@@ -246,6 +247,8 @@ class IMU_MainWindow(object):
 
         QMetaObject.connectSlotsByName(MainWindow)
 
+        # self.updateData(self.data)
+
     
     # Just label for everything, can even translate it if necessary    
     def retranslateUi(self, MainWindow):
@@ -272,3 +275,35 @@ class IMU_MainWindow(object):
         self.angular_velocity_command_label.setText(QCoreApplication.translate("MainWindow", u"Angular velocity", None))
         self.tilt_visualizer.setText(QCoreApplication.translate("MainWindow", u"Tilt visualizer ( pitch + roll )", None))
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Heading visualizer (Yaw)", None))
+
+    def updateData(self, data):
+        count = 1
+        hour = [1,2,3,4,5,6,7,8,9,10]
+        temperature = [30,32,34,32,33,31,29,32,35,45]
+        h=10
+        t=15
+        self.data = data
+
+        while True:
+            self.lcdNumber_2.display(count)
+            time.sleep(1)
+            # self.pfd.heading = count%361
+
+            # self.pfd = YawVisualizer(self.centralwidget) 
+            self.pfd.zoom = 0.3
+            self.pfd.heading = count%361
+            self.pfd.setGeometry(QRect(330, 530, 270, 200))
+            self.pfd.setMinimumSize(QSize(270, 200))
+            self.pfd.show()
+
+            hour.append(time)
+            temperature.append(self.data.temp)
+            self.graphWidget.plot(hour, temperature)   
+
+
+            # self.temp_visualizer
+
+            # QApplication.instance().paletteChanged.connect(self.update_style)
+            # self.update_style()            
+            # self.pfd.update()
+            count = count+1

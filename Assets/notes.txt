@@ -1,0 +1,7 @@
+
+----------------- GS integration ----------------------------
+
+-----------------*-todo 1-*-----------------
+Need to set previous data array for data like temperature and timestamp etc.
+These will be required for all the data that are shown in graph so we do have visualization from beginning of the time
+or set temperature and data as such in a time: temp pair to ensure no duplication and 

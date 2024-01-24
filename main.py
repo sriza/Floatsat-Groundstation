@@ -8,6 +8,13 @@ from Views.IMU import IMU_MainWindow
 from Views.Telecommand import Telecommand_MainWindow
 from Views.Docking import Docking_MainWindow
 
+# for rodos and data manipulation
+from rodos import Gateway
+from rodos import LinkinterfaceUDP
+from rodos import Topic
+import json
+import struct
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -17,29 +24,126 @@ class MainWindow(QMainWindow):
         self.imu = IMU_MainWindow()
         self.telecommand = Telecommand_MainWindow()
         self.docking = Docking_MainWindow()
-        self.summary.setupUi(self)
+        self.data = {}
+        self.setData()
+        self.summary.setupUi(self, self.data)
+
+        #rodos
+        self.luart = LinkinterfaceUDP()
+        self.gwUDP = Gateway(self.luart)
+        self.telemetry = {}
+        self.topics = {}
+        self.initializeTelemetryTopics()
+        # self.initializeTelecommandTopics()
+
+        self.gwUDP.run()
+    
+    def initializeTelemetryTopics(self):
+        try:
+            print("data initialized")
+            f = open("Assets/data.json")
+            json_array = json.load(f)
+
+            for item in json_array:
+                print("initializing...")
+                dataStruct = json_array[item]
+
+                # initialization of topic
+                topic = Topic(dataStruct["topicId"])
+                topic.addSubscriber(self.setAndUpdate)
+
+                self.telemetry[item] = {}
+                # try:
+                self.telemetry[item]["topic"] = topic
+                self.topics[dataStruct["topicId"]] = item
+                # except Exception as ex:
+                    # print(ex)
+                    # exit
+                # gwUart.forwardTopic(telemetry[item]["topic"]) 
+
+                # # copy remaining data to structure
+                self.telemetry[item]["topicId"] = dataStruct["topicId"]
+                self.telemetry[item]["structure"] = dataStruct["structure"]
+                self.telemetry[item]["data"] = {}
+
+                # # copy the structure of data
+                for datum in dataStruct["data"]:
+                    self.telemetry[item]["data"][datum] = 0
+
+                print(item)
+
+        except Exception as e:
+            print(e)
+
+
+    def initializeTelecommandTopics(self):
+        try:
+            print("data initialized")
+            f = open("Assets/data.json")
+            json_array = json.load(f)
+
+            for item in json_array:
+                print("initializing...")
+                dataStruct = json_array[item]
+
+                # initialization of topic
+                topic = Topic(dataStruct["topicId"])
+                self.gwUart.forwardTopic(topic) 
+
+                self.telemetry[item] = {}
+                # try:
+                self.telemetry[item]["topic"] = topic
+                # except Exception as ex:
+                    # print(ex)
+                    # exit
+                # gwUart.forwardTopic(telemetry[item]["topic"]) 
+
+                # # copy remaining data to structure
+                self.telemetry[item]["topicId"] = dataStruct["topicId"]
+                self.telemetry[item]["structure"] = dataStruct["structure"]
+                self.telemetry[item]["data"] = {}
+
+                # # copy the structure of data
+                for datum in dataStruct["data"]:
+                    self.telemetry[item]["data"][datum] = 0
+
+                print(item)
+
+        except Exception as e:
+            print(e)
+
+    def setAndUpdate(self, data, topicId):
+        try:       
+            topicName = self.topics[topicId]
+            unpackedData = struct.unpack(self.telemetry[topicName]["structure"],*tuple(data))
+            i = 0
+
+            for datum in self.telemetry[topicName]["data"]:
+                self.telemetry[topicName]["data"][datum] = unpackedData[i]
+                i+=1
+            print("got data", unpackedData, topicId)
+        except Exception as e:
+            print(e)
+
+    
+    # def updateContinuousTelemetry(self, receivedData):
+    #     try:
+    #         unpacked = struct.unpack("=ii19f", receivedData)
+    #         i=0
+    #         for item in self.data:
+    #             self.data[item] = unpacked[i]
+    #             i+=1
+
+    #         self.summary.update(self.data)
+        
+    #     except Exception as e:
+    #         print(e)
+
     
     def menubarCollection(self):
-        # set action to menubar buttons
-        button_action = QAction(self)
-        button_action.triggered.connect(self.show_new_window)
-        button_action.setCheckable(True)
-
-        button_action_summary = QAction(self)
-        button_action_summary.triggered.connect(self.show_new_window_summary)
-        button_action_summary.setCheckable(True)
-
-        button_action_docking = QAction(self)
-        button_action_docking.triggered.connect(self.show_new_window_docking)
-        button_action_docking.setCheckable(True)
-
-        button_action_telecommand = QAction(self)
-        button_action_telecommand.triggered.connect(self.show_new_window_telecommand)
-        button_action_telecommand.setCheckable(True)
-
         # add menu to menubar
         self.menubar = QMenuBar(self)
-        self.menubar.addAction(button_action)
+        # self.menubar.addAction(button_action)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 2560, 40))
 
@@ -55,8 +159,8 @@ class MainWindow(QMainWindow):
         self.menuTelecommand = QMenu(self.menubar)
         self.menuTelecommand.setObjectName(u"menuTelecommand")
 
-        # self.menuTesting = QMenu(self.menubar)
-        # self.menuTesting.setObjectName(u"menuTelecommand")
+        self.menuTesting = QMenu(self.menubar)
+        self.menuTesting.setObjectName(u"menuTelecommand")
 
         self.setMenuBar(self.menubar)
 
@@ -65,14 +169,13 @@ class MainWindow(QMainWindow):
             self.menuIMU.menuAction(),
             self.menuDocking.menuAction(),
             self.menuTelecommand.menuAction(),
-            # self.menuTesting.menuAction()
+            self.menuTesting.menuAction()
         ])
 
-        self.menuSummary.addAction(button_action_summary)
-        self.menuIMU.addAction(button_action)
-        self.menuDocking.addAction(button_action_docking)
-        self.menuTelecommand.addAction(button_action_telecommand)
-        # self.menuTesting.addAction(button_action)
+        self.menuSummary.aboutToShow.connect(self.show_new_window_summary)
+        self.menuIMU.aboutToShow.connect(self.show_new_window)
+        self.menuDocking.aboutToShow.connect(self.show_new_window_docking)
+        self.menuTelecommand.aboutToShow.connect(self.show_new_window_telecommand)
 
         self.menuSummary.setTitle(QCoreApplication.translate("MainWindow", u"Summary", None))
         self.menuIMU.setTitle(QCoreApplication.translate("MainWindow", u"IMU", None))
@@ -83,6 +186,8 @@ class MainWindow(QMainWindow):
     def show_new_window_summary(self):
         print("clicked")
         self.summary.setupUi(self)
+        # t1 = threading.Thread(target=self.updateData)
+        # t1.start()
 
     def show_new_window(self):
         print("clicked")
@@ -95,7 +200,26 @@ class MainWindow(QMainWindow):
     def show_new_window_telecommand(self):
         print("clicked telecommand")
         self.telecommand.setupUi(self)
-            
+    
+    def setData(self):
+        try:
+            print("data initialized")
+            f = open("Assets/data.json")
+            json_array = json.load(f)
+            print(json_array["telemetryContinuous"]["data"])
+            # temp = []
+
+            for item in json_array["telemetryContinuous"]["data"]:
+                print(item)
+                self.data[item] = 0
+
+            for key in self.data:
+                print(key,":",self.data[key])
+
+
+        except Exception as e:
+            print(e)
+        
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = MainWindow()

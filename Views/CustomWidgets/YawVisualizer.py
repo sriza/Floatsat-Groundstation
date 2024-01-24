@@ -29,7 +29,7 @@ class YawVisualizer(WidgetClass):
         self.pitch = 0
         self.roll = 0
         self.skipskid = 0
-        self.heading = 270
+        self.heading = 0
         self.airspeed = 0
         self.alt = 0
         self.vspeed = 0
@@ -81,7 +81,7 @@ class YawVisualizer(WidgetClass):
         self.font16 = QFont("Arial", 16 * z)
         self.font20 = QFont('Arial', 20 * z)
 
-    def paintEvent(self, e):
+    def paintEvent(self,e):
         dpi = min(self.logicalDpiX(), self.logicalDpiY())
         if dpi != self.dpi:
             self.update_style()
@@ -160,15 +160,8 @@ class YawVisualizer(WidgetClass):
         painter.setBrush(self.hg)
         painter.setPen(self.hg2)
 
-        # red middle mark
-        # painter.drawLine(QLineF(w/2 , h/2, w / 2, 17 * h / 16 + x))
         painter.drawLine(QLineF(w/2 , h/2-x, w / 2, h/2))
         painter.setPen(self.hg4)
-        # painter.drawPolygon([
-        #     QPointF(w / 2 - 7 * s, 17 * h / 16 - x + 17 * s),
-        #     QPointF(w / 2, 17 * h / 16 - x + 2 * s),
-        #     QPointF(w / 2 + 7 * s, 17 * h / 16 - x + 17 * s)
-        # ])
         painter.drawPolygon([
             QPointF(w / 2 - 7 * s, h/2-x + 17 * s),
             QPointF(w / 2, h/2-x + 2 * s),

@@ -1,0 +1,10 @@
+Data.json contains data in json format
+{
+    "<topicName>": {
+        "topic": <topicid>,
+        "structure": "<topic structure in python>",
+        "data": [
+            "<data_name_in_gs>":"<data_name_in_satellite>"
+        ]
+    }
+}

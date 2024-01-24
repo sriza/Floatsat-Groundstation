@@ -34,7 +34,6 @@ class QPrimaryFlightDisplay(WidgetClass):
         self.alt = 0
         self.vspeed = 0
         self.battery = 40
-        # self.arm = False
         self.arm = True
         self.zoom = 0.4
         if WidgetClass == QOpenGLWidget:
@@ -577,14 +576,3 @@ class QPrimaryFlightDisplay(WidgetClass):
         painter.setPen(self.fg2)
         painter.setBrush(self.sky if sky else self.ground)
         painter.drawPolygon(points)
-
-
-# if __name__ == '__main__':
-#     import sys
-#     app = QApplication(sys.argv)
-#     pfd = QPrimaryFlightDisplay()
-#     pfd.show()
-#     try:
-#         sys.exit(app.exec())
-#     except AttributeError:
-#         sys.exit(app.exec_())

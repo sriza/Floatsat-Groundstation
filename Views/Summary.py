@@ -17,9 +17,12 @@ from PySide6.QtWidgets import (QFrame, QGraphicsView, QGroupBox, QLCDNumber,
 import pyqtgraph as pg
 from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
 from Views.CustomWidgets.YawVisualizer import YawVisualizer
-
+import time
+import threading
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+
+    def setupUi(self, MainWindow, data):
+        self.data = data
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1265, 802)
@@ -46,22 +49,32 @@ class Ui_MainWindow(object):
         self.lcdNumber.setObjectName(u"lcdNumber")
         self.lcdNumber.setGeometry(QRect(30, 130, 201, 41))
         self.lcdNumber.display(5000.9986)
-        self.lcdNumber_2 = QLCDNumber(self.frame)
-        self.lcdNumber_2.setObjectName(u"lcdNumber_2")
-        self.lcdNumber_2.setGeometry(QRect(30, 310, 201, 41))
-        self.lcdNumber_3 = QLCDNumber(self.frame)
-        self.lcdNumber_3.setObjectName(u"lcdNumber_3")
-        self.lcdNumber_3.setGeometry(QRect(30, 220, 201, 41))
-        self.lcdNumber_4 = QLCDNumber(self.frame)
-        self.lcdNumber_4.setObjectName(u"lcdNumber_4")
-        self.lcdNumber_4.setGeometry(QRect(30, 510, 201, 41))
-        self.lcdNumber_5 = QLCDNumber(self.frame)
-        self.lcdNumber_5.setObjectName(u"lcdNumber_5")
-        self.lcdNumber_5.setGeometry(QRect(30, 620, 201, 41))
+
+        self.lcdYaw = QLCDNumber(self.frame)
+        self.lcdYaw.setObjectName(u"lcdYaw")
+        self.lcdYaw.setGeometry(QRect(30, 310, 201, 41))
+        self.lcdYaw.display(2)
+    
+        self.lcdPitch = QLCDNumber(self.frame)
+        self.lcdPitch.setObjectName(u"lcdPitch")
+        self.lcdPitch.setGeometry(QRect(30, 220, 201, 41))
+        self.lcdPitch.display(3)
+
+
+        self.lcdTemperature = QLCDNumber(self.frame)
+        self.lcdTemperature.setObjectName(u"lcdTemperature")
+        self.lcdTemperature.setGeometry(QRect(30, 510, 201, 41))
+        self.lcdTemperature.display(4)
+
+        self.lcdAngVelocity = QLCDNumber(self.frame)
+        self.lcdAngVelocity.setObjectName(u"lcdAngVelocity")
+        self.lcdAngVelocity.setGeometry(QRect(30, 620, 201, 41))
+        self.lcdAngVelocity.display(5)
 
         self.roll_label = QLabel(self.frame)
         self.roll_label.setObjectName(u"label_3")
         self.roll_label.setGeometry(QRect(30, 100, 121, 31))
+
         font1 = QFont()
         font1.setFamilies([u"Arial"])
         font1.setPointSize(12)
@@ -105,10 +118,10 @@ class Ui_MainWindow(object):
         self.textEdit.raise_()
         self.label.raise_()
         self.lcdNumber.raise_()
-        self.lcdNumber_2.raise_()
-        self.lcdNumber_3.raise_()
-        self.lcdNumber_4.raise_()
-        self.lcdNumber_5.raise_()
+        self.lcdYaw.raise_()
+        self.lcdPitch.raise_()
+        self.lcdTemperature.raise_()
+        self.lcdAngVelocity.raise_()
         self.roll_label.raise_()
         self.pitch_label.raise_()
         self.yaw_label.raise_()
@@ -177,12 +190,15 @@ class Ui_MainWindow(object):
         self.label_9.setObjectName(u"label_9")
         self.label_9.setGeometry(QRect(20, 140, 161, 31))
         self.label_9.setFont(font1)
+
         self.lcdNumber_6 = QTextEdit(self.groupBox_3)
         self.lcdNumber_6.setObjectName(u"lcdNumber_6")
         self.lcdNumber_6.setGeometry(QRect(10, 80, 201, 41))
+
         self.lcdNumber_7 = QTextEdit(self.groupBox_3)
         self.lcdNumber_7.setObjectName(u"lcdNumber_7")
         self.lcdNumber_7.setGeometry(QRect(20, 180, 201, 41))
+
         self.pushButton_2 = QPushButton(self.centralwidget)
         self.pushButton_2.setObjectName(u"pushButton_2")
         self.pushButton_2.setGeometry(QRect(950, 670, 231, 41))
@@ -230,6 +246,8 @@ class Ui_MainWindow(object):
         self.lcdNumber_9 = QLCDNumber(self.centralwidget)
         self.lcdNumber_9.setObjectName(u"lcdNumber_9")
         self.lcdNumber_9.setGeometry(QRect(950, 180, 191, 41))
+        self.lcdNumber_9.display(9)
+
         self.progressBar = QProgressBar(self.centralwidget)
         self.progressBar.setObjectName(u"progressBar")
         self.progressBar.setGeometry(QRect(950, 80, 221, 51))
@@ -252,7 +270,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
-        self.updateData()
+    
+        # self.updateData(self.data)
     # setupUi
     
 
@@ -279,8 +298,39 @@ class Ui_MainWindow(object):
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Voltage", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"V", None))
     
-    def updateData(self):
-        pass
+    def updateData(self, data):
+        count = 1
+        hour = [1,2,3,4,5,6,7,8,9,10]
+        temperature = [30,32,34,32,33,31,29,32,35,45]
+        h=10
+        t=15
+        self.data = data
+        print("here in update")
+
+        while True:
+            self.lcdYaw.display(count)
+            time.sleep(1)
+            # self.pfd.heading = count%361
+
+            # self.pfd = YawVisualizer(self.centralwidget) 
+            # self.pfd.zoom = 0.3
+            # self.pfd.heading = count%361
+            # self.pfd.setGeometry(QRect(330, 530, 270, 200))
+            # self.pfd.setMinimumSize(QSize(270, 200))
+            # self.pfd.show()
+
+            # hour.append(time)
+            # temperature.append(self.data["temp"])
+            # self.graphWidget.plot(hour, temperature)   
+
+
+            # self.temp_visualizer
+
+            # QApplication.instance().paletteChanged.connect(self.update_style)
+            # self.update_style()            
+            # self.pfd.update()
+            count = count+1
+
 
 
     # retranslateUi
