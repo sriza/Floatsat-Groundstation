@@ -14,7 +14,6 @@ from rodos import LinkinterfaceUDP
 from rodos import Topic
 import json
 import struct
-import inspect
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -24,10 +23,7 @@ class MainWindow(QMainWindow):
         self.summary = Ui_MainWindow()
         self.imu = IMU_MainWindow()
         self.telecommand = Telecommand_MainWindow()
-        self.docking = Docking_MainWindow()
-        self.data = {}
-        self.setData()
-        
+        self.docking = Docking_MainWindow()        
 
         #rodos
         self.luart = LinkinterfaceUDP()
@@ -38,7 +34,7 @@ class MainWindow(QMainWindow):
         # self.initializeTelecommandTopics()
         self.gwUDP.run()
 
-        self.summary.setupUi(self, self.data)
+        self.summary.setupUi(self)
         self.currentView = self.summary
 
     
@@ -192,45 +188,24 @@ class MainWindow(QMainWindow):
         self.summary.setupUi(self)
         self.currentView = self.summary
         self.currentView.updateData(self.telemetry)
-        # t1 = threading.Thread(target=self.updateData)
-        # t1.start()
 
     def show_new_window(self):
         print("clicked")
         self.imu.setupUi(self)
-        self.currentView = self.summary
+        self.currentView = self.imu
         self.currentView.updateData(self.telemetry)
     
     def show_new_window_docking(self):
         print("clicked docking")
         self.docking.setupUi(self)
-        self.currentView = self.summary
+        self.currentView = self.docking
         self.currentView.updateData(self.telemetry)
     
     def show_new_window_telecommand(self):
         print("clicked telecommand")
         self.telecommand.setupUi(self)
-        self.currentView = self.summary
+        self.currentView = self.telecommand
         self.currentView.updateData(self.telemetry)
-    
-    def setData(self):
-        try:
-            print("data initialized")
-            f = open("Assets/data.json")
-            json_array = json.load(f)
-            print(json_array["telemetryContinuous"]["data"])
-            # temp = []
-
-            for item in json_array["telemetryContinuous"]["data"]:
-                print(item)
-                self.data[item] = 0
-
-            for key in self.data:
-                print(key,":",self.data[key])
-
-
-        except Exception as e:
-            print(e)
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)

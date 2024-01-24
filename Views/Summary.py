@@ -21,8 +21,7 @@ import time
 import threading
 class Ui_MainWindow(object):
 
-    def setupUi(self, MainWindow, data):
-        self.data = data
+    def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1265, 802)
@@ -271,7 +270,6 @@ class Ui_MainWindow(object):
 
         QMetaObject.connectSlotsByName(MainWindow)
     
-        # self.updateData(self.data)
     # setupUi
     
 
@@ -305,11 +303,14 @@ class Ui_MainWindow(object):
         h=10
         t=15
         self.data = data
-        print("here in update")
+        topicName = "telemetryContinuous"
+        topicData = data[topicName]["data"]
 
-        while True:
-            self.lcdYaw.display(count)
-            time.sleep(1)
+        # while True:
+        self.lcdPitch.display(topicData["q0"])
+        self.lcdYaw.display(topicData["q1"])
+        self.lcdTemperature.display(topicData["temp"])
+            # time.sleep(1)
             # self.pfd.heading = count%361
 
             # self.pfd = YawVisualizer(self.centralwidget) 
@@ -329,7 +330,7 @@ class Ui_MainWindow(object):
             # QApplication.instance().paletteChanged.connect(self.update_style)
             # self.update_style()            
             # self.pfd.update()
-            count = count+1
+            # count = count+1
 
 
 

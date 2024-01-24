@@ -54,12 +54,14 @@ def setAndPublish(cnt):
         for tele_name in telemetry:
             print(tele_name)
             data_array = []
+            last_data = 0
 
             for datum in telemetry[tele_name]["data"]:
                 # new_value = (telemetry[tele_name]["data"][datum]+cnt)%360
-                new_value = cnt %360
+                new_value = (last_data+cnt) %360
                 telemetry[tele_name]["data"][datum] = new_value
                 data_array.append(new_value)
+                last_data = new_value
 
             dataStruct = struct.pack(telemetry[tele_name]["structure"],*tuple(data_array))
 
@@ -88,4 +90,4 @@ while True:
     if cnt==30:
         cnt=0
 
-    time.sleep(10)
+    time.sleep(2)
