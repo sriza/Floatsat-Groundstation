@@ -14,6 +14,7 @@ from rodos import LinkinterfaceUDP
 from rodos import Topic
 import json
 import struct
+import inspect
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -26,7 +27,7 @@ class MainWindow(QMainWindow):
         self.docking = Docking_MainWindow()
         self.data = {}
         self.setData()
-        self.summary.setupUi(self, self.data)
+        
 
         #rodos
         self.luart = LinkinterfaceUDP()
@@ -35,8 +36,11 @@ class MainWindow(QMainWindow):
         self.topics = {}
         self.initializeTelemetryTopics()
         # self.initializeTelecommandTopics()
-
         self.gwUDP.run()
+
+        self.summary.setupUi(self, self.data)
+        self.currentView = self.summary
+
     
     def initializeTelemetryTopics(self):
         try:
@@ -50,16 +54,12 @@ class MainWindow(QMainWindow):
 
                 # initialization of topic
                 topic = Topic(dataStruct["topicId"])
-                topic.addSubscriber(self.setAndUpdate)
+                func = getattr(self, item)
+                topic.addSubscriber(func)
 
                 self.telemetry[item] = {}
-                # try:
                 self.telemetry[item]["topic"] = topic
                 self.topics[dataStruct["topicId"]] = item
-                # except Exception as ex:
-                    # print(ex)
-                    # exit
-                # gwUart.forwardTopic(telemetry[item]["topic"]) 
 
                 # # copy remaining data to structure
                 self.telemetry[item]["topicId"] = dataStruct["topicId"]
@@ -112,32 +112,36 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(e)
 
-    def setAndUpdate(self, data, topicId):
+    def telemetryContinuous(self, data):
+        topicName = "telemetryContinuous"
+        self.setAndUpdate(data,topicName)
+    
+    def telemetryContinuousExtendedTopicID(self, data):
+        topicName = "telemetryContinuousExtendedTopicID"
+        self.setAndUpdate(data,topicName)
+    
+    def telemetryCalibIMU(self, data):
+        topicName = "telemetryContinuous"
+        self.setAndUpdate(data,topicName)
+    
+    def telemetryControlParams(self, data):
+        topicName = "telemetryControlParams"
+        self.setAndUpdate(data,topicName)
+
+    def setAndUpdate(self, data, topicName):
         try:       
-            topicName = self.topics[topicId]
-            unpackedData = struct.unpack(self.telemetry[topicName]["structure"],*tuple(data))
+            print("set and update", self.telemetry[topicName]["structure"])
+            unpackedData = struct.unpack(self.telemetry[topicName]["structure"],data)
             i = 0
 
             for datum in self.telemetry[topicName]["data"]:
                 self.telemetry[topicName]["data"][datum] = unpackedData[i]
                 i+=1
-            print("got data", unpackedData, topicId)
-        except Exception as e:
-            print(e)
+            print("got data", unpackedData)
 
-    
-    # def updateContinuousTelemetry(self, receivedData):
-    #     try:
-    #         unpacked = struct.unpack("=ii19f", receivedData)
-    #         i=0
-    #         for item in self.data:
-    #             self.data[item] = unpacked[i]
-    #             i+=1
-
-    #         self.summary.update(self.data)
-        
-    #     except Exception as e:
-    #         print(e)
+            self.currentView.updateData(self.telemetry)
+        except Exception as ex:
+            print(ex)
 
     
     def menubarCollection(self):
@@ -186,20 +190,28 @@ class MainWindow(QMainWindow):
     def show_new_window_summary(self):
         print("clicked")
         self.summary.setupUi(self)
+        self.currentView = self.summary
+        self.currentView.updateData(self.telemetry)
         # t1 = threading.Thread(target=self.updateData)
         # t1.start()
 
     def show_new_window(self):
         print("clicked")
         self.imu.setupUi(self)
+        self.currentView = self.summary
+        self.currentView.updateData(self.telemetry)
     
     def show_new_window_docking(self):
         print("clicked docking")
         self.docking.setupUi(self)
+        self.currentView = self.summary
+        self.currentView.updateData(self.telemetry)
     
     def show_new_window_telecommand(self):
         print("clicked telecommand")
         self.telecommand.setupUi(self)
+        self.currentView = self.summary
+        self.currentView.updateData(self.telemetry)
     
     def setData(self):
         try:

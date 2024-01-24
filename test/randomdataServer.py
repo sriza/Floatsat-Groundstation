@@ -56,7 +56,8 @@ def setAndPublish(cnt):
             data_array = []
 
             for datum in telemetry[tele_name]["data"]:
-                new_value = (telemetry[tele_name]["data"][datum]+cnt)%360
+                # new_value = (telemetry[tele_name]["data"][datum]+cnt)%360
+                new_value = cnt %360
                 telemetry[tele_name]["data"][datum] = new_value
                 data_array.append(new_value)
 
@@ -72,7 +73,7 @@ initializeTopics()
 
 cnt = 0
 
-while cnt<50:
+while True:
     setAndPublish(cnt)
 
     # sendMe = struct.pack("i",  cnt)
@@ -83,4 +84,8 @@ while cnt<50:
     print("------------------------")
 
     cnt += 1
-    time.sleep(4)
+    
+    if cnt==30:
+        cnt=0
+
+    time.sleep(10)
