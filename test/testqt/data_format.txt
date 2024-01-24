@@ -1,0 +1,18 @@
+struct IMUData
+{
+    Vector3D angularVelocity; // [rad/s]
+    Vector3D magneticField; // [gauss]
+    Vector3D acceleration; // [g]
+    float temperature; // [A degree C]
+}
+
+struct IMUData
+{
+    float wx, wy, wz; // [rad/s]
+    float mx, my, mz; // [gauss]
+    float ax, ay, az; // [g]
+    float temperature; // [A degree C]
+}
+
+// id=40, name = IMU_Telemetry
+Topic<IMUData> IMUTelemetryTopic(40, "IMU_Telemetry") 

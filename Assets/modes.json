@@ -1,0 +1,136 @@
+{
+    "SetMode_Idle": {
+        "id": 1,
+        "data": []
+    },
+    "SetMode_CalibGyro": {
+        "id": 2,
+        "data": []
+    },
+    "SetMode_CalibAccel": {
+        "id": 3,
+        "data": []
+    },
+    "SetMode_CalibMag": {
+        "id": 4,
+        "data": []
+    },
+    "SetMode_CalibArm": {
+        "id": 5,
+        "data": []
+    },
+    "SetMode_ControlSpeed ": {
+        "id": 6,
+        "data": []
+    },
+    "SetMode_ControlPos": {
+        "id": 7,
+        "data": []
+    },
+    "SetMode_ControlVel": {
+        "id": 8,
+        "data": []
+    },
+    "SetMode_Mission": {
+        "id": 9,
+        "data": []
+    },
+    "SetCalibParams_gyro": {
+        "id": 10,
+        "data": [
+            "x",
+            "y",
+            "z"
+        ]
+    },
+    "SetCalibParams_accel": {
+        "id": 11,
+        "data": [
+            "x",
+            "y",
+            "z"
+        ]
+    },
+    "SetCalibParams_mag": {
+        "id": 12,
+        "data": [
+            "x",
+            "y",
+            "z"
+        ]
+    },
+    "SetControlParams_speed": {
+        "id": 13,
+        "data": [
+            "P",
+            "I",
+            "D"
+        ]
+    },
+    "SetControlLimit_speed": {
+        "id": 14,
+        "data": [
+            "limit"
+        ]
+    },
+    "SetControlParams_pos": {
+        "id": 15,
+        "data": [
+            "P",
+            "I",
+            "D"
+        ]
+    },
+    "SetControlLimit_pos": {
+        "id": 16,
+        "data": [
+            "limit"
+        ]
+    },
+    "SetControlParams_vel": {
+        "id": 17,
+        "data": [
+            "P",
+            "I",
+            "D"
+        ]
+    },
+    "SetControlLimit_vel": {
+        "id": 18,
+        "data": [
+            "limit"
+        ]
+    },
+    "SetControlDesired_speed": {
+        "id": 19,
+        "data": ["Desired speed"]
+    },
+    "SetControlDesired_pos": {
+        "id": 20,
+        "data": ["Desired position"]
+    },
+    "SetControlDesired_vel": {
+        "id": 21,
+        "data": ["Desired Velocity"]
+    },
+    "SendCalibTelemetry": {
+        "id": 22,
+        "data": []
+    },
+    "SendControlTelemetry": {
+        "id": 23,
+        "data": []
+    },
+    "ToggleExtendedTelemetry": {
+        "id": 24,
+        "data": []
+    },
+    "ToggleCamera": {
+        "id": 25,
+        "data": []
+    },
+    "ToggleVideoStreaming": {
+        "id": 26,
+        "data": []
+    }
+}
