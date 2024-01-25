@@ -329,7 +329,7 @@ class Ui_MainWindow(object):
             self.lcdTemperature.display(topicData["temp"])
             self.lcdVoltage.display(topicData["U_bat"])
 
-            value = (topicData["U_bat"]/max_voltage)%100
+            value = (topicData["U_bat"]/max_voltage)
             print("battery:", value)
 
             # todo: update progress bar and its styling

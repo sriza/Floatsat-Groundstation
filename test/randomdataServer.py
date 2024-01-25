@@ -7,13 +7,7 @@ from rodos import Gateway
 from rodos import LinkinterfaceUDP
 from rodos import Topic
 import json
-import sys
-
-# sys.setrecursionlimit(10)
-
-
-# from rodos import *
-
+import time
 
 luart = LinkinterfaceUDP()
 gwUart = Gateway(luart)
@@ -42,7 +36,7 @@ def initializeTopics():
 
             # # copy the structure of data
             for datum in dataStruct["data"]:
-                telemetry[item]["data"][datum] = 1 
+                telemetry[item]["data"][datum] = 0.0
 
             print(item)
 
@@ -58,7 +52,7 @@ def setAndPublish(cnt):
 
             for datum in telemetry[tele_name]["data"]:
                 # new_value = (telemetry[tele_name]["data"][datum]+cnt)%360
-                new_value = (last_data+cnt) %360
+                new_value = (int(time.time())+cnt+last_data%15)%360
                 telemetry[tele_name]["data"][datum] = new_value
                 data_array.append(new_value)
                 last_data = new_value

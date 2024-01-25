@@ -226,7 +226,6 @@ class IMU_MainWindow(object):
         self.roll_pitch_viz.setMinimumSize(QSize(270, 200))
         self.roll_pitch_viz.show()
 
-
         self.yaw_viz = YawVisualizer(self.centralwidget) 
         self.yaw_viz.zoom = 0.3
         self.yaw_viz.setGeometry(QRect(890, 280, 341, 201))
@@ -294,8 +293,8 @@ class IMU_MainWindow(object):
             q3 = topicData["q3"]/100
 
           
-            roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))%30
-            pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))%30                        
+            roll = math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2))
+            pitch = math.asin(2 * (q0 * q2 - q3 * q1))                     
             yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
 
             # lcd data update
@@ -326,11 +325,10 @@ class IMU_MainWindow(object):
             # todo: update roll and pitch parameters, issue with repainting
             self.roll_pitch_viz.roll = roll
             self.roll_pitch_viz.pitch = pitch
-            self.roll_pitch_viz.yaw = yaw
             self.roll_pitch_viz.update()
-            # self.pfd.roll = roll
-            # self.pfd.pitch = pitch
-            # self.pfd.update()
+            self.pfd.roll = roll
+            self.pfd.pitch = pitch
+            self.pfd.update()
 
         except Exception as ex:
             print("exception imu update:", ex)
