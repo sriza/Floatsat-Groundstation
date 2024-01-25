@@ -22,7 +22,7 @@ telemetry = {}
 def initializeTopics():
     try:
         print("data initialized")
-        f = open("../Assets/data.json")
+        f = open("../Assets/telemetry.json")
         json_array = json.load(f)
 
         for item in json_array:

@@ -1,4 +1,4 @@
-Data.json contains data in json format
+telemetry.json contains data in json format
 {
     "<topicName>": {
         "topic": <topicid>,

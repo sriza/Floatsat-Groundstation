@@ -26,8 +26,10 @@ else:
 class QPrimaryFlightDisplay(WidgetClass):
     def __init__(self, parent=None):
         super(QPrimaryFlightDisplay, self).__init__(parent)
-        self.pitch = 0
-        self.roll = 0
+        self.pitch = 10
+        self.roll = 12
+        # self.pitch = 0
+        # self.roll = 0
         self.skipskid = 0
         self.heading = 0
         self.airspeed = 0
@@ -96,10 +98,10 @@ class QPrimaryFlightDisplay(WidgetClass):
         self.draw_markers()
         self.draw_cursor()
         self.draw_skipskid()
-        # self.draw_heading()
-        # self.draw_airspeed()
-        # self.draw_vspeed()
-        # self.draw_altimeter()
+        self.draw_heading()
+        self.draw_airspeed()
+        self.draw_vspeed()
+        self.draw_altimeter()
         self.draw_status()
         self.painter.end()
 

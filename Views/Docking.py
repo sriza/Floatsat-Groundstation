@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QLabel,
     QMainWindow, QMenu, QMenuBar, QProgressBar,
     QPushButton, QRadioButton, QSizePolicy, QStatusBar,
     QWidget)
+import math
 
 class Docking_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -136,4 +137,54 @@ class Docking_MainWindow(object):
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Calculated Angular velocity", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Orientation", None))
     # retranslateUi
+    
+    def updateData(self, data):
+        try:
+            # hour = []
+            # temperature = []
+
+            topicName = "telemetryContinuous"
+            # topicStruc = data[topicName]
+            topicData = data[topicName]["data"]
+
+            # if topicStruc["pairedData"]["temp"]:
+            #     tempData = topicStruc["pairedData"]["temp"]
+            #     print("tempData", tempData)
+            #     hour = list(tempData.keys())
+            #     temperature = list(tempData.values())
+            
+            # conversion of quaternion to roll, pitch and yaw
+            q0 = topicData["q0"]/100
+            q1 = topicData["q1"]/100
+            q2 = topicData["q2"]/100
+            q3 = topicData["q3"]/100
+
+          
+            # roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))%40
+            # pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))%40                        
+            # yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
+
+            # # lcd data update
+            # self.roll.display(roll)
+            # self.pitch.display(pitch)
+            # self.yaw.display(yaw)
+
+            # # graph data update
+            # # print("tempData",hour, temperature)
+            # # self.graphWidget.plot(hour, temperature) 
+
+
+            # # update yaw parameters
+            # print("roll, pitch, yaw",roll,pitch, yaw)
+            # self.yaw_viz.heading = yaw
+            # self.yaw_viz.update()
+
+            # #update roll and pitch parameters
+            # self.roll_pitch_viz.roll = 40
+            # self.roll_pitch_viz.pitch = 44
+            # # self.roll_pitch_viz.yaw = yaw
+            # self.roll_pitch_viz.update()
+
+        except Exception as ex:
+            print("exception imu update:", ex)
 

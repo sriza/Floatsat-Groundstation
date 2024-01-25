@@ -1,0 +1,194 @@
+{
+    "SetMode_Idle": {
+        "id": 1,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SetMode_CalibGyro": {
+        "id": 2,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SetMode_CalibAccel": {
+        "id": 3,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SetMode_CalibMag": {
+        "id": 4,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SetMode_CalibArm": {
+        "id": 5,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SetMode_ControlSpeed ": {
+        "id": 6,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SetMode_ControlPos": {
+        "id": 7,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SetMode_ControlVel": {
+        "id": 8,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SetMode_Mission": {
+        "id": 9,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SetCalibParams_gyro": {
+        "id": 10,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "X",
+            "y": "Y",
+            "z": "Z"
+        }
+    },
+    "SetCalibParams_accel": {
+        "id": 11,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "X",
+            "y": "Y",
+            "z": "Z"
+        }
+    },
+    "SetCalibParams_mag": {
+        "id": 12,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "X",
+            "y": "Y",
+            "z": "Z"
+        }
+    },
+    "SetControlParams_speed": {
+        "id": 13,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "P",
+            "y": "I",
+            "z": "D"
+        }
+    },
+    "SetControlLimit_speed": {
+        "id": 14,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "Speed Limit"
+        }
+    },
+    "SetControlParams_pos": {
+        "id": 15,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "P",
+            "y": "I",
+            "z": "D"
+        }
+    },
+    "SetControlLimit_pos": {
+        "id": 16,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "Position Limit"
+        }
+    },
+    "SetControlParams_vel": {
+        "id": 17,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x":"P",
+            "y":"I",
+            "z":"D"
+        }
+    },
+    "SetControlLimit_vel": {
+        "id": 18,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x":"Limit"
+        }
+    },
+    "SetControlDesired_speed": {
+        "id": 19,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x" :"Desired speed"
+        }
+    },
+    "SetControlDesired_pos": {
+        "id": 20,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x":"Desired position"
+        }
+    },
+    "SetControlDesired_vel": {
+        "id": 21,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x" : "Desired Velocity"
+        }
+    },
+    "SendCalibTelemetry": {
+        "id": 22,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "SendControlTelemetry": {
+        "id": 23,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "ToggleExtendedTelemetry": {
+        "id": 24,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "ToggleCamera": {
+        "id": 25,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "ToggleVideoStreaming": {
+        "id": 26,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    }
+}

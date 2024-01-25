@@ -19,14 +19,16 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGraphicsView,
     QGroupBox, QLabel, QMainWindow, QMenu,
-    QMenuBar, QPlainTextEdit, QPushButton, QSizePolicy,
+    QMenuBar, QPlainTextEdit, QPushButton, QSizePolicy, QComboBox,
     QStatusBar, QWidget)
+import json
 
 class Telecommand_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1265, 802)
+        self.parent = MainWindow
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.frame = QFrame(self.centralwidget)
@@ -73,7 +75,7 @@ class Telecommand_MainWindow(object):
         self.pushButton_6.setObjectName(u"pushButton_6")
         self.pushButton_6.setGeometry(QRect(10, 170, 201, 41))
         self.pushButton_6.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(50, 107, 29);")
+        "background-color: rgb(50, 107, 29);")
         self.plainTextEdit_5 = QPlainTextEdit(self.groupBox_2)
         self.plainTextEdit_5.setObjectName(u"plainTextEdit_5")
         self.plainTextEdit_5.setGeometry(QRect(10, 120, 201, 41))
@@ -88,7 +90,7 @@ class Telecommand_MainWindow(object):
         font1.setPointSize(16)
         self.label_4.setFont(font1)
         self.label_4.setStyleSheet(u"color: rgb(0, 0, 0);\n"
-"background-color: rgb(211, 211, 211);")
+        "background-color: rgb(211, 211, 211);")
         self.groupBox_2.raise_()
         self.groupBox.raise_()
         self.label_4.raise_()
@@ -140,12 +142,12 @@ class Telecommand_MainWindow(object):
         self.pushButton_3.setObjectName(u"pushButton_3")
         self.pushButton_3.setGeometry(QRect(960, 250, 231, 41))
         self.pushButton_3.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(182, 41, 16);")
+        "background-color: rgb(182, 41, 16);")
         self.pushButton_4 = QPushButton(self.centralwidget)
         self.pushButton_4.setObjectName(u"pushButton_4")
         self.pushButton_4.setGeometry(QRect(960, 660, 231, 41))
         self.pushButton_4.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(50, 107, 29);")
+        "background-color: rgb(50, 107, 29);")
         self.groupBox_4 = QGroupBox(self.centralwidget)
         self.groupBox_4.setObjectName(u"groupBox_4")
         self.groupBox_4.setGeometry(QRect(960, 520, 231, 111))
@@ -154,7 +156,7 @@ class Telecommand_MainWindow(object):
         font3.setPointSize(1)
         self.groupBox_4.setFont(font3)
         self.groupBox_4.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(26, 29, 56);")
+        "background-color: rgb(26, 29, 56);")
         self.checkBox = QCheckBox(self.groupBox_4)
         self.checkBox.setObjectName(u"checkBox")
         self.checkBox.setGeometry(QRect(20, 30, 171, 16))
@@ -169,7 +171,7 @@ class Telecommand_MainWindow(object):
         self.pushButton_5.setObjectName(u"pushButton_5")
         self.pushButton_5.setGeometry(QRect(960, 340, 231, 41))
         self.pushButton_5.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(50, 107, 29);")
+        "background-color: rgb(50, 107, 29);")
         self.line = QFrame(self.centralwidget)
         self.line.setObjectName(u"line")
         self.line.setGeometry(QRect(950, 310, 251, 16))
@@ -207,45 +209,71 @@ class Telecommand_MainWindow(object):
         self.groupBox_7.setGeometry(QRect(20, 60, 811, 201))
         self.groupBox_7.setFont(font)
         self.groupBox_7.setStyleSheet(u"color: rgb(9, 10, 17);")
-        self.label_19 = QLabel(self.groupBox_7)
-        self.label_19.setObjectName(u"label_19")
-        self.label_19.setGeometry(QRect(30, 20, 121, 31))
-        self.label_19.setFont(font)
-        self.pushButton_11 = QPushButton(self.groupBox_7)
-        self.pushButton_11.setObjectName(u"pushButton_11")
-        self.pushButton_11.setGeometry(QRect(590, 150, 201, 41))
-        self.pushButton_11.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(50, 107, 29);")
-        self.label_20 = QLabel(self.groupBox_7)
-        self.label_20.setObjectName(u"label_20")
-        self.label_20.setGeometry(QRect(290, 20, 121, 31))
-        self.label_20.setFont(font)
-        self.label_22 = QLabel(self.groupBox_7)
-        self.label_22.setObjectName(u"label_22")
-        self.label_22.setGeometry(QRect(550, 20, 121, 31))
-        self.label_22.setFont(font)
+        self.x_label = QLabel(self.groupBox_7)
+        self.x_label.setObjectName(u"label_19")
+        self.x_label.setGeometry(QRect(30, 20, 121, 31))
+        self.x_label.setFont(font)
+
+        # send telecommand button
+        self.telecommandButton = QPushButton(self.groupBox_7)
+        self.telecommandButton.setObjectName(u"pushButton_11")
+        self.telecommandButton.setGeometry(QRect(590, 150, 201, 41))
+        self.telecommandButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
+        "background-color: rgb(50, 107, 29);")
+        self.telecommandButton.clicked.connect(self.mainTelecommand)
+        
+        self.y_label = QLabel(self.groupBox_7)
+        self.y_label.setObjectName(u"label_20")
+        self.y_label.setGeometry(QRect(290, 20, 121, 31))
+        self.y_label.setFont(font)
+        self.z_label = QLabel(self.groupBox_7)
+        self.z_label.setObjectName(u"label_22")
+        self.z_label.setGeometry(QRect(550, 20, 121, 31))
+        self.z_label.setFont(font)
         self.label_23 = QLabel(self.groupBox_7)
         self.label_23.setObjectName(u"label_23")
         self.label_23.setGeometry(QRect(30, 100, 121, 31))
         self.label_23.setFont(font)
-        self.plainTextEdit = QPlainTextEdit(self.groupBox_7)
-        self.plainTextEdit.setObjectName(u"plainTextEdit")
-        self.plainTextEdit.setGeometry(QRect(30, 133, 311, 51))
-        self.plainTextEdit_2 = QPlainTextEdit(self.groupBox_7)
-        self.plainTextEdit_2.setObjectName(u"plainTextEdit_2")
-        self.plainTextEdit_2.setGeometry(QRect(30, 50, 231, 41))
-        self.plainTextEdit_3 = QPlainTextEdit(self.groupBox_7)
-        self.plainTextEdit_3.setObjectName(u"plainTextEdit_3")
-        self.plainTextEdit_3.setGeometry(QRect(290, 50, 231, 41))
-        self.plainTextEdit_4 = QPlainTextEdit(self.groupBox_7)
-        self.plainTextEdit_4.setObjectName(u"plainTextEdit_4")
-        self.plainTextEdit_4.setGeometry(QRect(550, 50, 231, 41))
+
+        # tuning parameters
+        self.modeDropdown = QComboBox(self.groupBox_7)
+        # self.plainTextEdit = QPlainTextEdit(self.groupBox_7)
+        self.modeDropdown.setObjectName(u"plainTextEdit")
+        self.modeDropdown.setGeometry(QRect(30, 133, 311, 51))
+        self.modeDropdown.setPlaceholderText("Propertional")
+
+        self.xTextEdit = QPlainTextEdit(self.groupBox_7)
+        self.xTextEdit.setObjectName(u"x")
+        self.xTextEdit.setGeometry(QRect(30, 50, 231, 41))
+        self.xTextEdit.setPlaceholderText("Propertional")
+
+
+        self.yTextEdit = QPlainTextEdit(self.groupBox_7)
+        self.yTextEdit.setObjectName(u"y")
+        self.yTextEdit.setGeometry(QRect(290, 50, 231, 41))
+        self.yTextEdit.setPlaceholderText("Integrator")
+
+        self.zTextEdit = QPlainTextEdit(self.groupBox_7)
+        self.zTextEdit.setObjectName(u"z")
+        self.zTextEdit.setGeometry(QRect(550, 50, 231, 41))
+        self.zTextEdit.setPlaceholderText("Derivative")
+
+        self.modeDropdown = QComboBox(self.groupBox_7)
+        self.modes = {}
+        self.addDropdownItems()
+        # self.plainTextEdit = QPlainTextEdit(self.groupBox_7)
+        self.modeDropdown.setObjectName(u"plainTextEdit")
+        self.modeDropdown.setGeometry(QRect(30, 133, 311, 51))
+        self.modeDropdown.setPlaceholderText("Select the mode")
+        self.modeDropdown.currentTextChanged.connect(self.updateModeParameters)
+
+
         self.label_21 = QLabel(self.frame_2)
         self.label_21.setObjectName(u"label_21")
         self.label_21.setGeometry(QRect(0, 0, 881, 41))
         self.label_21.setFont(font1)
         self.label_21.setStyleSheet(u"color: rgb(0, 0, 0);\n"
-"background-color: rgb(211, 211, 211);")
+        "background-color: rgb(211, 211, 211);")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -279,10 +307,81 @@ class Telecommand_MainWindow(object):
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Mode :", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"Nominal", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Docking", None))
-        self.label_19.setText(QCoreApplication.translate("MainWindow", u"Propertional", None))
-        self.pushButton_11.setText(QCoreApplication.translate("MainWindow", u"Set Tuning Parameters", None))
-        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Integral", None))
-        self.label_22.setText(QCoreApplication.translate("MainWindow", u"Derivative", None))
-        self.label_23.setText(QCoreApplication.translate("MainWindow", u"Controller Type", None))
+        self.x_label.setText(QCoreApplication.translate("MainWindow", u"Propertional", None))
+        self.telecommandButton.setText(QCoreApplication.translate("MainWindow", u"Send Telecommand", None))
+        self.y_label.setText(QCoreApplication.translate("MainWindow", u"Integral", None))
+        self.z_label.setText(QCoreApplication.translate("MainWindow", u"Derivative", None))
+        self.label_23.setText(QCoreApplication.translate("MainWindow", u"Telecommand mode", None))
         self.label_21.setText(QCoreApplication.translate("MainWindow", u"Tuning Parameters", None))
+    
+    def addDropdownItems(self):
+        f = open("Assets/telecommand_modes.json")
+        json_array = json.load(f)
 
+        for item in json_array:
+            self.modeDropdown.addItem(item)
+            self.modes[item] = {}
+            self.modes[item]["id"] = json_array[item]["id"]
+            self.modes[item]["data"] = json_array[item]["data"]
+    
+    def updateModeParameters(self):
+        currentText= self.modeDropdown.currentText()
+        print("mode has been updated to:", currentText)
+
+        data = self.modes[currentText]["data"]
+        types = {
+            "x": {
+                "input":self.xTextEdit,
+                "label":self.x_label
+                },
+            "y": {
+                "input":self.yTextEdit,
+                "label":self.y_label
+                },
+            "z": {
+                "input":self.zTextEdit,
+                "label":self.z_label
+                }
+        }
+        
+
+        for type in types:
+            if type in data:
+                (types[type]["input"]).setPlaceholderText(data[type])
+                (types[type]["input"]).show()
+                (types[type]["label"]).show()
+                continue
+
+            (types[type]["input"]).hide()
+            (types[type]["label"]).hide()
+
+    def mainTelecommand(self):
+        data = []
+        currentText= self.modeDropdown.currentText()
+        currentMode = self.modes[currentText]
+        data.append(currentMode["id"])
+        expectedData = currentMode["data"]
+
+        types = {"x": self.xTextEdit,
+                  "y": self.yTextEdit, 
+                  "z": self.zTextEdit}
+        
+        for key in expectedData.keys():
+            value = float(types[key].toPlainText())
+            data.append(value)
+
+        print("data",data)
+        'e'
+        self.parent.sendTelecommand(data)
+
+        
+    def updateData(self, data):
+        try:
+            topicName = "telemetryCalibIMU"
+            topicData = data[topicName]["data"]
+
+            topicName = "telemetryCalibIMU"
+            
+
+        except Exception as ex:
+            print("exception imu update:", ex)

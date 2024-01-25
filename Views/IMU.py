@@ -24,10 +24,9 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QLCDNumber,
 from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
 from Views.CustomWidgets.YawVisualizer import YawVisualizer
 from Views.CustomWidgets.OrientationVisualizer import OrientationVisualizer
-
+import math
 class IMU_MainWindow(object):
-    def setupUi(self, MainWindow, data):
-        self.data = data
+    def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         # MainWindow.resize(1700, 1000)
@@ -66,20 +65,20 @@ class IMU_MainWindow(object):
         font2.setPointSize(12)
         self.x_label.setFont(font2)
 
-        self.roll_x = QLCDNumber(self.groupBox)
-        self.roll_x.setObjectName(u"lcdNumber")
-        self.roll_x.setGeometry(QRect(140, 70, 201, 41))
-        self.roll_x.display(1) 
+        self.gyroscope_x = QLCDNumber(self.groupBox)
+        self.gyroscope_x.setObjectName(u"lcdNumber")
+        self.gyroscope_x.setGeometry(QRect(140, 70, 201, 41))
+        self.gyroscope_x.display(1) 
 
-        self.roll_y = QLCDNumber(self.groupBox)
-        self.roll_y.setObjectName(u"lcdNumber_4")
-        self.roll_y.setGeometry(QRect(350, 70, 201, 41))
-        self.roll_y.display(2)
+        self.gyroscope_y = QLCDNumber(self.groupBox)
+        self.gyroscope_y.setObjectName(u"lcdNumber_4")
+        self.gyroscope_y.setGeometry(QRect(350, 70, 201, 41))
+        self.gyroscope_y.display(2)
 
-        self.roll_z = QLCDNumber(self.groupBox)
-        self.roll_z.setObjectName(u"lcdNumber_5")
-        self.roll_z.setGeometry(QRect(560, 70, 201, 41))
-        self.roll_z.display(3)
+        self.gyroscope_z = QLCDNumber(self.groupBox)
+        self.gyroscope_z.setObjectName(u"lcdNumber_5")
+        self.gyroscope_z.setGeometry(QRect(560, 70, 201, 41))
+        self.gyroscope_z.display(3)
 
         self.y_label = QLabel(self.groupBox)
         self.y_label.setObjectName(u"label_6")
@@ -146,17 +145,17 @@ class IMU_MainWindow(object):
         self.roll = QLCDNumber(self.groupBox_3)
         self.roll.setObjectName(u"roll")
         self.roll.setGeometry(QRect(10, 70, 201, 41))
-        self.roll.display(11)
+        # self.roll.display('-')
 
         self.pitch = QLCDNumber(self.groupBox_3)
         self.pitch.setObjectName(u"pitch")
         self.pitch.setGeometry(QRect(270, 70, 201, 41))
-        self.pitch.display(10)
+        # self.pitch.display('-')
     
         self.yaw = QLCDNumber(self.groupBox_3)
         self.yaw.setObjectName(u"yaw")
         self.yaw.setGeometry(QRect(510, 70, 201, 41))
-        self.yaw.display(12)
+        # self.yaw.display(12)
 
 
         self.pitch_label = QLabel(self.groupBox_3)
@@ -221,18 +220,18 @@ class IMU_MainWindow(object):
         self.tilt_visualizer.setGeometry(QRect(890, 250, 341, 31))
         self.tilt_visualizer.setFont(font2)
 
-        self.pfd_heading = QPrimaryFlightDisplay(self.centralwidget) 
-        self.pfd_heading.zoom = 0.3
-        self.pfd_heading.setGeometry(QRect(890, 520, 341, 201))
-        self.pfd_heading.setMinimumSize(QSize(270, 200))
-        self.pfd_heading.show()
+        self.roll_pitch_viz = QPrimaryFlightDisplay(self.centralwidget) 
+        self.roll_pitch_viz.zoom = 0.3
+        self.roll_pitch_viz.setGeometry(QRect(890, 520, 341, 201))
+        self.roll_pitch_viz.setMinimumSize(QSize(270, 200))
+        self.roll_pitch_viz.show()
 
 
-        self.pfd_tilt = YawVisualizer(self.centralwidget) 
-        self.pfd_tilt.zoom = 0.3
-        self.pfd_tilt.setGeometry(QRect(890, 280, 341, 201))
-        self.pfd_tilt.setMinimumSize(QSize(270, 200))
-        self.pfd_tilt.show()
+        self.yaw_viz = YawVisualizer(self.centralwidget) 
+        self.yaw_viz.zoom = 0.3
+        self.yaw_viz.setGeometry(QRect(890, 280, 341, 201))
+        self.yaw_viz.setMinimumSize(QSize(270, 200))
+        self.yaw_viz.show()
 
         self.label_16 = QLabel(self.centralwidget)
         self.label_16.setObjectName(u"label_16")
@@ -246,9 +245,6 @@ class IMU_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
-
-        # self.updateData(self.data)
-
     
     # Just label for everything, can even translate it if necessary    
     def retranslateUi(self, MainWindow):
@@ -277,33 +273,64 @@ class IMU_MainWindow(object):
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Heading visualizer (Yaw)", None))
 
     def updateData(self, data):
-        count = 1
-        hour = [1,2,3,4,5,6,7,8,9,10]
-        temperature = [30,32,34,32,33,31,29,32,35,45]
-        h=10
-        t=15
-        self.data = data
+        try:
+            # hour = []
+            # temperature = []
 
-        while True:
-            self.lcdNumber_2.display(count)
-            time.sleep(1)
-            # self.pfd.heading = count%361
+            topicName = "telemetryContinuous"
+            # topicStruc = data[topicName]
+            topicData = data[topicName]["data"]
 
-            # self.pfd = YawVisualizer(self.centralwidget) 
-            self.pfd.zoom = 0.3
-            self.pfd.heading = count%361
-            self.pfd.setGeometry(QRect(330, 530, 270, 200))
-            self.pfd.setMinimumSize(QSize(270, 200))
-            self.pfd.show()
+            # if topicStruc["pairedData"]["temp"]:
+            #     tempData = topicStruc["pairedData"]["temp"]
+            #     print("tempData", tempData)
+            #     hour = list(tempData.keys())
+            #     temperature = list(tempData.values())
+            
+            # conversion of quaternion to roll, pitch and yaw
+            q0 = topicData["q0"]/100
+            q1 = topicData["q1"]/100
+            q2 = topicData["q2"]/100
+            q3 = topicData["q3"]/100
 
-            hour.append(time)
-            temperature.append(self.data.temp)
-            self.graphWidget.plot(hour, temperature)   
+          
+            roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))%30
+            pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))%30                        
+            yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
+
+            # lcd data update
+            self.roll.display(roll)
+            self.pitch.display(pitch)
+            self.yaw.display(yaw)
+
+            self.gyroscope_x.display(topicData["wx"])
+            self.gyroscope_y.display(topicData["wy"])
+            self.gyroscope_z.display(topicData["wz"])
+            self.accelerometer_x.display(topicData["ax"])
+            self.accelerometer_y.display(topicData["ay"])
+            self.accelerometer_z.display(topicData["az"])
+            self.magnetometer_x.display(topicData["mx"])
+            self.magnetometer_y.display(topicData["my"])
+            self.magnetometer_z.display(topicData["mz"])
+
+            # graph data update
+            # print("tempData",hour, temperature)
+            # self.graphWidget.plot(hour, temperature) 
 
 
-            # self.temp_visualizer
+            # update yaw parameters
+            print("roll, pitch, yaw",roll,pitch, yaw)
+            self.yaw_viz.heading = yaw
+            self.yaw_viz.update()
 
-            # QApplication.instance().paletteChanged.connect(self.update_style)
-            # self.update_style()            
+            # todo: update roll and pitch parameters, issue with repainting
+            self.roll_pitch_viz.roll = roll
+            self.roll_pitch_viz.pitch = pitch
+            self.roll_pitch_viz.yaw = yaw
+            self.roll_pitch_viz.update()
+            # self.pfd.roll = roll
+            # self.pfd.pitch = pitch
             # self.pfd.update()
-            count = count+1
+
+        except Exception as ex:
+            print("exception imu update:", ex)

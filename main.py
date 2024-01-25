@@ -26,12 +26,16 @@ class MainWindow(QMainWindow):
         self.docking = Docking_MainWindow()        
 
         #rodos
+        self.pairedData = {"temp":{}}
         self.luart = LinkinterfaceUDP()
         self.gwUDP = Gateway(self.luart)
         self.telemetry = {}
+        self.telecommandTopic = {}
         self.topics = {}
         self.initializeTelemetryTopics()
-        # self.initializeTelecommandTopics()
+        self.initializeTelecommandTopics()
+
+        # todo: need to run this in a different thread
         self.gwUDP.run()
 
         self.summary.setupUi(self)
@@ -40,12 +44,11 @@ class MainWindow(QMainWindow):
     
     def initializeTelemetryTopics(self):
         try:
-            print("data initialized")
-            f = open("Assets/data.json")
+            print("initializing telemetry topics")
+            f = open("Assets/telemetry.json")
             json_array = json.load(f)
 
             for item in json_array:
-                print("initializing...")
                 dataStruct = json_array[item]
 
                 # initialization of topic
@@ -66,16 +69,15 @@ class MainWindow(QMainWindow):
                 for datum in dataStruct["data"]:
                     self.telemetry[item]["data"][datum] = 0
 
-                print(item)
+                self.telemetry[item]["pairedData"] = self.pairedData
 
         except Exception as e:
             print(e)
 
-
     def initializeTelecommandTopics(self):
         try:
-            print("data initialized")
-            f = open("Assets/data.json")
+            print("data initialized telecommand topics")
+            f = open("Assets/telecommand.json")
             json_array = json.load(f)
 
             for item in json_array:
@@ -84,27 +86,19 @@ class MainWindow(QMainWindow):
 
                 # initialization of topic
                 topic = Topic(dataStruct["topicId"])
-                self.gwUart.forwardTopic(topic) 
+                self.gwUDP.forwardTopic(topic) 
 
-                self.telemetry[item] = {}
-                # try:
-                self.telemetry[item]["topic"] = topic
-                # except Exception as ex:
-                    # print(ex)
-                    # exit
-                # gwUart.forwardTopic(telemetry[item]["topic"]) 
+                self.telecommandTopic[item] = {}
+                self.telecommandTopic[item]["topic"] = topic
 
                 # # copy remaining data to structure
-                self.telemetry[item]["topicId"] = dataStruct["topicId"]
-                self.telemetry[item]["structure"] = dataStruct["structure"]
-                self.telemetry[item]["data"] = {}
+                self.telecommandTopic[item]["topicId"] = dataStruct["topicId"]
+                self.telecommandTopic[item]["structure"] = dataStruct["structure"]
+                self.telecommandTopic[item]["data"] = {}
 
-                # # copy the structure of data
+                # copy the structure of data
                 for datum in dataStruct["data"]:
-                    self.telemetry[item]["data"][datum] = 0
-
-                print(item)
-
+                    self.telecommandTopic[item]["data"][datum] = 0
         except Exception as e:
             print(e)
 
@@ -124,6 +118,7 @@ class MainWindow(QMainWindow):
         topicName = "telemetryControlParams"
         self.setAndUpdate(data,topicName)
 
+    # set data from the telemetry and update view
     def setAndUpdate(self, data, topicName):
         try:       
             print("set and update", self.telemetry[topicName]["structure"])
@@ -131,15 +126,46 @@ class MainWindow(QMainWindow):
             i = 0
 
             for datum in self.telemetry[topicName]["data"]:
-                self.telemetry[topicName]["data"][datum] = unpackedData[i]
-                i+=1
-            print("got data", unpackedData)
+                # print(self.pairedData, unpackedData, i, cldatum, self.pairedData.keys())
+                dataInIndex = unpackedData[i]
 
+                if datum in self.pairedData.keys():
+                    print("the data:", datum)
+                    time = self.telemetry[topicName]["data"]["time"]
+                    self.pairedData[datum][time] = dataInIndex
+
+                self.telemetry[topicName]["data"][datum] = dataInIndex
+                i+=1
+
+            self.telemetry[topicName]["pairedData"] = self.pairedData
             self.currentView.updateData(self.telemetry)
         except Exception as ex:
-            print(ex)
+            print("set and update exception:",ex)
+            self.currentView.updateData(self.telemetry)
 
+    # send telecommand: common interface for all child windows
+    def sendTelecommand(self, data):
+        i = len(data)-1
+
+        while i<3:
+            data.append(0.0)
+            i+=1
+
+        dataStruct = struct.pack("=i3f",*tuple(data))
+        (self.telecommandTopic["TelecommandTopicId"]["topic"]).publish(dataStruct)
+        print("published data", dataStruct)
     
+    def sendEchoTelecommand(self, data):
+        i = len(data)-1
+
+        while i<4:
+            data.append(0)
+            i+=1
+
+        dataStruct = struct.pack("=3f",*tuple(data))
+        (self.telecommandTopic["TelecommandEchoTopicId"]["topic"]).publish(dataStruct)
+
+
     def menubarCollection(self):
         # add menu to menubar
         self.menubar = QMenuBar(self)
@@ -169,7 +195,7 @@ class MainWindow(QMainWindow):
             self.menuIMU.menuAction(),
             self.menuDocking.menuAction(),
             self.menuTelecommand.menuAction(),
-            self.menuTesting.menuAction()
+            # self.menuTesting.menuAction()
         ])
 
         self.menuSummary.aboutToShow.connect(self.show_new_window_summary)

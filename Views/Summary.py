@@ -18,7 +18,9 @@ import pyqtgraph as pg
 from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
 from Views.CustomWidgets.YawVisualizer import YawVisualizer
 import time
-import threading
+# import threading
+import math
+
 class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
@@ -44,10 +46,10 @@ class Ui_MainWindow(object):
         font.setFamilies([u"Arial"])
         font.setPointSize(20)
         self.label.setFont(font)
-        self.lcdNumber = QLCDNumber(self.frame)
-        self.lcdNumber.setObjectName(u"lcdNumber")
-        self.lcdNumber.setGeometry(QRect(30, 130, 201, 41))
-        self.lcdNumber.display(5000.9986)
+        self.lcdRoll = QLCDNumber(self.frame)
+        self.lcdRoll.setObjectName(u"lcdRoll")
+        self.lcdRoll.setGeometry(QRect(30, 130, 201, 41))
+        self.lcdRoll.display(5000.9986)
 
         self.lcdYaw = QLCDNumber(self.frame)
         self.lcdYaw.setObjectName(u"lcdYaw")
@@ -116,7 +118,7 @@ class Ui_MainWindow(object):
         self.orientation_groupBox.raise_()
         self.textEdit.raise_()
         self.label.raise_()
-        self.lcdNumber.raise_()
+        self.lcdRoll.raise_()
         self.lcdYaw.raise_()
         self.lcdPitch.raise_()
         self.lcdTemperature.raise_()
@@ -202,7 +204,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setObjectName(u"pushButton_2")
         self.pushButton_2.setGeometry(QRect(950, 670, 231, 41))
         self.pushButton_2.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(50, 107, 29);")
+        "background-color: rgb(50, 107, 29);")
         self.orientation_visualizer_label = QLabel(self.centralwidget)
         self.orientation_visualizer_label.setObjectName(u"label_11")
         self.orientation_visualizer_label.setGeometry(QRect(330, 500, 191, 31))
@@ -226,11 +228,9 @@ class Ui_MainWindow(object):
         self.graphWidget.setGeometry(QRect(630,530,270,200))
         self.graphWidget.setMinimumSize(QSize(270, 200))
         # self.graphWidget.setMaximumSize(QSize(500, 16777215))
-        hour = [1,2,3,4,5,6,7,8,9,10]
-        temperature = [30,32,34,32,33,31,29,32,35,45]
 
         self.graphWidget.setBackground('w')
-        self.graphWidget.plot(hour, temperature)   
+        # self.graphWidget.plot(hour, temperature)   
 
 
         self.label_13 = QLabel(self.centralwidget)
@@ -241,11 +241,11 @@ class Ui_MainWindow(object):
         self.pushButton_3.setObjectName(u"pushButton_3")
         self.pushButton_3.setGeometry(QRect(950, 240, 231, 41))
         self.pushButton_3.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(182, 41, 16);")
-        self.lcdNumber_9 = QLCDNumber(self.centralwidget)
-        self.lcdNumber_9.setObjectName(u"lcdNumber_9")
-        self.lcdNumber_9.setGeometry(QRect(950, 180, 191, 41))
-        self.lcdNumber_9.display(9)
+        "background-color: rgb(182, 41, 16);")
+        self.lcdVoltage = QLCDNumber(self.centralwidget)
+        self.lcdVoltage.setObjectName(u"lcdNumber_9")
+        self.lcdVoltage.setGeometry(QRect(950, 180, 191, 41))
+        self.lcdVoltage.display(9)
 
         self.progressBar = QProgressBar(self.centralwidget)
         self.progressBar.setObjectName(u"progressBar")
@@ -297,46 +297,57 @@ class Ui_MainWindow(object):
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"V", None))
     
     def updateData(self, data):
-        count = 1
-        hour = [1,2,3,4,5,6,7,8,9,10]
-        temperature = [30,32,34,32,33,31,29,32,35,45]
-        h=10
-        t=15
-        self.data = data
-        topicName = "telemetryContinuous"
-        topicData = data[topicName]["data"]
+        try:
+            max_voltage = 14.4
+            hour = []
+            temperature = []
 
-        # while True:
-        self.lcdPitch.display(topicData["q0"])
-        self.lcdYaw.display(topicData["q1"])
-        self.lcdTemperature.display(topicData["temp"])
-            # time.sleep(1)
-            # self.pfd.heading = count%361
+            topicName = "telemetryContinuous"
+            topicStruc = data[topicName]
+            topicData = data[topicName]["data"]
 
-            # self.pfd = YawVisualizer(self.centralwidget) 
-            # self.pfd.zoom = 0.3
-            # self.pfd.heading = count%361
-            # self.pfd.setGeometry(QRect(330, 530, 270, 200))
-            # self.pfd.setMinimumSize(QSize(270, 200))
-            # self.pfd.show()
+            if topicStruc["pairedData"]["temp"]:
+                tempData = topicStruc["pairedData"]["temp"]
+                print("tempData", tempData)
+                hour = list(tempData.keys())
+                temperature = list(tempData.values())
+            
+            # conversion of quaternion to roll, pitch and yaw
+            q0 = topicData["q0"]/100
+            q1 = topicData["q1"]/100
+            q2 = topicData["q2"]/100
+            q3 = topicData["q3"]/100
+          
+            roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))
+            pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))                         
+            yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
 
-            # hour.append(time)
-            # temperature.append(self.data["temp"])
-            # self.graphWidget.plot(hour, temperature)   
+            # lcd data update
+            self.lcdRoll.display(roll)
+            self.lcdPitch.display(pitch)
+            self.lcdYaw.display(yaw)
+            self.lcdTemperature.display(topicData["temp"])
+            self.lcdVoltage.display(topicData["U_bat"])
 
+            value = (topicData["U_bat"]/max_voltage)%100
+            print("battery:", value)
 
-            # self.temp_visualizer
+            # todo: update progress bar and its styling
+            # self.progressBar.valueChanged(value)
 
-            # QApplication.instance().paletteChanged.connect(self.update_style)
-            # self.update_style()            
-            # self.pfd.update()
-            # count = count+1
+            # graph data update
+            print("tempData",hour, temperature)
+            self.graphWidget.plot(hour, temperature) 
 
+            # update yaw parameter
+            print("roll, pitch, yaw",roll,pitch, yaw)
+            self.pfd.heading = yaw
+            self.pfd.update()
 
+        except Exception as ex:
+            print("exception summary update:", ex)
 
     # retranslateUi
-
-
     def close(self):
         pass
 
