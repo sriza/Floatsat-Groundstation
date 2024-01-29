@@ -14,7 +14,7 @@ def topicHandler(data):
         # print('received data',data)
     
         # # unpacked = struct.unpack('<10f', data)
-        unpacked = struct.unpack("=ii19f", data)
+        unpacked = struct.unpack("=4f", data)
         # unpacked = struct.unpack('<c', data)
         print(unpacked)
         print("--------------------------------------------")
@@ -35,7 +35,7 @@ def topicEchoHandler(data):
         # print('received data',data)
         print("echo received", data)
         # # unpacked = struct.unpack('<10f', data)
-        unpacked = struct.unpack("=i3f", data)
+        unpacked = struct.unpack("=f", data)
         # unpacked = struct.unpack('<c', data)
         print(unpacked)
         print("--------------------------------------------")
@@ -50,31 +50,34 @@ def topicEchoHandler(data):
 
 try:
     print("Starting client")
-    stm2rodos = rodos.Topic(40)
-    # echo2rodos = rodos.Topic(60) #receive echo
-    rodos2stm = rodos.Topic(50) #send echo command
+    # stm2rodos = rodos.Topic(40)
+    echo2rodos = rodos.Topic(402) #receive echo
+    # rodos2stm = rodos.Topic(50) #send echo command
     print("topic created")
-    stm2rodos.addSubscriber(topicHandler)
+    # stm2rodos.addSubscriber(topicHandler)
     # echo2rodos.addSubscriber(topicEchoHandler)
     print("subscriber added")
 
     # changed MARK in linkinterfactUART.py
-    liUart = rodos.LinkinterfaceUART(path="COM3")
-    gwUDP = rodos.Gateway(liUart)
-    gwUDP.forwardTopic(rodos2stm)
+    # liUart = rodos.LinkinterfaceUART(path="COM3")
+    liUDP = rodos.LinkinterfaceUDP()
+    gwUDP = rodos.Gateway(liUDP)
     gwUDP.run()
+    gwUDP.forwardTopic(echo2rodos)
 
     # liUart_server = rodos.LinkinterfaceUART(path="COM3")
     # gwUDP_
 
-    cnt = 0
+    cnt = 0.5
 
     while True:
         # print("sending data to stm")
-        sendData = struct.pack("i3f", 5,0,0,0)
+        sendData = struct.pack("f", cnt)
         # sendData = struct.pack("f", 65.0)
         # print("sendData:", sendData)
-        rodos2stm.publish(sendData)
+        # rodos2stm.publish(sendData)
+        print("publishing:", sendData)
+        echo2rodos.publish(sendData)
         print("published")
         # msg = liUart.messageQueue.get()
         # print(msg)

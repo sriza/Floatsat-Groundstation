@@ -11,6 +11,7 @@ import time
 
 luart = LinkinterfaceUDP()
 gwUart = Gateway(luart)
+gwUart.run()
 telemetry = {}
 
 def initializeTopics():
@@ -43,6 +44,27 @@ def initializeTopics():
     except Exception as e:
         print(e)
 
+def initializeTelecommandTopics():
+    try:
+        print("data initialized telecommand topics")
+
+        print("initializing...")
+
+        # initialization of topic
+        topic = Topic(50)
+        topic.addSubscriber(testSubscriber)
+
+    except Exception as e:
+        print("exception in receiving telecommand", e)
+
+def testSubscriber(data):
+    try:
+        print("received data")
+        unpackedData = struct.unpack("=4f",data)
+        print("unpacked Data:", unpackedData)
+    except Exception as e:
+        print("exception in receiving data:", e)
+
 def setAndPublish(cnt):
     try:
         for tele_name in telemetry:
@@ -65,19 +87,20 @@ def setAndPublish(cnt):
         print(e)
 
 initializeTopics()
+initializeTelecommandTopics()
 
 
 cnt = 0
 
 while True:
-    setAndPublish(cnt)
+    # setAndPublish(cnt)
 
     # sendMe = struct.pack("i",  cnt)
     # linux2rodos.publish(sendMe)
     # print("sendMe")
 
     # print(struct.unpack("I", sendMe))
-    print("------------------------")
+    # print("------------------------")
 
     cnt += 1
     

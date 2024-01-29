@@ -33,10 +33,10 @@ class MainWindow(QMainWindow):
         self.telecommandTopic = {}
         self.topics = {}
         self.initializeTelemetryTopics()
-        self.initializeTelecommandTopics()
-
         # todo: need to run this in a different thread
+        self.initializeTelecommandTopics()
         self.gwUDP.run()
+
 
         self.summary.setupUi(self)
         self.currentView = self.summary
@@ -85,11 +85,12 @@ class MainWindow(QMainWindow):
                 dataStruct = json_array[item]
 
                 # initialization of topic
-                topic = Topic(dataStruct["topicId"])
-                self.gwUDP.forwardTopic(topic) 
+                # self.telecommandTopicID = Topic(dataStruct["topicId"])
+                self.telecommandTopicID = Topic(51)
+                self.gwUDP.forwardTopic(self.telecommandTopicID) 
 
                 self.telecommandTopic[item] = {}
-                self.telecommandTopic[item]["topic"] = topic
+                self.telecommandTopic[item]["topic"] = self.telecommandTopicID
 
                 # # copy remaining data to structure
                 self.telecommandTopic[item]["topicId"] = dataStruct["topicId"]
@@ -120,7 +121,8 @@ class MainWindow(QMainWindow):
 
     # set data from the telemetry and update view
     def setAndUpdate(self, data, topicName):
-        try:       
+        try:
+            print("struct data size:", struct.calcsize(self.telemetry[topicName]["structure"]));  
             print("set and update", self.telemetry[topicName]["structure"])
             unpackedData = struct.unpack(self.telemetry[topicName]["structure"],data)
             i = 0
@@ -152,8 +154,10 @@ class MainWindow(QMainWindow):
             i+=1
 
         dataStruct = struct.pack("=i3f",*tuple(data))
-        (self.telecommandTopic["TelecommandTopicId"]["topic"]).publish(dataStruct)
-        print("published data", dataStruct)
+        print(self.telecommandTopic["TelecommandTopicId"]["topicId"])
+        # (self.telecommandTopic["TelecommandTopicId"]["topic"]).publish(dataStruct)
+        (self.telecommandTopicID).publish(dataStruct)
+        print("published data", dataStruct, tuple(data))
     
     def sendEchoTelecommand(self, data):
         i = len(data)-1

@@ -1,0 +1,110 @@
+{
+    "Idle": {
+        "id": 0,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Electrical Startup": {
+        "id": 1,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Reaction Wheel spin up": {
+        "id": 2,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Calib Gyroscope": {
+        "id": 3,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Calib Accel": {
+        "id": 4,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Calib Magnetometer": {
+        "id": 5,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Calib Arm ": {
+        "id": 6,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Control Speed": {
+        "id": 7,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Control Pos": {
+        "id": 8,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Control Vel": {
+        "id": 9,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "Mission Locate": {
+        "id": 10,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "X",
+            "y": "Y",
+            "z": "Z"
+        }
+    },
+    "Mission point": {
+        "id": 11,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "X",
+            "y": "Y",
+            "z": "Z"
+        }
+    },
+    "Mission dock initial": {
+        "id": 12,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "X",
+            "y": "Y",
+            "z": "Z"
+        }
+    },
+    "Mission dock final": {
+        "id": 13,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "P",
+            "y": "I",
+            "z": "D"
+        }
+    },
+    "Standby": {
+        "id": 14,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "Speed Limit"
+        }
+    }
+}

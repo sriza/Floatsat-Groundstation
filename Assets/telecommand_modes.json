@@ -1,60 +1,60 @@
 {
     "SetMode_Idle": {
-        "id": 1,
+        "id": 0,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SetMode_CalibGyro": {
-        "id": 2,
+        "id": 1,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SetMode_CalibAccel": {
-        "id": 3,
+        "id": 2,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SetMode_CalibMag": {
-        "id": 4,
+        "id": 3,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SetMode_CalibArm": {
-        "id": 5,
+        "id": 4,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SetMode_ControlSpeed ": {
-        "id": 6,
+        "id": 5,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SetMode_ControlPos": {
-        "id": 7,
+        "id": 6,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SetMode_ControlVel": {
-        "id": 8,
+        "id": 7,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SetMode_Mission": {
-        "id": 9,
+        "id": 8,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SetCalibParams_gyro": {
-        "id": 10,
+        "id": 9,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -64,7 +64,7 @@
         }
     },
     "SetCalibParams_accel": {
-        "id": 11,
+        "id": 10,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -74,7 +74,7 @@
         }
     },
     "SetCalibParams_mag": {
-        "id": 12,
+        "id": 11,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -84,7 +84,7 @@
         }
     },
     "SetControlParams_speed": {
-        "id": 13,
+        "id": 12,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -94,7 +94,7 @@
         }
     },
     "SetControlLimit_speed": {
-        "id": 14,
+        "id": 13,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -102,7 +102,7 @@
         }
     },
     "SetControlParams_pos": {
-        "id": 15,
+        "id": 14,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -112,7 +112,7 @@
         }
     },
     "SetControlLimit_pos": {
-        "id": 16,
+        "id": 15,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -120,7 +120,7 @@
         }
     },
     "SetControlParams_vel": {
-        "id": 17,
+        "id": 16,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -130,7 +130,7 @@
         }
     },
     "SetControlLimit_vel": {
-        "id": 18,
+        "id": 17,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -138,7 +138,7 @@
         }
     },
     "SetControlDesired_speed": {
-        "id": 19,
+        "id": 18,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -146,7 +146,7 @@
         }
     },
     "SetControlDesired_pos": {
-        "id": 20,
+        "id": 19,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -154,7 +154,7 @@
         }
     },
     "SetControlDesired_vel": {
-        "id": 21,
+        "id": 20,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -162,31 +162,31 @@
         }
     },
     "SendCalibTelemetry": {
-        "id": 22,
+        "id": 21,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "SendControlTelemetry": {
-        "id": 23,
+        "id": 22,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "ToggleExtendedTelemetry": {
-        "id": 24,
+        "id": 23,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "ToggleCamera": {
-        "id": 25,
+        "id": 24,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
     "ToggleVideoStreaming": {
-        "id": 26,
+        "id": 25,
         "topicId": 50,
         "structure": "=3f",
         "data": {}

@@ -177,26 +177,26 @@ class Telecommand_MainWindow(object):
         self.line.setGeometry(QRect(950, 310, 251, 16))
         self.line.setFrameShape(QFrame.HLine)
         self.line.setFrameShadow(QFrame.Sunken)
-        self.label_8 = QLabel(self.centralwidget)
-        self.label_8.setObjectName(u"label_8")
-        self.label_8.setGeometry(QRect(960, 90, 201, 31))
-        self.label_8.setFont(font1)
-        self.label_8.setStyleSheet(u"color: rgb(0, 0, 0);")
+        self.battery_status_text = QLabel(self.centralwidget)
+        self.battery_status_text.setObjectName(u"label_8")
+        self.battery_status_text.setGeometry(QRect(960, 90, 201, 31))
+        self.battery_status_text.setFont(font1)
+        self.battery_status_text.setStyleSheet(u"color: rgb(0, 0, 0);")
         self.label_9 = QLabel(self.centralwidget)
         self.label_9.setObjectName(u"label_9")
         self.label_9.setGeometry(QRect(960, 170, 201, 31))
         self.label_9.setFont(font1)
         self.label_9.setStyleSheet(u"color: rgb(0, 0, 0);")
-        self.label_13 = QLabel(self.centralwidget)
-        self.label_13.setObjectName(u"label_13")
-        self.label_13.setGeometry(QRect(960, 120, 231, 31))
-        self.label_13.setFont(font)
-        self.label_13.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
-        self.label_14 = QLabel(self.centralwidget)
-        self.label_14.setObjectName(u"label_14")
-        self.label_14.setGeometry(QRect(960, 200, 231, 31))
-        self.label_14.setFont(font)
-        self.label_14.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
+        self.commandCnt = QLabel(self.centralwidget)
+        self.commandCnt.setObjectName(u"label_13")
+        self.commandCnt.setGeometry(QRect(960, 120, 231, 31))
+        self.commandCnt.setFont(font)
+        self.commandCnt.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
+        self.mode_text = QLabel(self.centralwidget)
+        self.mode_text.setObjectName(u"label_14")
+        self.mode_text.setGeometry(QRect(960, 200, 231, 31))
+        self.mode_text.setFont(font)
+        self.mode_text.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
         self.frame_2 = QFrame(self.centralwidget)
         self.frame_2.setObjectName(u"frame_2")
         self.frame_2.setGeometry(QRect(20, 470, 881, 281))
@@ -209,6 +209,12 @@ class Telecommand_MainWindow(object):
         self.groupBox_7.setGeometry(QRect(20, 60, 811, 201))
         self.groupBox_7.setFont(font)
         self.groupBox_7.setStyleSheet(u"color: rgb(9, 10, 17);")
+
+        # self.extendedData = QLabel(self.groupBox_7)
+        # self.extendedData.setObjectName(u"extended_data")
+        # self.extendedData.setGeometry(QRect(290, 25, 121, 31))
+        # self.extendedData.setFont(font)
+
         self.x_label = QLabel(self.groupBox_7)
         self.x_label.setObjectName(u"label_19")
         self.x_label.setGeometry(QRect(30, 20, 121, 31))
@@ -280,6 +286,8 @@ class Telecommand_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
+        self.satelliteModes = {}
+        self.setSatelliteModes()
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -303,11 +311,12 @@ class Telecommand_MainWindow(object):
         self.checkBox.setText(QCoreApplication.translate("MainWindow", u"Magnetometer", None))
         self.checkBox_3.setText(QCoreApplication.translate("MainWindow", u"Gyroscope", None))
         self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Initiate Telecommand Mode", None))
-        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Battery status :", None))
+        self.battery_status_text.setText(QCoreApplication.translate("MainWindow", u"Command count :", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Mode :", None))
-        self.label_13.setText(QCoreApplication.translate("MainWindow", u"Nominal", None))
-        self.label_14.setText(QCoreApplication.translate("MainWindow", u"Docking", None))
+        self.commandCnt.setText(QCoreApplication.translate("MainWindow", u"Nominal", None))
+        self.mode_text.setText(QCoreApplication.translate("MainWindow", u"Docking", None))
         self.x_label.setText(QCoreApplication.translate("MainWindow", u"Propertional", None))
+        # self.extendedData.setText(QCoreApplication.translate("MainWindow", u"Extended data ..... .... ...", None))
         self.telecommandButton.setText(QCoreApplication.translate("MainWindow", u"Send Telecommand", None))
         self.y_label.setText(QCoreApplication.translate("MainWindow", u"Integral", None))
         self.z_label.setText(QCoreApplication.translate("MainWindow", u"Derivative", None))
@@ -323,6 +332,16 @@ class Telecommand_MainWindow(object):
             self.modes[item] = {}
             self.modes[item]["id"] = json_array[item]["id"]
             self.modes[item]["data"] = json_array[item]["data"]
+    
+    def setSatelliteModes(self):
+        f = open("Assets/modes.json")
+        json_array = json.load(f)
+
+        for item in json_array:
+            # self.modeDropdown.addItem(item)
+            self.satelliteModes[json_array[item]["id"]] = item
+            # self.modes[item]["id"] = json_array[item]["id"]
+            # self.modes[item]["data"] = json_array[item]["data"]
     
     def updateModeParameters(self):
         currentText= self.modeDropdown.currentText()
@@ -377,10 +396,23 @@ class Telecommand_MainWindow(object):
         
     def updateData(self, data):
         try:
+            # topic = "telemetryContinuousExtendedTopicID"
+            # topicData = data[topicName]["data"]
+
+            # self.extendedData.setText("Speed:"+topicData["speed"]+" Speed Control Out:"+topic["speedControlOut"])
+
             topicName = "telemetryCalibIMU"
             topicData = data[topicName]["data"]
 
             topicName = "telemetryCalibIMU"
+
+            topicName = "telemetryContinuous"
+            topicData = data[topicName]["data"]
+
+            mode_id = topicData["modeid"]
+            self.mode_text.setText(self.satelliteModes[mode_id]+"("+str(mode_id)+")")
+            self.commandCnt.setText(str(topicData["cmdCnt"]))
+            # self.battery_status_text.setText(str(topicData["cmdCnt"]))
             
 
         except Exception as ex:

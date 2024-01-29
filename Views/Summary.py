@@ -49,28 +49,23 @@ class Ui_MainWindow(object):
         self.lcdRoll = QLCDNumber(self.frame)
         self.lcdRoll.setObjectName(u"lcdRoll")
         self.lcdRoll.setGeometry(QRect(30, 130, 201, 41))
-        self.lcdRoll.display(5000.9986)
 
         self.lcdYaw = QLCDNumber(self.frame)
         self.lcdYaw.setObjectName(u"lcdYaw")
         self.lcdYaw.setGeometry(QRect(30, 310, 201, 41))
-        self.lcdYaw.display(2)
     
         self.lcdPitch = QLCDNumber(self.frame)
         self.lcdPitch.setObjectName(u"lcdPitch")
         self.lcdPitch.setGeometry(QRect(30, 220, 201, 41))
-        self.lcdPitch.display(3)
 
 
         self.lcdTemperature = QLCDNumber(self.frame)
         self.lcdTemperature.setObjectName(u"lcdTemperature")
         self.lcdTemperature.setGeometry(QRect(30, 510, 201, 41))
-        self.lcdTemperature.display(4)
 
         self.lcdAngVelocity = QLCDNumber(self.frame)
         self.lcdAngVelocity.setObjectName(u"lcdAngVelocity")
         self.lcdAngVelocity.setGeometry(QRect(30, 620, 201, 41))
-        self.lcdAngVelocity.display(5)
 
         self.roll_label = QLabel(self.frame)
         self.roll_label.setObjectName(u"label_3")
@@ -245,7 +240,6 @@ class Ui_MainWindow(object):
         self.lcdVoltage = QLCDNumber(self.centralwidget)
         self.lcdVoltage.setObjectName(u"lcdNumber_9")
         self.lcdVoltage.setGeometry(QRect(950, 180, 191, 41))
-        self.lcdVoltage.display(9)
 
         self.progressBar = QProgressBar(self.centralwidget)
         self.progressBar.setObjectName(u"progressBar")
@@ -308,15 +302,15 @@ class Ui_MainWindow(object):
 
             if topicStruc["pairedData"]["temp"]:
                 tempData = topicStruc["pairedData"]["temp"]
-                print("tempData", tempData)
+                # print("tempData", tempData)
                 hour = list(tempData.keys())
                 temperature = list(tempData.values())
             
             # conversion of quaternion to roll, pitch and yaw
-            q0 = topicData["q0"]/100
-            q1 = topicData["q1"]/100
-            q2 = topicData["q2"]/100
-            q3 = topicData["q3"]/100
+            q0 = topicData["q0"]
+            q1 = topicData["q1"]
+            q2 = topicData["q2"]
+            q3 = topicData["q3"]
           
             roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))
             pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))                         

@@ -287,10 +287,10 @@ class IMU_MainWindow(object):
             #     temperature = list(tempData.values())
             
             # conversion of quaternion to roll, pitch and yaw
-            q0 = topicData["q0"]/100
-            q1 = topicData["q1"]/100
-            q2 = topicData["q2"]/100
-            q3 = topicData["q3"]/100
+            q0 = topicData["q0"]
+            q1 = topicData["q1"]
+            q2 = topicData["q2"]
+            q3 = topicData["q3"]
 
           
             roll = math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2))
