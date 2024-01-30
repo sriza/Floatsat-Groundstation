@@ -27,7 +27,6 @@ class Telecommand_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1265, 802)
         self.parent = MainWindow
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -138,10 +137,10 @@ class Telecommand_MainWindow(object):
         self.label_11.setObjectName(u"label_11")
         self.label_11.setGeometry(QRect(330, 20, 191, 31))
         self.label_11.setFont(font)
-        self.pushButton_3 = QPushButton(self.centralwidget)
-        self.pushButton_3.setObjectName(u"pushButton_3")
-        self.pushButton_3.setGeometry(QRect(960, 250, 231, 41))
-        self.pushButton_3.setStyleSheet(u"color: rgb(255, 255, 255);\n"
+        self.shutDownButton = QPushButton(self.centralwidget)
+        self.shutDownButton.setObjectName(u"pushButton_3")
+        self.shutDownButton.setGeometry(QRect(960, 250, 231, 41))
+        self.shutDownButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(182, 41, 16);")
         self.pushButton_4 = QPushButton(self.centralwidget)
         self.pushButton_4.setObjectName(u"pushButton_4")
@@ -305,7 +304,7 @@ class Telecommand_MainWindow(object):
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Satellite Status ", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Calibration", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
-        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
+        self.shutDownButton.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
         self.pushButton_4.setText(QCoreApplication.translate("MainWindow", u"Initiate Caliberation", None))
         self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Sensor Calibration Status", None))
         self.checkBox.setText(QCoreApplication.translate("MainWindow", u"Magnetometer", None))
@@ -313,7 +312,7 @@ class Telecommand_MainWindow(object):
         self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Initiate Telecommand Mode", None))
         self.battery_status_text.setText(QCoreApplication.translate("MainWindow", u"Command count :", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Mode :", None))
-        self.commandCnt.setText(QCoreApplication.translate("MainWindow", u"Nominal", None))
+        self.commandCnt.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.mode_text.setText(QCoreApplication.translate("MainWindow", u"Docking", None))
         self.x_label.setText(QCoreApplication.translate("MainWindow", u"Propertional", None))
         # self.extendedData.setText(QCoreApplication.translate("MainWindow", u"Extended data ..... .... ...", None))
@@ -390,7 +389,6 @@ class Telecommand_MainWindow(object):
             data.append(value)
 
         print("data",data)
-        'e'
         self.parent.sendTelecommand(data)
 
         
@@ -400,7 +398,6 @@ class Telecommand_MainWindow(object):
             # topicData = data[topicName]["data"]
 
             # self.extendedData.setText("Speed:"+topicData["speed"]+" Speed Control Out:"+topic["speedControlOut"])
-
             topicName = "telemetryCalibIMU"
             topicData = data[topicName]["data"]
 

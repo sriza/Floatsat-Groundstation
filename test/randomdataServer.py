@@ -93,14 +93,14 @@ initializeTelecommandTopics()
 cnt = 0
 
 while True:
-    # setAndPublish(cnt)
+    setAndPublish(cnt)
 
     # sendMe = struct.pack("i",  cnt)
     # linux2rodos.publish(sendMe)
     # print("sendMe")
 
     # print(struct.unpack("I", sendMe))
-    # print("------------------------")
+    print("------------------------")
 
     cnt += 1
     

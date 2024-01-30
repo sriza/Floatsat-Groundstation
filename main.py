@@ -1,6 +1,6 @@
 import sys
-from PySide6.QtCore import (QRect, QCoreApplication)
-from PySide6.QtWidgets import (QApplication, QMainWindow, QMenuBar, QMenu)
+from PySide6.QtCore import (QRect, QCoreApplication, QTimer)
+from PySide6.QtWidgets import (QApplication, QMainWindow, QMenuBar, QMenu, QLabel)
 from PySide6.QtGui import (QAction)
 from Views.Summary import Ui_MainWindow
 # from Views.Summary_test import Ui_MainWindow
@@ -14,6 +14,9 @@ from rodos import LinkinterfaceUDP
 from rodos import Topic
 import json
 import struct
+
+# for time tracking and data tracking
+import time
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -37,10 +40,16 @@ class MainWindow(QMainWindow):
         self.initializeTelecommandTopics()
         self.gwUDP.run()
 
-
         self.summary.setupUi(self)
         self.currentView = self.summary
 
+        # connection Status checking with time interval of a second
+        self.programStatus = {"connectionStatus":False}
+        self.lastConnectedTime = 0
+        self.connectionTimer = QTimer()
+        self.connectionTimer.setInterval(1000)
+        self.connectionTimer.timeout.connect(self.checkConnectionStatus)
+        self.connectionTimer.start()
     
     def initializeTelemetryTopics(self):
         try:
@@ -124,17 +133,21 @@ class MainWindow(QMainWindow):
         try:
             print("struct data size:", struct.calcsize(self.telemetry[topicName]["structure"]));  
             print("set and update", self.telemetry[topicName]["structure"])
+            # updates last connected time to present time
+            self.lastConnectedTime = time.time()
+            self.programStatus["connectionStatus"]= True
+
+            #unpacks data
             unpackedData = struct.unpack(self.telemetry[topicName]["structure"],data)
             i = 0
 
             for datum in self.telemetry[topicName]["data"]:
-                # print(self.pairedData, unpackedData, i, cldatum, self.pairedData.keys())
                 dataInIndex = unpackedData[i]
 
                 if datum in self.pairedData.keys():
                     print("the data:", datum)
-                    time = self.telemetry[topicName]["data"]["time"]
-                    self.pairedData[datum][time] = dataInIndex
+                    satTime = self.telemetry[topicName]["data"]["time"]
+                    self.pairedData[datum][satTime] = dataInIndex
 
                 self.telemetry[topicName]["data"][datum] = dataInIndex
                 i+=1
@@ -147,18 +160,21 @@ class MainWindow(QMainWindow):
 
     # send telecommand: common interface for all child windows
     def sendTelecommand(self, data):
-        i = len(data)-1
+        try:
+            i = len(data)-1
 
-        while i<3:
-            data.append(0.0)
-            i+=1
+            while i<3:
+                data.append(0.0)
+                i+=1
 
-        dataStruct = struct.pack("=i3f",*tuple(data))
-        print(self.telecommandTopic["TelecommandTopicId"]["topicId"])
-        # (self.telecommandTopic["TelecommandTopicId"]["topic"]).publish(dataStruct)
-        (self.telecommandTopicID).publish(dataStruct)
-        print("published data", dataStruct, tuple(data))
+            dataStruct = struct.pack("=i3f",*tuple(data))
+            print(self.telecommandTopic["TelecommandTopicId"]["topicId"])
+            (self.telecommandTopicID).publish(dataStruct)
+            print("published data", dataStruct, tuple(data))
+        except Exception as ex:
+            print("exception in sending telecommand:", ex)
     
+    # sends echo telecommand: will be used in telecommand window only
     def sendEchoTelecommand(self, data):
         i = len(data)-1
 
@@ -169,6 +185,18 @@ class MainWindow(QMainWindow):
         dataStruct = struct.pack("=3f",*tuple(data))
         (self.telecommandTopic["TelecommandEchoTopicId"]["topic"]).publish(dataStruct)
 
+    # checks and updates connection status
+    def checkConnectionStatus(self):
+        connectionStatus = "Connected"
+        connectionStatusStyle = "background-color: rgb(26, 29, 56); color: rgb(255, 255, 255); qproperty-alignment: AlignCenter;"
+
+        if time.time()-self.lastConnectedTime > 2:
+            self.programStatus["connectionStatus"]= False
+            connectionStatus = "Disconnected"
+            connectionStatusStyle = "color: rgb(255, 255, 255); background-color: rgb(182, 41, 16);qproperty-alignment: AlignCenter;"
+
+        self.connectionStatus.setText(connectionStatus)
+        self.connectionStatus.setStyleSheet(connectionStatusStyle)
 
     def menubarCollection(self):
         # add menu to menubar
@@ -211,7 +239,11 @@ class MainWindow(QMainWindow):
         self.menuIMU.setTitle(QCoreApplication.translate("MainWindow", u"IMU", None))
         self.menuDocking.setTitle(QCoreApplication.translate("MainWindow", u"Docking", None))
         self.menuTelecommand.setTitle(QCoreApplication.translate("MainWindow", u"TeleCommand", None))
-        # self.menuTesting.setTitle(QCoreApplication.translate("MainWindow", u"Testing", None))
+
+        self.connectionStatus = QLabel(self)
+        self.connectionStatus.setObjectName(u"label_13")
+        self.connectionStatus.setGeometry(QRect(1050, 760, 150, 31))
+        self.connectionStatus.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
     
     def show_new_window_summary(self):
         print("clicked")
