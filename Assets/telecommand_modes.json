@@ -5,65 +5,61 @@
         "structure": "=3f",
         "data": {}
     },
-    "SetMode_CalibGyro": {
+    "SetMode_Standby":{
         "id": 1,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "SetMode_CalibAccel": {
+    "SetMode_CalibGyro": {
         "id": 2,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "SetMode_CalibMag": {
+    "SetMode_CalibAccel": {
         "id": 3,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "SetMode_CalibArm": {
+    "SetMode_CalibMag": {
         "id": 4,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "SetMode_ControlSpeed ": {
+    "SetMode_CalibArm": {
         "id": 5,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "SetMode_ControlPos": {
+    "SetMode_ControlSpeed ": {
         "id": 6,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "SetMode_ControlVel": {
+    "SetMode_ControlPos": {
         "id": 7,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "SetMode_Mission": {
+    "SetMode_ControlVel": {
         "id": 8,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "SetCalibParams_gyro": {
+    "SetMode_Mission": {
         "id": 9,
         "topicId": 50,
         "structure": "=3f",
-        "data": {
-            "x": "X",
-            "y": "Y",
-            "z": "Z"
-        }
+        "data": {}
     },
-    "SetCalibParams_accel": {
+    "SetCalibParams_gyro": {
         "id": 10,
         "topicId": 50,
         "structure": "=3f",
@@ -73,7 +69,7 @@
             "z": "Z"
         }
     },
-    "SetCalibParams_mag": {
+    "SetCalibParams_accel": {
         "id": 11,
         "topicId": 50,
         "structure": "=3f",
@@ -83,8 +79,18 @@
             "z": "Z"
         }
     },
-    "SetControlParams_speed": {
+    "SetCalibParams_mag": {
         "id": 12,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {
+            "x": "X",
+            "y": "Y",
+            "z": "Z"
+        }
+    },
+    "SetControlParams_speed": {
+        "id": 13,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -94,7 +100,7 @@
         }
     },
     "SetControlLimit_speed": {
-        "id": 13,
+        "id": 14,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -102,7 +108,7 @@
         }
     },
     "SetControlParams_pos": {
-        "id": 14,
+        "id": 15,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -112,7 +118,7 @@
         }
     },
     "SetControlLimit_pos": {
-        "id": 15,
+        "id": 16,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -120,7 +126,7 @@
         }
     },
     "SetControlParams_vel": {
-        "id": 16,
+        "id": 17,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -130,7 +136,7 @@
         }
     },
     "SetControlLimit_vel": {
-        "id": 17,
+        "id": 18,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -138,7 +144,7 @@
         }
     },
     "SetControlDesired_speed": {
-        "id": 18,
+        "id": 19,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -146,7 +152,7 @@
         }
     },
     "SetControlDesired_pos": {
-        "id": 19,
+        "id": 20,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -154,7 +160,7 @@
         }
     },
     "SetControlDesired_vel": {
-        "id": 20,
+        "id": 21,
         "topicId": 50,
         "structure": "=3f",
         "data": {
@@ -162,31 +168,31 @@
         }
     },
     "SendCalibTelemetry": {
-        "id": 21,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
-    },
-    "SendControlTelemetry": {
         "id": 22,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "ToggleExtendedTelemetry": {
+    "SendControlTelemetry": {
         "id": 23,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "ToggleCamera": {
+    "ToggleExtendedTelemetry": {
         "id": 24,
         "topicId": 50,
         "structure": "=3f",
         "data": {}
     },
-    "ToggleVideoStreaming": {
+    "ToggleCamera": {
         "id": 25,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
+    },
+    "ToggleVideoStreaming": {
+        "id": 26,
         "topicId": 50,
         "structure": "=3f",
         "data": {}

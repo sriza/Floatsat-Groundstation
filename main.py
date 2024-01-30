@@ -127,12 +127,17 @@ class MainWindow(QMainWindow):
     def telemetryControlParams(self, data):
         topicName = "telemetryControlParams"
         self.setAndUpdate(data,topicName)
+    
+    def telemetryMessage(self, data):
+        topicName = "telemetryMessage"
+        self.setAndUpdate(data,topicName)
 
     # set data from the telemetry and update view
     def setAndUpdate(self, data, topicName):
         try:
             print("struct data size:", struct.calcsize(self.telemetry[topicName]["structure"]));  
             print("set and update", self.telemetry[topicName]["structure"])
+
             # updates last connected time to present time
             self.lastConnectedTime = time.time()
             self.programStatus["connectionStatus"]= True
@@ -145,7 +150,7 @@ class MainWindow(QMainWindow):
                 dataInIndex = unpackedData[i]
 
                 if datum in self.pairedData.keys():
-                    print("the data:", datum)
+                    # print("the data:", datum)
                     satTime = self.telemetry[topicName]["data"]["time"]
                     self.pairedData[datum][satTime] = dataInIndex
 

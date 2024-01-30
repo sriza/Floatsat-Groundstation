@@ -96,5 +96,13 @@
             "vel_D": "vel_D",
             "vel_lim": "vel_lim"
         }
+    },
+    "telemetryMessage": {
+        "name" : "telemetryMessage",
+        "topicId" : 300,
+        "structure" : "=200p",
+        "data": {
+            "message" : "Message"
+        }
     }
 }

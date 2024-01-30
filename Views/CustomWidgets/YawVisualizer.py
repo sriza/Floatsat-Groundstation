@@ -125,6 +125,7 @@ class YawVisualizer(WidgetClass):
 
         #circular units within the yaw
         for i in range(72):
+            
             trans = QTransform()
             # trans.translate(w/2-x, h/2-x)
             # trans.translate(w, h)

@@ -2,7 +2,6 @@
 
 import time
 import struct
-from struct import *
 from rodos import Gateway
 from rodos import LinkinterfaceUDP
 from rodos import Topic
@@ -61,30 +60,37 @@ def testSubscriber(data):
     try:
         print("received data")
         unpackedData = struct.unpack("=4f",data)
-        print("unpacked Data:", unpackedData)
+        # print("unpacked Data:", unpackedData)
     except Exception as e:
         print("exception in receiving data:", e)
 
 def setAndPublish(cnt):
-    try:
-        for tele_name in telemetry:
+    for tele_name in telemetry:
+        try:
             print(tele_name)
             data_array = []
             last_data = 0
 
-            for datum in telemetry[tele_name]["data"]:
-                # new_value = (telemetry[tele_name]["data"][datum]+cnt)%360
-                new_value = (int(time.time())+cnt+last_data%15)%360
-                telemetry[tele_name]["data"][datum] = new_value
-                data_array.append(new_value)
-                last_data = new_value
+            if tele_name == "telemetryMessage":
+                print("-----------------telemetry message---------------")
+                stringData = "akajsdfkja lsdjkf lakjsdfl ajksdf lkajs dlfj alksdjf laj dlf jalsdj flajsds"
+                dataStruct = struct.pack("=200p", bytes(stringData,'ascii'))
 
-            dataStruct = struct.pack(telemetry[tele_name]["structure"],*tuple(data_array))
+            else:    
+                for datum in telemetry[tele_name]["data"]:
+                    # new_value = (telemetry[tele_name]["data"][datum]+cnt)%360
+                    new_value = (int(time.time())+cnt+last_data%15)%360
+                    telemetry[tele_name]["data"][datum] = new_value
+                    data_array.append(new_value)
+                    last_data = new_value
+
+                dataStruct = struct.pack(telemetry[tele_name]["structure"],*tuple(data_array))
 
             (telemetry[tele_name]["topic"]).publish(dataStruct)
 
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print("excption on publish: ",e)
+            continue
 
 initializeTopics()
 initializeTelecommandTopics()

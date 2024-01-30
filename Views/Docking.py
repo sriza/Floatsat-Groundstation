@@ -186,5 +186,5 @@ class Docking_MainWindow(object):
             # self.roll_pitch_viz.update()
 
         except Exception as ex:
-            print("exception imu update:", ex)
+            print("exception docking update:", ex)
 

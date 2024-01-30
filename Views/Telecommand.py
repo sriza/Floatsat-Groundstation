@@ -17,7 +17,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
-from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGraphicsView,
+from PySide6.QtWidgets import (QApplication, QFrame, QGraphicsView,
     QGroupBox, QLabel, QMainWindow, QMenu,
     QMenuBar, QPlainTextEdit, QPushButton, QSizePolicy, QComboBox,
     QStatusBar, QWidget)
@@ -95,7 +95,7 @@ class Telecommand_MainWindow(object):
         self.label_4.raise_()
         self.graphicsView_4 = QGraphicsView(self.centralwidget)
         self.graphicsView_4.setObjectName(u"graphicsView_4")
-        self.graphicsView_4.setGeometry(QRect(940, 450, 271, 291))
+        self.graphicsView_4.setGeometry(QRect(940, 450, 271, 270))
         self.graphicsView_4.setAutoFillBackground(True)
         brush = QBrush(QColor(255, 124, 234, 255))
         brush.setStyle(Qt.NoBrush)
@@ -128,11 +128,11 @@ class Telecommand_MainWindow(object):
         self.Connection_2.setGeometry(QRect(940, 450, 271, 51))
         self.Connection_2.setFont(font2)
         self.Connection_2.setStyleSheet(u"background-color: rgb(211, 211, 211);")
-        self.label_10 = QLabel(self.Connection_2)
-        self.label_10.setObjectName(u"label_10")
-        self.label_10.setGeometry(QRect(10, 10, 231, 31))
-        self.label_10.setFont(font1)
-        self.label_10.setStyleSheet(u"color: rgb(0, 0, 0);")
+        self.serverMessageLabel = QLabel(self.Connection_2)
+        self.serverMessageLabel.setObjectName(u"label_10")
+        self.serverMessageLabel.setGeometry(QRect(10, 10, 231, 31))
+        self.serverMessageLabel.setFont(font1)
+        self.serverMessageLabel.setStyleSheet(u"color: rgb(0, 0, 0);")
         self.label_11 = QLabel(self.centralwidget)
         self.label_11.setObjectName(u"label_11")
         self.label_11.setGeometry(QRect(330, 20, 191, 31))
@@ -142,30 +142,29 @@ class Telecommand_MainWindow(object):
         self.shutDownButton.setGeometry(QRect(960, 250, 231, 41))
         self.shutDownButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(182, 41, 16);")
-        self.pushButton_4 = QPushButton(self.centralwidget)
-        self.pushButton_4.setObjectName(u"pushButton_4")
-        self.pushButton_4.setGeometry(QRect(960, 660, 231, 41))
-        self.pushButton_4.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-        "background-color: rgb(50, 107, 29);")
+        # self.initiateCalib = QPushButton(self.centralwidget)
+        # self.initiateCalib.setObjectName(u"pushButton_4")
+        # self.initiateCalib.setGeometry(QRect(960, 660, 231, 41))
+        # self.initiateCalib.setStyleSheet(u"color: rgb(255, 255, 255);\n"
+        # "background-color: rgb(50, 107, 29);")
         self.groupBox_4 = QGroupBox(self.centralwidget)
         self.groupBox_4.setObjectName(u"groupBox_4")
-        self.groupBox_4.setGeometry(QRect(960, 520, 231, 111))
+        self.groupBox_4.setGeometry(QRect(960, 520, 231, 180))
         font3 = QFont()
         font3.setFamilies([u"Arial"])
         font3.setPointSize(1)
         self.groupBox_4.setFont(font3)
         self.groupBox_4.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(26, 29, 56);")
-        self.checkBox = QCheckBox(self.groupBox_4)
-        self.checkBox.setObjectName(u"checkBox")
-        self.checkBox.setGeometry(QRect(20, 30, 171, 16))
         font4 = QFont()
         font4.setPointSize(12)
-        self.checkBox.setFont(font4)
-        self.checkBox_3 = QCheckBox(self.groupBox_4)
-        self.checkBox_3.setObjectName(u"checkBox_3")
-        self.checkBox_3.setGeometry(QRect(20, 70, 171, 16))
-        self.checkBox_3.setFont(font4)
+
+        self.messageText = QLabel(self.groupBox_4)
+        self.messageText.setWordWrap(True)
+        self.messageText.setObjectName(u"messageText")
+        self.messageText.setGeometry(QRect(20,30,171,60))
+        # self.messageText.setFont(font)
+
         self.pushButton_5 = QPushButton(self.centralwidget)
         self.pushButton_5.setObjectName(u"pushButton_5")
         self.pushButton_5.setGeometry(QRect(960, 340, 231, 41))
@@ -208,12 +207,6 @@ class Telecommand_MainWindow(object):
         self.groupBox_7.setGeometry(QRect(20, 60, 811, 201))
         self.groupBox_7.setFont(font)
         self.groupBox_7.setStyleSheet(u"color: rgb(9, 10, 17);")
-
-        # self.extendedData = QLabel(self.groupBox_7)
-        # self.extendedData.setObjectName(u"extended_data")
-        # self.extendedData.setGeometry(QRect(290, 25, 121, 31))
-        # self.extendedData.setFont(font)
-
         self.x_label = QLabel(self.groupBox_7)
         self.x_label.setObjectName(u"label_19")
         self.x_label.setGeometry(QRect(30, 20, 121, 31))
@@ -302,13 +295,11 @@ class Telecommand_MainWindow(object):
         self.pushButton_6.setText(QCoreApplication.translate("MainWindow", u"Set Satellite Parameters", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Basic Telecommands", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Satellite Status ", None))
-        self.label_10.setText(QCoreApplication.translate("MainWindow", u"Calibration", None))
+        self.serverMessageLabel.setText(QCoreApplication.translate("MainWindow", u"Message from Server", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
         self.shutDownButton.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
-        self.pushButton_4.setText(QCoreApplication.translate("MainWindow", u"Initiate Caliberation", None))
+        # self.initiateCalib.setText(QCoreApplication.translate("MainWindow", u"Initiate Caliberation", None))
         self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Sensor Calibration Status", None))
-        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"Magnetometer", None))
-        self.checkBox_3.setText(QCoreApplication.translate("MainWindow", u"Gyroscope", None))
         self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Initiate Telecommand Mode", None))
         self.battery_status_text.setText(QCoreApplication.translate("MainWindow", u"Command count :", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Mode :", None))
@@ -396,21 +387,27 @@ class Telecommand_MainWindow(object):
         try:
             # topic = "telemetryContinuousExtendedTopicID"
             # topicData = data[topicName]["data"]
+            print("telemetryMessage")
+            topicName = "telemetryMessage"
+            # print(data[topicName])
+            topicData = data[topicName]["data"]
+            print(topicData, topicData["message"])
+            self.messageText.setText(str(topicData["message"])[2:-1])
 
             # self.extendedData.setText("Speed:"+topicData["speed"]+" Speed Control Out:"+topic["speedControlOut"])
+            print("telemetrycalib")
             topicName = "telemetryCalibIMU"
             topicData = data[topicName]["data"]
 
-            topicName = "telemetryCalibIMU"
-
+            # topicName = "telemetryCalibIMU"
+            print("telemetryContinuous")
             topicName = "telemetryContinuous"
             topicData = data[topicName]["data"]
+            # print(topicData, self.satelliteModes)
+            self.commandCnt.setText(str(topicData["cmdCnt"]))
 
             mode_id = topicData["modeid"]
             self.mode_text.setText(self.satelliteModes[mode_id]+"("+str(mode_id)+")")
-            self.commandCnt.setText(str(topicData["cmdCnt"]))
-            # self.battery_status_text.setText(str(topicData["cmdCnt"]))
-            
-
-        except Exception as ex:
-            print("exception imu update:", ex)
+        except Exception as expe:
+            print(expe)
+            print("exception telecommand update:", expe)
