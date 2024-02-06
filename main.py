@@ -7,6 +7,7 @@ from Views.Summary import Ui_MainWindow
 from Views.IMU import IMU_MainWindow
 from Views.Telecommand import Telecommand_MainWindow
 from Views.Docking import Docking_MainWindow
+from Views.Debug import Debug_MainWindow
 
 # for rodos and data manipulation
 from rodos import Gateway
@@ -26,7 +27,12 @@ class MainWindow(QMainWindow):
         self.summary = Ui_MainWindow()
         self.imu = IMU_MainWindow()
         self.telecommand = Telecommand_MainWindow()
-        self.docking = Docking_MainWindow()        
+        self.docking = Docking_MainWindow()   
+        self.debug = Debug_MainWindow()     
+
+        # self mission modes
+        self.missionModes = {}
+        self.setMissionModes()
 
         #rodos
         self.pairedData = {"temp":{}}
@@ -44,12 +50,14 @@ class MainWindow(QMainWindow):
         self.currentView = self.summary
 
         # connection Status checking with time interval of a second
-        self.programStatus = {"connectionStatus":False}
+        self.programStatus = {"connectionStatus":False, "currentMode": 0}
         self.lastConnectedTime = 0
         self.connectionTimer = QTimer()
         self.connectionTimer.setInterval(1000)
         self.connectionTimer.timeout.connect(self.checkConnectionStatus)
         self.connectionTimer.start()
+        
+    #init
     
     def initializeTelemetryTopics(self):
         try:
@@ -79,9 +87,12 @@ class MainWindow(QMainWindow):
                     self.telemetry[item]["data"][datum] = 0
 
                 self.telemetry[item]["pairedData"] = self.pairedData
+                self.telemetry[item]["programData"] = self.programStatus
+                self.telemetry[item]["missionModes"] = self.missionModes
 
         except Exception as e:
             print(e)
+    # initializeTelecommand end
 
     def initializeTelecommandTopics(self):
         try:
@@ -111,27 +122,40 @@ class MainWindow(QMainWindow):
                     self.telecommandTopic[item]["data"][datum] = 0
         except Exception as e:
             print(e)
+    #initializeTelecommandTopics
 
-    def telemetryContinuous(self, data):
-        topicName = "telemetryContinuous"
-        self.setAndUpdate(data,topicName)
-    
-    def telemetryContinuousExtendedTopicID(self, data):
-        topicName = "telemetryContinuousExtendedTopicID"
-        self.setAndUpdate(data,topicName)
-    
-    def telemetryCalibIMU(self, data):
-        topicName = "telemetryContinuous"
-        self.setAndUpdate(data,topicName)
-    
-    def telemetryControlParams(self, data):
-        topicName = "telemetryControlParams"
-        self.setAndUpdate(data,topicName)
-    
-    def telemetryMessage(self, data):
-        topicName = "telemetryMessage"
-        self.setAndUpdate(data,topicName)
+    def setMissionModes(self):
+        f = open("Assets/modes.json")
+        json_array = json.load(f)
 
+        for item in json_array:
+            mode = json_array[item]
+            print(mode)
+            if "type" in mode.keys() and mode["type"] =="mission":
+                print("found\n")
+                self.missionModes[mode["id"]] = {}
+                # self.missionModes[mode["type_count"]] = {}
+                self.missionModes[mode["id"]]["type"] = mode["type"]
+                self.missionModes[mode["id"]]["name"] = item
+                self.missionModes[mode["id"]]["status"] = False
+    #set mission modes
+    
+    def updateMissionModes(self):
+        inMission = False
+        updated = False
+
+        if self.programStatus["currentMode"] in self.missionModes.keys():
+            inMission = True
+
+        for modeid in self.missionModes:
+            if inMission and not updated:
+                self.missionModes[modeid]["status"] = True
+                if modeid == self.programStatus["currentMode"]:
+                    updated = True
+            else:
+                self.missionModes[modeid]["status"] = False
+    #updateMissionModes
+        
     # set data from the telemetry and update view
     def setAndUpdate(self, data, topicName):
         try:
@@ -146,23 +170,33 @@ class MainWindow(QMainWindow):
             unpackedData = struct.unpack(self.telemetry[topicName]["structure"],data)
             i = 0
 
-            for datum in self.telemetry[topicName]["data"]:
+            telemetryData = self.telemetry[topicName]["data"]
+
+            if "modeid" in telemetryData.keys():
+                self.programStatus["currentMode"] = telemetryData["modeid"]
+                self.updateMissionModes()
+
+            for datum in telemetryData:
                 dataInIndex = unpackedData[i]
 
                 if datum in self.pairedData.keys():
                     # print("the data:", datum)
-                    satTime = self.telemetry[topicName]["data"]["time"]
+                    satTime = telemetryData["time"]
                     self.pairedData[datum][satTime] = dataInIndex
 
-                self.telemetry[topicName]["data"][datum] = dataInIndex
+                telemetryData[datum] = dataInIndex
                 i+=1
 
             self.telemetry[topicName]["pairedData"] = self.pairedData
-            self.currentView.updateData(self.telemetry)
+            self.telemetry[topicName]["programData"] = self.programStatus
+            self.telemetry[topicName]["missionModes"] = self.missionModes
+
+            self.currentView.updateTrigger(self.telemetry)
         except Exception as ex:
             print("set and update exception:",ex)
-            self.currentView.updateData(self.telemetry)
-
+            self.currentView.updateTrigger(self.telemetry)
+    #setAndUpdate
+            
     # send telecommand: common interface for all child windows
     def sendTelecommand(self, data):
         try:
@@ -178,7 +212,8 @@ class MainWindow(QMainWindow):
             print("published data", dataStruct, tuple(data))
         except Exception as ex:
             print("exception in sending telecommand:", ex)
-    
+    #sendTelecommand
+            
     # sends echo telecommand: will be used in telecommand window only
     def sendEchoTelecommand(self, data):
         i = len(data)-1
@@ -189,7 +224,8 @@ class MainWindow(QMainWindow):
 
         dataStruct = struct.pack("=3f",*tuple(data))
         (self.telecommandTopic["TelecommandEchoTopicId"]["topic"]).publish(dataStruct)
-
+    #sendEchoTelecommand
+        
     # checks and updates connection status
     def checkConnectionStatus(self):
         connectionStatus = "Connected"
@@ -202,7 +238,9 @@ class MainWindow(QMainWindow):
 
         self.connectionStatus.setText(connectionStatus)
         self.connectionStatus.setStyleSheet(connectionStatusStyle)
-
+    #checkConnectionStatus
+        
+    # create collection of menubar
     def menubarCollection(self):
         # add menu to menubar
         self.menubar = QMenuBar(self)
@@ -225,6 +263,9 @@ class MainWindow(QMainWindow):
         self.menuTesting = QMenu(self.menubar)
         self.menuTesting.setObjectName(u"menuTelecommand")
 
+        self.menuDebug = QMenu(self.menubar)
+        self.menuDebug.setObjectName(u"menuDebug")
+
         self.setMenuBar(self.menubar)
 
         self.menubar.addActions([
@@ -232,6 +273,7 @@ class MainWindow(QMainWindow):
             self.menuIMU.menuAction(),
             self.menuDocking.menuAction(),
             self.menuTelecommand.menuAction(),
+            self.menuDebug.menuAction()
             # self.menuTesting.menuAction()
         ])
 
@@ -239,40 +281,80 @@ class MainWindow(QMainWindow):
         self.menuIMU.aboutToShow.connect(self.show_new_window)
         self.menuDocking.aboutToShow.connect(self.show_new_window_docking)
         self.menuTelecommand.aboutToShow.connect(self.show_new_window_telecommand)
+        self.menuDebug.aboutToShow.connect(self.show_new_window_debug)
 
         self.menuSummary.setTitle(QCoreApplication.translate("MainWindow", u"Summary", None))
         self.menuIMU.setTitle(QCoreApplication.translate("MainWindow", u"IMU", None))
         self.menuDocking.setTitle(QCoreApplication.translate("MainWindow", u"Docking", None))
         self.menuTelecommand.setTitle(QCoreApplication.translate("MainWindow", u"TeleCommand", None))
+        self.menuDebug.setTitle(QCoreApplication.translate("MainWindow", u"Debug", None))
 
         self.connectionStatus = QLabel(self)
         self.connectionStatus.setObjectName(u"label_13")
         self.connectionStatus.setGeometry(QRect(1050, 760, 150, 31))
         self.connectionStatus.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
-    
+    #menubarCollection
+        
     def show_new_window_summary(self):
         print("clicked")
         self.summary.setupUi(self)
         self.currentView = self.summary
-        self.currentView.updateData(self.telemetry)
-
+        self.currentView.updateTrigger(self.telemetry)
+    #show_new_window_summary
+        
     def show_new_window(self):
         print("clicked")
         self.imu.setupUi(self)
         self.currentView = self.imu
-        self.currentView.updateData(self.telemetry)
-    
+        self.currentView.updateTrigger(self.telemetry)
+    #show_new_window
+        
     def show_new_window_docking(self):
         print("clicked docking")
         self.docking.setupUi(self)
+        self.docking.createMissionModes(self.missionModes)
         self.currentView = self.docking
-        self.currentView.updateData(self.telemetry)
-    
+        self.currentView.updateTrigger(self.telemetry)
+    #show_new_window_docking
+        
     def show_new_window_telecommand(self):
         print("clicked telecommand")
         self.telecommand.setupUi(self)
         self.currentView = self.telecommand
-        self.currentView.updateData(self.telemetry)
+        self.currentView.updateTrigger(self.telemetry)
+    #show_new_window_telecommand
+        
+    def show_new_window_debug(self):
+        print("clicked telecommand")
+        self.debug.setupUi(self)
+        self.currentView = self.debug
+        self.currentView.updateTrigger(self.debug)
+    #show_new_window_debug
+        
+    def telemetryContinuous(self, data):
+        topicName = "telemetryContinuous"
+        self.setAndUpdate(data,topicName)
+    #telemetryContinuous
+        
+    def telemetryContinuousExtendedTopicID(self, data):
+        topicName = "telemetryContinuousExtendedTopicID"
+        self.setAndUpdate(data,topicName)
+    #telemetryContinuousExtendedTopicID
+        
+    def telemetryCalibIMU(self, data):
+        topicName = "telemetryContinuous"
+        self.setAndUpdate(data,topicName)
+    #telemetryCalibIMU
+        
+    def telemetryControlParams(self, data):
+        topicName = "telemetryControlParams"
+        self.setAndUpdate(data,topicName)
+    #telemetryControlParams
+        
+    def telemetryMessage(self, data):
+        topicName = "telemetryMessage"
+        self.setAndUpdate(data,topicName)
+    #telemetryMessage
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)

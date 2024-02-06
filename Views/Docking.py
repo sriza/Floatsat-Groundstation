@@ -10,7 +10,7 @@
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
+    QSize, QTime, QUrl, Qt, Signal, Slot)
 from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QCursor, QFont, QFontDatabase, QGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
@@ -18,12 +18,19 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QLabel,
     QMainWindow, QMenu, QMenuBar, QProgressBar,
-    QPushButton, QRadioButton, QSizePolicy, QStatusBar,
+    QPushButton, QRadioButton, QSizePolicy, QStatusBar,QCheckBox,
     QWidget)
 import math
+import json
+class DockingSignal(QObject):
+    value = Signal()
 
 class Docking_MainWindow(object):
+
     def setupUi(self, MainWindow):
+        super(Docking_MainWindow, self).__init__()
+        self.value = DockingSignal()
+
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         # MainWindow.resize(1265, 820)
@@ -52,28 +59,15 @@ class Docking_MainWindow(object):
         self.pushButton_3.setGeometry(QRect(30, 40, 291, 51))
         self.pushButton_3.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(15, 102, 28);")
-        self.groupBox_3 = QGroupBox(self.centralwidget)
-        self.groupBox_3.setObjectName(u"groupBox_3")
-        self.groupBox_3.setGeometry(QRect(900, 20, 341, 261))
-        self.radioButton = QRadioButton(self.groupBox_3)
-        self.radioButton.setObjectName(u"radioButton")
-        self.radioButton.setGeometry(QRect(30, 90, 91, 22))
-        self.radioButton_2 = QRadioButton(self.groupBox_3)
-        self.radioButton_2.setObjectName(u"radioButton_2")
-        self.radioButton_2.setGeometry(QRect(30, 120, 141, 22))
-        self.radioButton_3 = QRadioButton(self.groupBox_3)
-        self.radioButton_3.setObjectName(u"radioButton_3")
-        self.radioButton_3.setGeometry(QRect(30, 150, 141, 22))
-        self.radioButton_4 = QRadioButton(self.groupBox_3)
-        self.radioButton_4.setObjectName(u"radioButton_4")
-        self.radioButton_4.setGeometry(QRect(30, 180, 141, 22))
-        self.radioButton_5 = QRadioButton(self.groupBox_3)
-        self.radioButton_5.setObjectName(u"radioButton_5")
-        self.radioButton_5.setGeometry(QRect(30, 210, 141, 22))
-        self.progressBar = QProgressBar(self.groupBox_3)
+        self.missionGroupBox = QGroupBox(self.centralwidget)
+        self.missionGroupBox.setObjectName(u"groupBox_3")
+        self.missionGroupBox.setGeometry(QRect(900, 20, 341, 261))
+     
+        self.progressBar = QProgressBar(self.missionGroupBox)
         self.progressBar.setObjectName(u"progressBar")
         self.progressBar.setGeometry(QRect(30, 40, 291, 20))
-        self.progressBar.setValue(24)
+        self.progressBar.setValue(0)
+
         self.frame_2 = QFrame(self.centralwidget)
         self.frame_2.setObjectName(u"frame_2")
         self.frame_2.setGeometry(QRect(30, 500, 1211, 241))
@@ -111,8 +105,10 @@ class Docking_MainWindow(object):
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        self.data = {}
+        self.value.value.connect(self.updateData)
 
+        self.retranslateUi(MainWindow)
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
@@ -122,12 +118,7 @@ class Docking_MainWindow(object):
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"IMU Command", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Cancel Docking Mission", None))
         self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Initiate Docking", None))
-        self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Mission Profile", None))
-        self.radioButton.setText(QCoreApplication.translate("MainWindow", u"Initiated", None))
-        self.radioButton_2.setText(QCoreApplication.translate("MainWindow", u"Searching Debris", None))
-        self.radioButton_3.setText(QCoreApplication.translate("MainWindow", u"Debris located", None))
-        self.radioButton_4.setText(QCoreApplication.translate("MainWindow", u"Docking initiated", None))
-        self.radioButton_5.setText(QCoreApplication.translate("MainWindow", u"Docked", None))
+        self.missionGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Mission Profile", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Arm Position", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Rate of extension", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Arm Length", None))
@@ -138,8 +129,46 @@ class Docking_MainWindow(object):
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Orientation", None))
     # retranslateUi
     
-    def updateData(self, data):
+
+    # create UI for mission modes
+    def createMissionModes(self, missionModes):
         try:
+            print("in create mission modes", missionModes)
+            self.modesUI = {}
+            i = 0
+            completedCount = 0
+
+            for mode in missionModes:
+                print("mode")
+                self.modesUI[mode] = {}
+                self.modesUI[mode]["radioButton"] = QCheckBox(self.missionGroupBox)
+                (self.modesUI[mode]["radioButton"]).setObjectName("checkbox")
+                (self.modesUI[mode]["radioButton"]).setGeometry(QRect(30, 90+30*i, 250, 22))
+                (self.modesUI[mode]["radioButton"]).setText(missionModes[mode]["name"])
+
+                if missionModes[mode]["status"]:
+                    completedCount+=1
+                    (self.modesUI[mode]["radioButton"]).toggle()
+
+                i+=1
+            
+            self.progressBar.value = (100*completedCount/i)
+            
+        except Exception as ex:
+            print("exception in creating mission modes",ex)
+
+    def updateTrigger(self,data):
+        try:
+            # self.value+=1
+            self.data = data
+            self.value.value.emit()
+        except Exception as ex:
+            print("docking update trigger:", ex)
+    
+    # @Slot()
+    def updateData(self):        
+        try:
+            data = self.data
             # hour = []
             # temperature = []
 
@@ -159,31 +188,31 @@ class Docking_MainWindow(object):
             q2 = topicData["q2"]/100
             q3 = topicData["q3"]/100
 
-          
-            # roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))%40
-            # pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))%40                        
-            # yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
 
-            # # lcd data update
-            # self.roll.display(roll)
-            # self.pitch.display(pitch)
-            # self.yaw.display(yaw)
+            # print(data[topicName])
+            missionData = data[topicName]["missionModes"]
 
-            # # graph data update
-            # # print("tempData",hour, temperature)
-            # # self.graphWidget.plot(hour, temperature) 
+            print(missionData)
 
+            i= 0 
+            total = len(self.modesUI)
+            per = 100/total
 
-            # # update yaw parameters
-            # print("roll, pitch, yaw",roll,pitch, yaw)
-            # self.yaw_viz.heading = yaw
-            # self.yaw_viz.update()
+            for mode in self.modesUI:
+                radioButton = self.modesUI[mode]["radioButton"]
+                buttonStatus = radioButton.isChecked()
+                missionStatus = missionData[mode]["status"]
+                print(mode, buttonStatus, missionStatus)
 
-            # #update roll and pitch parameters
-            # self.roll_pitch_viz.roll = 40
-            # self.roll_pitch_viz.pitch = 44
-            # # self.roll_pitch_viz.yaw = yaw
-            # self.roll_pitch_viz.update()
+                if buttonStatus != missionStatus:
+                    radioButton.toggle()
+
+                if radioButton.isChecked():
+                    i+=per
+            
+            
+            # self.progressBar.value = i
+            self.progressBar.setValue(i)
 
         except Exception as ex:
             print("exception docking update:", ex)

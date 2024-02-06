@@ -10,7 +10,7 @@
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
+    QSize, QTime, QUrl, Qt, Signal, Slot)
 from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QCursor, QFont, QFontDatabase, QGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
@@ -23,10 +23,14 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGraphicsView,
     QStatusBar, QWidget)
 import json
 
+class TeleCommandSignal(QObject):
+    value = Signal()
+
 class Telecommand_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
+        self.value = TeleCommandSignal()
         self.parent = MainWindow
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -281,6 +285,9 @@ class Telecommand_MainWindow(object):
         self.satelliteModes = {}
         self.setSatelliteModes()
 
+        self.data = {}
+        self.value.value.connect(self.updateData)
+
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
@@ -353,10 +360,10 @@ class Telecommand_MainWindow(object):
                 }
         }
         
-
         for type in types:
             if type in data:
                 (types[type]["input"]).setPlaceholderText(data[type])
+                (types[type]["label"]).setPlaceholderText(data[type])
                 (types[type]["input"]).show()
                 (types[type]["label"]).show()
                 continue
@@ -382,9 +389,17 @@ class Telecommand_MainWindow(object):
         print("data",data)
         self.parent.sendTelecommand(data)
 
-        
-    def updateData(self, data):
+    def updateTrigger(self,data):
         try:
+            # self.value+=1
+            self.data = data
+            self.value.value.emit()
+        except Exception as ex:
+            print("telecommand update trigger:", ex)
+        
+    def updateData(self):      
+        try:
+            data = self.data
             # topic = "telemetryContinuousExtendedTopicID"
             # topicData = data[topicName]["data"]
             print("telemetryMessage")

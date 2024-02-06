@@ -8,18 +8,21 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect, Qt, QSize)
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect, Qt, QSize, Signal, Slot, QObject)
 from PySide6.QtGui import (QAction, QBrush, QColor, QFont)
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 from PySide6.QtWidgets import (QFrame, QGraphicsView, QGroupBox, QLCDNumber, 
     QLabel, QMenu, QMenuBar, QProgressBar, QPushButton, QStatusBar, QTextEdit, 
-    QWidget, QHBoxLayout, QWidgetItem)
+    QWidget, QHBoxLayout, QWidgetItem, )
 import pyqtgraph as pg
 from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
 from Views.CustomWidgets.YawVisualizer import YawVisualizer
 import time
 # import threading
 import math
+
+class SummarySignal(QObject):
+    value = Signal()
 
 class Ui_MainWindow(object):
 
@@ -246,7 +249,6 @@ class Ui_MainWindow(object):
         self.progressBar = QProgressBar(self.centralwidget)
         self.progressBar.setObjectName(u"progressBar")
         self.progressBar.setGeometry(QRect(950, 80, 221, 51))
-        self.progressBar.setValue(24)
         self.label_14 = QLabel(self.centralwidget)
         self.label_14.setObjectName(u"label_14")
         self.label_14.setGeometry(QRect(950, 150, 121, 31))
@@ -263,6 +265,9 @@ class Ui_MainWindow(object):
     
         # self.menubarCollection(MainWindow)
         self.retranslateUi(MainWindow)
+
+        self.value = SummarySignal()
+        self.value.value.connect(self.updateData)
 
         QMetaObject.connectSlotsByName(MainWindow)
     
@@ -292,8 +297,18 @@ class Ui_MainWindow(object):
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Voltage", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"V", None))
     
-    def updateData(self, data):
+    def updateTrigger(self,data):
         try:
+            # self.value+=1
+            self.data = data
+            self.value.value.emit()
+        except Exception as ex:
+            print("summary update trigger:", ex)
+
+    @Slot()
+    def updateData(self):
+        try:
+            data = self.data
             max_voltage = 14.4
             hour = []
             temperature = []
@@ -325,11 +340,10 @@ class Ui_MainWindow(object):
             self.lcdTemperature.display(topicData["temp"])
             self.lcdVoltage.display(topicData["U_bat"])
 
-            value = (topicData["U_bat"]/max_voltage)
-            print("battery:", value)
+            batterPer = (topicData["U_bat"]/max_voltage)
+            self.progressBar.setValue(batterPer)
 
             # todo: update progress bar and its styling
-            # self.progressBar.valueChanged(value)
 
             # graph data update
             print("tempData",hour, temperature)

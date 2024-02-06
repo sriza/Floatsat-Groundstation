@@ -79,7 +79,8 @@ def setAndPublish(cnt):
             else:    
                 for datum in telemetry[tele_name]["data"]:
                     # new_value = (telemetry[tele_name]["data"][datum]+cnt)%360
-                    new_value = (int(time.time())+cnt+last_data%15)%360
+                    # new_value = (int(time.time())+cnt+last_data%15)%360
+                    new_value = cnt
                     telemetry[tele_name]["data"][datum] = new_value
                     data_array.append(new_value)
                     last_data = new_value
@@ -106,11 +107,11 @@ while True:
     # print("sendMe")
 
     # print(struct.unpack("I", sendMe))
-    print("------------------------")
+    print("-----------"+str(cnt)+"-------------")
 
     cnt += 1
     
-    if cnt==30:
+    if cnt==20:
         cnt=0
 
     time.sleep(2)

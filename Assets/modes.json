@@ -1,110 +1,55 @@
 {
     "Idle": {
-        "id": 0,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 0
     },
     "Electrical Startup": {
-        "id": 1,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 1
     },
     "Reaction Wheel spin up": {
-        "id": 2,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 2
     },
     "Calib Gyroscope": {
-        "id": 3,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 3
     },
     "Calib Accel": {
-        "id": 4,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 4
     },
     "Calib Magnetometer": {
-        "id": 5,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 5
     },
     "Calib Arm ": {
-        "id": 6,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 6
     },
     "Control Speed": {
-        "id": 7,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 7
     },
     "Control Pos": {
-        "id": 8,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 8
     },
     "Control Vel": {
-        "id": 9,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {}
+        "id": 9
     },
     "Mission Locate": {
         "id": 10,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {
-            "x": "X",
-            "y": "Y",
-            "z": "Z"
-        }
+        "type": "mission",
+        "type_count" : 1
     },
     "Mission point": {
         "id": 11,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {
-            "x": "X",
-            "y": "Y",
-            "z": "Z"
-        }
+        "type": "mission",
+        "type_count" : 2
     },
     "Mission dock initial": {
         "id": 12,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {
-            "x": "X",
-            "y": "Y",
-            "z": "Z"
-        }
+        "type": "mission",
+        "type_count" : 3
     },
     "Mission dock final": {
         "id": 13,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {
-            "x": "P",
-            "y": "I",
-            "z": "D"
-        }
+        "type": "mission",
+        "type_count" : 4
     },
     "Standby": {
-        "id": 14,
-        "topicId": 50,
-        "structure": "=3f",
-        "data": {
-            "x": "Speed Limit"
-        }
+        "id": 14
     }
 }

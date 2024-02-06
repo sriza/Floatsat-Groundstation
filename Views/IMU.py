@@ -10,7 +10,7 @@
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
+    QSize, QTime, QUrl, Qt, Signal, Slot)
 from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QCursor, QFont, QFontDatabase, QGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
@@ -23,13 +23,19 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QLCDNumber,
     QWidget)
 from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
 from Views.CustomWidgets.YawVisualizer import YawVisualizer
-from Views.CustomWidgets.OrientationVisualizer import OrientationVisualizer
 import math
+
+class IMUSignal(QObject):
+    value = Signal()
+
 class IMU_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         # MainWindow.resize(1700, 1000)
+        self.value= IMUSignal()
+        self.data = {}
+
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.frame = QFrame(self.centralwidget)
@@ -242,6 +248,7 @@ class IMU_MainWindow(object):
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.retranslateUi(MainWindow)
+        self.value.value.connect(self.updateData)
 
         QMetaObject.connectSlotsByName(MainWindow)
     
@@ -271,8 +278,19 @@ class IMU_MainWindow(object):
         self.tilt_visualizer.setText(QCoreApplication.translate("MainWindow", u"Tilt visualizer ( pitch + roll )", None))
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Heading visualizer (Yaw)", None))
 
-    def updateData(self, data):
+    def updateTrigger(self,data):
         try:
+            # self.value+=1
+            self.data = data
+            self.value.value.emit()
+        except Exception as ex:
+            print("imu update trigger:", ex)
+
+    @Slot()
+    def updateData(self):  
+        try:
+            data= self.data
+            print("data:",data)
             # hour = []
             # temperature = []
 
