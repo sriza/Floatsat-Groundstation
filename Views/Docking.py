@@ -172,41 +172,32 @@ class Docking_MainWindow(object):
             # hour = []
             # temperature = []
 
-            topicName = "telemetryContinuous"
-            # topicStruc = data[topicName]
-            topicData = data[topicName]["data"]
-            
-            # conversion of quaternion to roll, pitch and yaw
-            q0 = topicData["q0"]/100
-            q1 = topicData["q1"]/100
-            q2 = topicData["q2"]/100
-            q3 = topicData["q3"]/100
+            if "telemetryContinuous" in data.keys():
+                topicName = "telemetryContinuous"
+                topicData = data[topicName]["data"]
 
+                # print(data[topicName])
+                missionData = data[topicName]["missionModes"]
+                print(missionData)
 
-            # print(data[topicName])
-            missionData = data[topicName]["missionModes"]
+                i= 0 
+                total = len(self.modesUI)
+                per = 100/total
 
-            print(missionData)
+                for mode in self.modesUI:
+                    radioButton = self.modesUI[mode]["radioButton"]
+                    buttonStatus = radioButton.isChecked()
+                    missionStatus = missionData[mode]["status"]
+                    print(mode, buttonStatus, missionStatus)
 
-            i= 0 
-            total = len(self.modesUI)
-            per = 100/total
+                    if buttonStatus != missionStatus:
+                        radioButton.toggle()
 
-            for mode in self.modesUI:
-                radioButton = self.modesUI[mode]["radioButton"]
-                buttonStatus = radioButton.isChecked()
-                missionStatus = missionData[mode]["status"]
-                print(mode, buttonStatus, missionStatus)
-
-                if buttonStatus != missionStatus:
-                    radioButton.toggle()
-
-                if radioButton.isChecked():
-                    i+=per
-            
-            
-            # self.progressBar.value = i
-            self.progressBar.setValue(i)
+                    if radioButton.isChecked():
+                        i+=per
+                
+                
+                self.progressBar.setValue(i)
 
         except Exception as ex:
             print("exception docking update:", ex)

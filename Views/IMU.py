@@ -340,63 +340,64 @@ class IMU_MainWindow(object):
         try:
             data= self.data
 
-            topicName = "telemetryContinuous"
-            topicStruc = data[topicName]
-            topicData = data[topicName]["data"]
-            
-            # conversion of quaternion to roll, pitch and yaw
-            q0 = topicData["q0"]
-            q1 = topicData["q1"]
-            q2 = topicData["q2"]
-            q3 = topicData["q3"]
-            timestamp = topicData["time"]
-
-          
-            roll = math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2))
-            pitch = math.asin(2 * (q0 * q2 - q3 * q1))                     
-            yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
-
-            # lcd data update
-            self.roll.display(roll)
-            self.pitch.display(pitch)
-            self.yaw.display(yaw)
-
-            self.dynamicData["yaw"][timestamp] = yaw
-
-            self.gyroscope_x.display(topicData["wx"])
-            self.gyroscope_y.display(topicData["wy"])
-            self.gyroscope_z.display(topicData["wz"])
-            self.accelerometer_x.display(topicData["ax"])
-            self.accelerometer_y.display(topicData["ay"])
-            self.accelerometer_z.display(topicData["az"])
-            self.magnetometer_x.display(topicData["mx"])
-            self.magnetometer_y.display(topicData["my"])
-            self.magnetometer_z.display(topicData["mz"])
-
-            # update yaw parameters
-            self.yaw_viz.heading = yaw
-            self.yaw_viz.update()
-
-            tempData = topicStruc["pairedData"]["speed"]
-
-            if self.currentCommand == "SetControlDesired_pos" :
-                print("yaw data")
-                tempData = self.dynamicData["yaw"]
+            if "telemetryContinuous" in data.keys():
+                topicName = "telemetryContinuous"
+                topicStruc = data[topicName]
+                topicData = data[topicName]["data"]
                 
-            x = list(tempData.keys())
-            y = list(tempData.values())
+                # conversion of quaternion to roll, pitch and yaw
+                q0 = topicData["q0"]
+                q1 = topicData["q1"]
+                q2 = topicData["q2"]
+                q3 = topicData["q3"]
+                timestamp = topicData["time"]
 
-            self.dynamicGraph.clear()
+            
+                roll = math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2))
+                pitch = math.asin(2 * (q0 * q2 - q3 * q1))                     
+                yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
 
-            self.dynamicGraph.plot(x, y) 
+                # lcd data update
+                self.roll.display(roll)
+                self.pitch.display(pitch)
+                self.yaw.display(yaw)
 
-            # todo: update roll and pitch parameters, issue with repainting
-            self.roll_pitch_viz.roll = roll
-            self.roll_pitch_viz.pitch = pitch
-            self.roll_pitch_viz.update()
-            self.dynamicGraph.roll = roll
-            self.dynamicGraph.pitch = pitch
-            self.dynamicGraph.update()
+                self.dynamicData["yaw"][timestamp] = yaw
+
+                self.gyroscope_x.display(topicData["wx"])
+                self.gyroscope_y.display(topicData["wy"])
+                self.gyroscope_z.display(topicData["wz"])
+                self.accelerometer_x.display(topicData["ax"])
+                self.accelerometer_y.display(topicData["ay"])
+                self.accelerometer_z.display(topicData["az"])
+                self.magnetometer_x.display(topicData["mx"])
+                self.magnetometer_y.display(topicData["my"])
+                self.magnetometer_z.display(topicData["mz"])
+
+                # update yaw parameters
+                self.yaw_viz.heading = yaw
+                self.yaw_viz.update()
+
+                tempData = topicStruc["pairedData"]["speed"]
+
+                if self.currentCommand == "SetControlDesired_pos" :
+                    print("yaw data")
+                    tempData = self.dynamicData["yaw"]
+                    
+                x = list(tempData.keys())
+                y = list(tempData.values())
+
+                self.dynamicGraph.clear()
+
+                self.dynamicGraph.plot(x, y) 
+
+                # todo: update roll and pitch parameters, issue with repainting
+                self.roll_pitch_viz.roll = roll
+                self.roll_pitch_viz.pitch = pitch
+                self.roll_pitch_viz.update()
+                self.dynamicGraph.roll = roll
+                self.dynamicGraph.pitch = pitch
+                self.dynamicGraph.update()
 
         except Exception as ex:
             print("exception imu update:", ex)

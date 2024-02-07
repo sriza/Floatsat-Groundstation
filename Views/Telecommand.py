@@ -400,29 +400,27 @@ class Telecommand_MainWindow(object):
     def updateData(self):      
         try:
             data = self.data
-            # topic = "telemetryContinuousExtendedTopicID"
-            # topicData = data[topicName]["data"]
-            print("telemetryMessage")
-            topicName = "telemetryMessage"
-            # print(data[topicName])
-            topicData = data[topicName]["data"]
-            print(topicData, topicData["message"])
-            self.messageText.setText(str(topicData["message"])[2:-1])
+            print("data:", data)
 
-            # self.extendedData.setText("Speed:"+topicData["speed"]+" Speed Control Out:"+topic["speedControlOut"])
-            print("telemetrycalib")
-            topicName = "telemetryCalibIMU"
-            topicData = data[topicName]["data"]
+            if "telemetryMessage" in data.keys():
+                topicName = "telemetryMessage"
+                # print(data[topicName])
+                topicData = data[topicName]["data"]
+                print(topicData, topicData["message"])
+                self.messageText.setText(str(topicData["message"])[2:-1])
 
-            # topicName = "telemetryCalibIMU"
-            print("telemetryContinuous")
-            topicName = "telemetryContinuous"
-            topicData = data[topicName]["data"]
-            # print(topicData, self.satelliteModes)
-            self.commandCnt.setText(str(topicData["cmdCnt"]))
+            if "telemetryCalibIMU" in data.keys():
+                print("telemetrycalib")
+                topicName = "telemetryCalibIMU"
+                topicData = data[topicName]["data"]
 
-            mode_id = topicData["modeid"]
-            self.mode_text.setText(self.satelliteModes[mode_id]+"("+str(mode_id)+")")
+            if "telemetryContinuous" in data.keys():
+                print("telemetryContinuous")
+                topicName = "telemetryContinuous"
+                topicData = data[topicName]["data"]
+                self.commandCnt.setText(str(topicData["cmdCnt"]))
+
+                mode_id = topicData["modeid"]
+                self.mode_text.setText(self.satelliteModes[mode_id]+"("+str(mode_id)+")")
         except Exception as expe:
-            print(expe)
             print("exception telecommand update:", expe)

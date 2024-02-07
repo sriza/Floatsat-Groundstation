@@ -313,43 +313,44 @@ class Ui_MainWindow(object):
             hour = []
             voltage = []
 
-            topicName = "telemetryContinuous"
-            topicStruc = data[topicName]
-            topicData = data[topicName]["data"]
+            if "telemetryContinuous" in data.keys():
+                topicName = "telemetryContinuous"
+                topicStruc = data[topicName]
+                topicData = data[topicName]["data"]
 
-            if topicStruc["pairedData"]["U_bat"]:
-                tempData = topicStruc["pairedData"]["U_bat"]
-                # print("tempData", tempData)
-                hour = list(tempData.keys())
-                voltage = list(tempData.values())
+                if topicStruc["pairedData"]["U_bat"]:
+                    tempData = topicStruc["pairedData"]["U_bat"]
+                    # print("tempData", tempData)
+                    hour = list(tempData.keys())
+                    voltage = list(tempData.values())
+                
+                # conversion of quaternion to roll, pitch and yaw
+                q0 = topicData["q0"]
+                q1 = topicData["q1"]
+                q2 = topicData["q2"]
+                q3 = topicData["q3"]
             
-            # conversion of quaternion to roll, pitch and yaw
-            q0 = topicData["q0"]
-            q1 = topicData["q1"]
-            q2 = topicData["q2"]
-            q3 = topicData["q3"]
-          
-            roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))
-            pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))                         
-            yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
+                roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))
+                pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))                         
+                yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
 
-            # lcd data update
-            self.lcdRoll.display(roll)
-            self.lcdPitch.display(pitch)
-            self.lcdYaw.display(yaw)
-            self.lcdTemperature.display(topicData["temp"])
-            self.lcdVoltage.display(topicData["U_bat"])
+                # lcd data update
+                self.lcdRoll.display(roll)
+                self.lcdPitch.display(pitch)
+                self.lcdYaw.display(yaw)
+                self.lcdTemperature.display(topicData["temp"])
+                self.lcdVoltage.display(topicData["U_bat"])
 
-            batterPer = (topicData["U_bat"]/max_voltage)*100
-            self.progressBar.setValue(batterPer)
+                batterPer = (topicData["U_bat"]/max_voltage)*100
+                self.progressBar.setValue(batterPer)
 
-            # todo: update progress bar styling
-            self.graphWidget.plot(hour, voltage) 
+                # todo: update progress bar styling
+                self.graphWidget.plot(hour, voltage) 
 
-            # update yaw parameter
-            print("roll, pitch, yaw",roll,pitch, yaw)
-            self.pfd.heading = yaw
-            self.pfd.update()
+                # update yaw parameter
+                print("roll, pitch, yaw",roll,pitch, yaw)
+                self.pfd.heading = yaw
+                self.pfd.update()
 
         except Exception as ex:
             print("exception summary update:", ex)

@@ -68,7 +68,7 @@ class Debug_MainWindow(object):
             j =0 
             #create topic header
 
-            for key in topicData:
+            for key in data.keys():
                 self.pitch_label = QLabel(self.frame)
                 self.pitch_label.setObjectName(u"label_4")
                 self.pitch_label.setGeometry(QRect(topicLeft, topicTop+line, 50, 20))

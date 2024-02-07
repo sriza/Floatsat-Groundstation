@@ -42,7 +42,6 @@ class MainWindow(QMainWindow):
         self.telecommandTopic = {}
         self.topics = {}
         self.initializeTelemetryTopics()
-        # todo: need to run this in a different thread
         self.initializeTelecommandTopics()
         self.gwUDP.run()
 
