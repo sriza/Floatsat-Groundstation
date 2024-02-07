@@ -340,7 +340,7 @@ class Ui_MainWindow(object):
             self.lcdTemperature.display(topicData["temp"])
             self.lcdVoltage.display(topicData["U_bat"])
 
-            batterPer = (topicData["U_bat"]/max_voltage)
+            batterPer = (topicData["U_bat"]/max_voltage)*100
             self.progressBar.setValue(batterPer)
 
             # todo: update progress bar and its styling

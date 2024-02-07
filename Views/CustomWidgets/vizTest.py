@@ -4,6 +4,8 @@ from PySide6.QtGui import *
 from PySide6.QtCore import *
 from PySide6.QtOpenGL import *
 from PySide6.QtOpenGLWidgets import *
+from math import cos, radians, tan, pi, sin
+
 # import sys
 # from PySide6.QtWidgets import QApplication, QGraphicsScene, QGraphicsView, QGraphicsEllipseItem
 # from PySide6.QtCore import Qt, QRectF, QPointF, QPropertyAnimation
@@ -24,6 +26,8 @@ class RotatingCirclesAnimation(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setGeometry(100, 100, 600, 400)
+        self.mocksatAngle = 0
+        self.floatsatAngle = 0
         # scene.setSceneRect(-300, -200, 600, 400)
         
         # self.painter.begin(self)
@@ -33,10 +37,6 @@ class RotatingCirclesAnimation(QWidget):
         self.painter = QPainter(self)
         self.brush = QBrush()
         self.brush.setColor(QColor('black'))
-        # self.brush.setTextureImage()
-        # rect = QRect(0, 0, painter.device().width(), painter.device().height())
-        # painter.fillRect(rect, brush)
-        # painter = QPainter(self)
 
         self.drawMockSat()
         self.drawFloatSat()
@@ -46,27 +46,43 @@ class RotatingCirclesAnimation(QWidget):
     
     def drawMockSat(self):
         painter = self.painter
-        # painter.setBrush(Qt.black)
-        # QIma
-        # self.brush.se
-        # painter.drawImage(150,150, QImage("../../Assets/mocksat.jpeg"),5,5,-5,-5, QImage::Format_Grayscale8)
-        # painter.setBackground(QBrush.setTextureImage(QImage("../../Assets/mocksat.jpeg")))
-        # painter.drawRect(150,150,75,10)
         painter.drawRect(150,150,75,10)
         painter.drawRect(150,150, -75,10)
+        rect = QRect(150,100,100,100)
+        center_rect = rect.center()
+        print(center_rect.x, center_rect.y)
 
-        painter.setBrush(Qt.blue)
-        # polygon = QPolygon([QPoint(10,20), QPoint(20,20), QPoint(40,20), QPoint(10,30), QPoint(10,20)])
-        # polygon.
-        # painter.drawEllipse(150,100, 100,100)
-        # painter.drawPolygon(polygon, Qt.OddEvenFill)
+        trans = QTransform()
+        trans.translate(199,149)
+        trans.rotate(self.mocksatAngle)
+        trans.translate(-199,-149)
+        painter.setTransform(trans)
         painter.drawRect(150,100,100,100)
+        painter.resetTransform()
+
+    # def updatePainter(self):
+    #     self.angle+=1
+    #     if self.angle >= 360:
+    #         self.angle = 0
+    #     self.update()
+        
 
     def drawFloatSat(self):
         painter = self.painter
         painter.setBrush(Qt.black)
         painter.setOpacity(12)
-        painter.drawEllipse(350,100, 100,100)
+        trans = QTransform()
+        # trans.translate(125,100)
+        trans.rotate(self.floatsatAngle)
+        trans.translate(-125,-100)
+        painter.setTransform(trans)
+        painter.drawRect(350,100, 100,100)
+        painter.resetTransform()
+
+def updateSat():
+    window.mocksatAngle +=5
+    window.floatsatAngle +=15
+    window.update()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -74,8 +90,10 @@ if __name__ == "__main__":
     window.show()
     updatePaint = QTimer()
 
-    updatePaint.setInterval()
+    updatePaint.setInterval(100)
+    updatePaint.timeout.connect(updateSat)
+    updatePaint.start()
 
 
-    window.update()
+    # window.update()
     sys.exit(app.exec())

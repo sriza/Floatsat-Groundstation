@@ -175,12 +175,6 @@ class Docking_MainWindow(object):
             topicName = "telemetryContinuous"
             # topicStruc = data[topicName]
             topicData = data[topicName]["data"]
-
-            # if topicStruc["pairedData"]["temp"]:
-            #     tempData = topicStruc["pairedData"]["temp"]
-            #     print("tempData", tempData)
-            #     hour = list(tempData.keys())
-            #     temperature = list(tempData.values())
             
             # conversion of quaternion to roll, pitch and yaw
             q0 = topicData["q0"]/100
