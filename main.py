@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
         self.setMissionModes()
 
         #rodos
-        self.pairedData = {"temp":{}}
+        self.pairedData = {"U_bat":{}, "speed":{}}
         self.luart = LinkinterfaceUDP()
         self.gwUDP = Gateway(self.luart)
         self.telemetry = {}

@@ -218,10 +218,10 @@ class Ui_MainWindow(object):
 
         # self.visualization = QHBoxLayout(self.centralwidget)
 
-        self.temp_visualizer = QLabel(self.centralwidget)
-        self.temp_visualizer.setObjectName(u"temp_visualizer")
-        self.temp_visualizer.setGeometry(QRect(630, 500, 191, 31))
-        self.temp_visualizer.setFont(font1)
+        self.volt_visualizer = QLabel(self.centralwidget)
+        self.volt_visualizer.setObjectName(u"volt_visualizer")
+        self.volt_visualizer.setGeometry(QRect(630, 500, 191, 31))
+        self.volt_visualizer.setFont(font1)
 
         # temperature graph
         self.graphWidget = pg.PlotWidget(self.centralwidget)
@@ -291,7 +291,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Port", None))
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
         self.orientation_visualizer_label.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
-        self.temp_visualizer.setText(QCoreApplication.translate("MainWindow", u"Temperature Visualizer", None))
+        self.volt_visualizer.setText(QCoreApplication.translate("MainWindow", u"Voltage Visualizer", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"View from Camera", None))
         self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Voltage", None))
@@ -311,17 +311,17 @@ class Ui_MainWindow(object):
             data = self.data
             max_voltage = 14.4
             hour = []
-            temperature = []
+            voltage = []
 
             topicName = "telemetryContinuous"
             topicStruc = data[topicName]
             topicData = data[topicName]["data"]
 
-            if topicStruc["pairedData"]["temp"]:
-                tempData = topicStruc["pairedData"]["temp"]
+            if topicStruc["pairedData"]["U_bat"]:
+                tempData = topicStruc["pairedData"]["U_bat"]
                 # print("tempData", tempData)
                 hour = list(tempData.keys())
-                temperature = list(tempData.values())
+                voltage = list(tempData.values())
             
             # conversion of quaternion to roll, pitch and yaw
             q0 = topicData["q0"]
@@ -343,11 +343,8 @@ class Ui_MainWindow(object):
             batterPer = (topicData["U_bat"]/max_voltage)*100
             self.progressBar.setValue(batterPer)
 
-            # todo: update progress bar and its styling
-
-            # graph data update
-            print("tempData",hour, temperature)
-            self.graphWidget.plot(hour, temperature) 
+            # todo: update progress bar styling
+            self.graphWidget.plot(hour, voltage) 
 
             # update yaw parameter
             print("roll, pitch, yaw",roll,pitch, yaw)

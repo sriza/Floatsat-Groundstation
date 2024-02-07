@@ -19,11 +19,13 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.Qt3DRender import Qt3DRender
 from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QLCDNumber,
     QLabel, QMainWindow, QMenu, QMenuBar,
-    QPushButton, QSizePolicy, QStatusBar, QTextEdit,
+    QPushButton, QSizePolicy, QStatusBar, QTextEdit, QComboBox,
     QWidget)
 from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
 from Views.CustomWidgets.YawVisualizer import YawVisualizer
 import math
+import json
+import pyqtgraph as pg
 
 class IMUSignal(QObject):
     value = Signal()
@@ -35,7 +37,7 @@ class IMU_MainWindow(object):
         # MainWindow.resize(1700, 1000)
         self.value= IMUSignal()
         self.data = {}
-
+        self.parent = MainWindow
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.frame = QFrame(self.centralwidget)
@@ -55,6 +57,7 @@ class IMU_MainWindow(object):
         font.setPointSize(20)
         self.label.setFont(font)
         self.groupBox = QGroupBox(self.frame)
+        self.currentCommand = ""
 
         # orientation raw values
         self.groupBox.setObjectName(u"groupBox")
@@ -151,17 +154,14 @@ class IMU_MainWindow(object):
         self.roll = QLCDNumber(self.groupBox_3)
         self.roll.setObjectName(u"roll")
         self.roll.setGeometry(QRect(10, 70, 201, 41))
-        # self.roll.display('-')
 
         self.pitch = QLCDNumber(self.groupBox_3)
         self.pitch.setObjectName(u"pitch")
         self.pitch.setGeometry(QRect(270, 70, 201, 41))
-        # self.pitch.display('-')
     
         self.yaw = QLCDNumber(self.groupBox_3)
         self.yaw.setObjectName(u"yaw")
         self.yaw.setGeometry(QRect(510, 70, 201, 41))
-        # self.yaw.display(12)
 
 
         self.pitch_label = QLabel(self.groupBox_3)
@@ -177,58 +177,71 @@ class IMU_MainWindow(object):
         self.label.raise_()
         self.groupBox_3.raise_()
 
-        # self.satelliteVisualization = QOpenGLWidget(self.centralwidget)
-        # self.satelliteVisualization.setObjectName(u"satelliteVisualization")
-        # self.satelliteVisualization.setGeometry(QRect(890, 40, 341, 201))
-        self.orientation_visualizer_label = QLabel(self.centralwidget)
-        self.orientation_visualizer_label.setObjectName(u"label_11")
-        self.orientation_visualizer_label.setGeometry(QRect(890, 10, 191, 31))
-        self.orientation_visualizer_label.setFont(font2)
+        self.tilt_viz = QLabel(self.centralwidget)
+        self.tilt_viz.setObjectName(u"label_11")
+        self.tilt_viz.setGeometry(QRect(890, 10, 191, 31))
+        self.tilt_viz.setFont(font2)
 
-        self.pfd = QPrimaryFlightDisplay(self.centralwidget) 
-        self.pfd.zoom = 0.3
-        self.pfd.setGeometry(QRect(890, 40, 341, 201))
-        self.pfd.setMinimumSize(QSize(270, 200))
-        self.pfd.show()
-
+        # telecommand for Imu
         self.imu_command_group = QGroupBox(self.centralwidget)
         self.imu_command_group.setObjectName(u"groupBox_2")
         self.imu_command_group.setGeometry(QRect(20, 610, 841, 121))
+        
+        self.command_type_label = QLabel(self.imu_command_group)
+        self.command_type_label.setObjectName(u"label_10")
+        self.command_type_label.setGeometry(QRect(20, 30, 101, 31))
+        self.command_type_label.setFont(font2)
 
-        self.orientation_command_label = QLabel(self.imu_command_group)
-        self.orientation_command_label.setObjectName(u"label_10")
-        self.orientation_command_label.setGeometry(QRect(20, 30, 101, 31))
-        self.orientation_command_label.setFont(font2)
+        self.command_type_dropdown = QComboBox(self.imu_command_group)
+        self.command_type_dropdown.setObjectName(u"command_type_dropdown")
+        self.command_type_dropdown.setGeometry(QRect(20, 60, 201, 41))
+        self.modes = {}
+        self.addDropdownItems()
+        self.command_type_dropdown.currentTextChanged.connect(self.updateCommandInputField)
 
-        self.lcdNumber_6 = QTextEdit(self.imu_command_group)
-        self.lcdNumber_6.setObjectName(u"lcdNumber_6")
-        self.lcdNumber_6.setGeometry(QRect(20, 60, 201, 41))
+        self.command_data_label = QLabel(self.imu_command_group)
+        self.command_data_label.setObjectName(u"label_14")
+        self.command_data_label.setGeometry(QRect(260, 30, 131, 31))
+        self.command_data_label.setFont(font2)
+        self.updateCommandInputField()
 
+        self.command_data = QTextEdit(self.imu_command_group)
+        self.command_data.setObjectName(u"command_data")
+        self.command_data.setGeometry(QRect(260, 60, 201, 41))
 
-        self.angular_velocity_command_label = QLabel(self.imu_command_group)
-        self.angular_velocity_command_label.setObjectName(u"label_14")
-        self.angular_velocity_command_label.setGeometry(QRect(260, 30, 131, 31))
-        self.angular_velocity_command_label.setFont(font2)
-
-        self.lcdNumber_14 = QTextEdit(self.imu_command_group)
-        self.lcdNumber_14.setObjectName(u"lcdNumber_14")
-        self.lcdNumber_14.setGeometry(QRect(260, 60, 201, 41))
+        # error message label for telecommand input
+        self.command_error_label = QLabel(self.imu_command_group)
+        self.command_error_label.setObjectName(u"label_command_error")
+        self.command_error_label.setGeometry(QRect(260, 90, 201, 41))
+        self.command_error_label.setStyleSheet(f'color:red')
 
         self.pushButton = QPushButton(self.imu_command_group)
         self.pushButton.setObjectName(u"pushButton")
         self.pushButton.setGeometry(QRect(530, 50, 291, 51))
         self.pushButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(15, 102, 28);")
+        self.pushButton.clicked.connect(self.mainTelecommand)
+        # end telecommand for IMU
         
         # visualizer section
-        self.tilt_visualizer = QLabel(self.centralwidget)
-        self.tilt_visualizer.setObjectName(u"label_15")
-        self.tilt_visualizer.setGeometry(QRect(890, 250, 341, 31))
-        self.tilt_visualizer.setFont(font2)
+
+        self.dynamicGraph = pg.PlotWidget(self.centralwidget) 
+        # self.dynamicGraph.setObjectName(u"dynamicGraph")
+        self.dynamicGraph.setGeometry(QRect(890, 520, 341, 201))
+        self.dynamicGraph.setMinimumSize(QSize(270, 200))
+        self.dynamicGraph.show()
+
+        self.dynamicData = {"yaw":{}, "velocity":{}}
+
+        self.yaw_viz_label = QLabel(self.centralwidget)
+        self.yaw_viz_label.setObjectName(u"label_15")
+        self.yaw_viz_label.setGeometry(QRect(890, 250, 341, 31))
+        self.yaw_viz_label.setFont(font2)
 
         self.roll_pitch_viz = QPrimaryFlightDisplay(self.centralwidget) 
         self.roll_pitch_viz.zoom = 0.3
-        self.roll_pitch_viz.setGeometry(QRect(890, 520, 341, 201))
+        self.roll_pitch_viz.setGeometry(QRect(890, 40, 341, 201))
+        # self.roll_pitch_viz.setGeometry(QRect(890, 520, 341, 201))
         self.roll_pitch_viz.setMinimumSize(QSize(270, 200))
         self.roll_pitch_viz.show()
 
@@ -238,10 +251,10 @@ class IMU_MainWindow(object):
         self.yaw_viz.setMinimumSize(QSize(270, 200))
         self.yaw_viz.show()
 
-        self.label_16 = QLabel(self.centralwidget)
-        self.label_16.setObjectName(u"label_16")
-        self.label_16.setGeometry(QRect(890, 490, 191, 31))
-        self.label_16.setFont(font2)
+        self.dynamic_graph_label = QLabel(self.centralwidget)
+        self.dynamic_graph_label.setObjectName(u"dynamic_graph_label")
+        self.dynamic_graph_label.setGeometry(QRect(890, 490, 191, 31))
+        self.dynamic_graph_label.setFont(font2)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
@@ -270,14 +283,50 @@ class IMU_MainWindow(object):
         self.pitch_label.setText(QCoreApplication.translate("MainWindow", u"Pitch", None))
         self.yaw_label.setText(QCoreApplication.translate("MainWindow", u"Yaw", None))
 
-        self.orientation_visualizer_label.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
-        self.imu_command_group.setTitle(QCoreApplication.translate("MainWindow", u"Attitude Command", None))
+        self.tilt_viz.setText(QCoreApplication.translate("MainWindow", u"Tilt Visualizer", None))
+        self.imu_command_group.setTitle(QCoreApplication.translate("MainWindow", u"Telecommands", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Command", None))
-        self.orientation_command_label.setText(QCoreApplication.translate("MainWindow", u"Orientation", None))
-        self.angular_velocity_command_label.setText(QCoreApplication.translate("MainWindow", u"Angular velocity", None))
-        self.tilt_visualizer.setText(QCoreApplication.translate("MainWindow", u"Tilt visualizer ( pitch + roll )", None))
-        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Heading visualizer (Yaw)", None))
+        self.command_type_label.setText(QCoreApplication.translate("MainWindow", u"Orientation", None))
+        self.yaw_viz_label.setText(QCoreApplication.translate("MainWindow", u"Yaw Visualizer", None))
+        self.dynamic_graph_label.setText(QCoreApplication.translate("MainWindow", u"Speed /  Orientation", None))
 
+    # update command label based on command type
+    def updateCommandInputField(self):
+        currentText= self.command_type_dropdown.currentText()
+        self.command_data_label.setText(self.modes[currentText]["data"]["x"])
+
+
+    # prepare command dropdowns
+    def addDropdownItems(self):
+        f = open("Assets/telecommand_modes.json")
+        json_array = json.load(f)
+
+        for item in json_array:
+            if "type" in json_array[item] and json_array[item]["type"] == "basic":
+                self.command_type_dropdown.addItem(item)
+                self.modes[item] = {}
+                self.modes[item]["id"] = json_array[item]["id"]
+                self.modes[item]["data"] = json_array[item]["data"]
+    
+    # prepare data for imu telecommand
+    def mainTelecommand(self):
+        try:
+            self.command_error_label.setText("")
+            data = []
+            currentText= self.command_type_dropdown.currentText()
+            currentMode = self.modes[currentText]
+
+            if currentMode !="":
+                data.append(currentMode["id"])
+            # expectedData = currentMode["data"]
+                data.append(float(self.command_data.toPlainText()))
+                self.parent.sendTelecommand(data)
+                self.currentCommand = currentText
+            # self.command_error_label.setText("Please enter value to send telecommand")
+        except Exception as ex:
+                self.command_error_label.setText("The entered data must be numeric")
+
+    # 
     def updateTrigger(self,data):
         try:
             # self.value+=1
@@ -290,25 +339,17 @@ class IMU_MainWindow(object):
     def updateData(self):  
         try:
             data= self.data
-            print("data:",data)
-            # hour = []
-            # temperature = []
 
             topicName = "telemetryContinuous"
-            # topicStruc = data[topicName]
+            topicStruc = data[topicName]
             topicData = data[topicName]["data"]
-
-            # if topicStruc["pairedData"]["temp"]:
-            #     tempData = topicStruc["pairedData"]["temp"]
-            #     print("tempData", tempData)
-            #     hour = list(tempData.keys())
-            #     temperature = list(tempData.values())
             
             # conversion of quaternion to roll, pitch and yaw
             q0 = topicData["q0"]
             q1 = topicData["q1"]
             q2 = topicData["q2"]
             q3 = topicData["q3"]
+            timestamp = topicData["time"]
 
           
             roll = math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2))
@@ -320,6 +361,8 @@ class IMU_MainWindow(object):
             self.pitch.display(pitch)
             self.yaw.display(yaw)
 
+            self.dynamicData["yaw"][timestamp] = yaw
+
             self.gyroscope_x.display(topicData["wx"])
             self.gyroscope_y.display(topicData["wy"])
             self.gyroscope_z.display(topicData["wz"])
@@ -330,23 +373,30 @@ class IMU_MainWindow(object):
             self.magnetometer_y.display(topicData["my"])
             self.magnetometer_z.display(topicData["mz"])
 
-            # graph data update
-            # print("tempData",hour, temperature)
-            # self.graphWidget.plot(hour, temperature) 
-
-
             # update yaw parameters
-            print("roll, pitch, yaw",roll,pitch, yaw)
             self.yaw_viz.heading = yaw
             self.yaw_viz.update()
+
+            tempData = topicStruc["pairedData"]["speed"]
+
+            if self.currentCommand == "SetControlDesired_pos" :
+                print("yaw data")
+                tempData = self.dynamicData["yaw"]
+                
+            x = list(tempData.keys())
+            y = list(tempData.values())
+
+            self.dynamicGraph.clear()
+
+            self.dynamicGraph.plot(x, y) 
 
             # todo: update roll and pitch parameters, issue with repainting
             self.roll_pitch_viz.roll = roll
             self.roll_pitch_viz.pitch = pitch
             self.roll_pitch_viz.update()
-            self.pfd.roll = roll
-            self.pfd.pitch = pitch
-            self.pfd.update()
+            self.dynamicGraph.roll = roll
+            self.dynamicGraph.pitch = pitch
+            self.dynamicGraph.update()
 
         except Exception as ex:
             print("exception imu update:", ex)

@@ -71,6 +71,8 @@ class RotatingCirclesAnimation(QWidget):
         painter = self.painter
         painter.setBrush(Qt.black)
         painter.setOpacity(12)
+
+        floatrect = QRect()
         trans = QTransform()
         # trans.translate(125,100)
         trans.rotate(self.floatsatAngle)

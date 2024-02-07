@@ -147,6 +147,7 @@
         "id": 19,
         "topicId": 50,
         "structure": "=3f",
+        "type" : "basic",
         "data": {
             "x" :"Desired speed"
         }
@@ -155,6 +156,7 @@
         "id": 20,
         "topicId": 50,
         "structure": "=3f",
+        "type" : "basic",
         "data": {
             "x":"Desired position"
         }
@@ -163,6 +165,7 @@
         "id": 21,
         "topicId": 50,
         "structure": "=3f",
+        "type": "basic",
         "data": {
             "x" : "Desired Velocity"
         }
