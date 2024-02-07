@@ -199,5 +199,11 @@
         "topicId": 50,
         "structure": "=3f",
         "data": {}
+    },
+    "Shutdown": {
+        "id": 27,
+        "topicId": 50,
+        "structure": "=3f",
+        "data": {}
     }
 }

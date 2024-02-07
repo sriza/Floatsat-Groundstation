@@ -20,6 +20,7 @@ from Views.CustomWidgets.YawVisualizer import YawVisualizer
 import time
 # import threading
 import math
+import json
 
 class SummarySignal(QObject):
     value = Signal()
@@ -31,6 +32,7 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         self.centralwidget = QWidget(MainWindow)
         MainWindow.resize(1265, 825)
+        self.parent = MainWindow
         self.centralwidget.setObjectName(u"centralwidget")
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
@@ -237,11 +239,13 @@ class Ui_MainWindow(object):
         self.label_13.setObjectName(u"label_13")
         self.label_13.setGeometry(QRect(440, 150, 191, 31))
         self.label_13.setFont(font1)
-        self.pushButton_3 = QPushButton(self.centralwidget)
-        self.pushButton_3.setObjectName(u"pushButton_3")
-        self.pushButton_3.setGeometry(QRect(950, 240, 231, 41))
-        self.pushButton_3.setStyleSheet(u"color: rgb(255, 255, 255);\n"
+
+        self.shutDownButton = QPushButton(self.centralwidget)
+        self.shutDownButton.setObjectName(u"shutDownButton")
+        self.shutDownButton.setGeometry(QRect(950, 240, 231, 41))
+        self.shutDownButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(182, 41, 16);")
+        self.shutDownButton.clicked.connect(self.shutDown)
         self.lcdVoltage = QLCDNumber(self.centralwidget)
         self.lcdVoltage.setObjectName(u"lcdNumber_9")
         self.lcdVoltage.setGeometry(QRect(950, 180, 191, 41))
@@ -265,6 +269,8 @@ class Ui_MainWindow(object):
     
         # self.menubarCollection(MainWindow)
         self.retranslateUi(MainWindow)
+        self.modes = {}
+        self.setModes()
 
         self.value = SummarySignal()
         self.value.value.connect(self.updateData)
@@ -293,9 +299,24 @@ class Ui_MainWindow(object):
         self.orientation_visualizer_label.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
         self.volt_visualizer.setText(QCoreApplication.translate("MainWindow", u"Voltage Visualizer", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"View from Camera", None))
-        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
+        self.shutDownButton.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Voltage", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"V", None))
+    
+    def setModes(self):
+        f = open("Assets/telecommand_modes.json")
+        json_array = json.load(f)
+
+        for item in json_array:
+            self.modes[item] = {}
+            self.modes[item]["id"] = json_array[item]["id"]
+            self.modes[item]["data"] = json_array[item]["data"]
+
+    def shutDown(self):
+        data = []
+        command_id = self.modes["Shutdown"]["id"]
+        data.append(command_id)
+        self.parent.sendTelecommand(data)
     
     def updateTrigger(self,data):
         try:

@@ -141,11 +141,13 @@ class Telecommand_MainWindow(object):
         self.label_11.setObjectName(u"label_11")
         self.label_11.setGeometry(QRect(330, 20, 191, 31))
         self.label_11.setFont(font)
+        
         self.shutDownButton = QPushButton(self.centralwidget)
         self.shutDownButton.setObjectName(u"pushButton_3")
         self.shutDownButton.setGeometry(QRect(960, 250, 231, 41))
         self.shutDownButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(182, 41, 16);")
+        self.shutDownButton.clicked.connect(self.shutDown)
         # self.initiateCalib = QPushButton(self.centralwidget)
         # self.initiateCalib.setObjectName(u"pushButton_4")
         # self.initiateCalib.setGeometry(QRect(960, 660, 231, 41))
@@ -169,11 +171,13 @@ class Telecommand_MainWindow(object):
         self.messageText.setGeometry(QRect(20,30,171,60))
         # self.messageText.setFont(font)
 
-        self.pushButton_5 = QPushButton(self.centralwidget)
-        self.pushButton_5.setObjectName(u"pushButton_5")
-        self.pushButton_5.setGeometry(QRect(960, 340, 231, 41))
-        self.pushButton_5.setStyleSheet(u"color: rgb(255, 255, 255);\n"
+        self.missionStartButton = QPushButton(self.centralwidget)
+        self.missionStartButton.setObjectName(u"missionStartButton")
+        self.missionStartButton.setGeometry(QRect(960, 340, 231, 41))
+        self.missionStartButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(50, 107, 29);")
+        self.missionStartButton.clicked.connect(self.initiateMission)
+
         self.line = QFrame(self.centralwidget)
         self.line.setObjectName(u"line")
         self.line.setGeometry(QRect(950, 310, 251, 16))
@@ -307,7 +311,7 @@ class Telecommand_MainWindow(object):
         self.shutDownButton.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
         # self.initiateCalib.setText(QCoreApplication.translate("MainWindow", u"Initiate Caliberation", None))
         self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Sensor Calibration Status", None))
-        self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Initiate Telecommand Mode", None))
+        self.missionStartButton.setText(QCoreApplication.translate("MainWindow", u"Initiate Mission Mode", None))
         self.battery_status_text.setText(QCoreApplication.translate("MainWindow", u"Command count :", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Mode :", None))
         self.commandCnt.setText(QCoreApplication.translate("MainWindow", u"0", None))
@@ -339,6 +343,18 @@ class Telecommand_MainWindow(object):
             self.satelliteModes[json_array[item]["id"]] = item
             # self.modes[item]["id"] = json_array[item]["id"]
             # self.modes[item]["data"] = json_array[item]["data"]
+
+    def initiateMission(self):
+        data = []
+        command_id = self.modes["SetMode_Mission"]["id"]
+        data.append(command_id)
+        self.parent.sendTelecommand(data)
+    
+    def shutDown(self):
+        data = []
+        command_id = self.modes["Shutdown"]["id"]
+        data.append(command_id)
+        self.parent.sendTelecommand(data)
     
     def updateModeParameters(self):
         currentText= self.modeDropdown.currentText()

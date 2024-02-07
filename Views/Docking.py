@@ -34,6 +34,7 @@ class Docking_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         # MainWindow.resize(1265, 820)
+        self.parent = MainWindow
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.frame = QFrame(self.centralwidget)
@@ -48,17 +49,23 @@ class Docking_MainWindow(object):
         self.groupBox_2 = QGroupBox(self.centralwidget)
         self.groupBox_2.setObjectName(u"groupBox_2")
         self.groupBox_2.setGeometry(QRect(900, 300, 341, 171))
-        self.pushButton = QPushButton(self.groupBox_2)
-        self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setGeometry(QRect(30, 100, 291, 51))
-        self.pushButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
+
+
+        self.cancelMissionButton = QPushButton(self.groupBox_2)
+        self.cancelMissionButton.setObjectName(u"pushButton")
+        self.cancelMissionButton.setGeometry(QRect(30, 100, 291, 51))
+        self.cancelMissionButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(255, 2, 36);\n"
 "background-color: rgb(184, 5, 14);")
-        self.pushButton_3 = QPushButton(self.groupBox_2)
-        self.pushButton_3.setObjectName(u"pushButton_3")
-        self.pushButton_3.setGeometry(QRect(30, 40, 291, 51))
-        self.pushButton_3.setStyleSheet(u"color: rgb(255, 255, 255);\n"
+        self.cancelMissionButton.clicked.connect(self.stopMission)
+
+        self.initiateDockingButton = QPushButton(self.groupBox_2)
+        self.initiateDockingButton.setObjectName(u"initiateDockingButton")
+        self.initiateDockingButton.setGeometry(QRect(30, 40, 291, 51))
+        self.initiateDockingButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(15, 102, 28);")
+        self.initiateDockingButton.clicked.connect(self.initiateMission)
+
         self.missionGroupBox = QGroupBox(self.centralwidget)
         self.missionGroupBox.setObjectName(u"groupBox_3")
         self.missionGroupBox.setGeometry(QRect(900, 20, 341, 261))
@@ -108,6 +115,9 @@ class Docking_MainWindow(object):
         self.data = {}
         self.value.value.connect(self.updateData)
 
+        self.modes = {}
+        self.setModes()
+
         self.retranslateUi(MainWindow)
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -116,8 +126,8 @@ class Docking_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Camera view of docking", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"IMU Command", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Cancel Docking Mission", None))
-        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Initiate Docking", None))
+        self.cancelMissionButton.setText(QCoreApplication.translate("MainWindow", u"Cancel Docking Mission", None))
+        self.initiateDockingButton.setText(QCoreApplication.translate("MainWindow", u"Initiate Docking", None))
         self.missionGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Mission Profile", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Arm Position", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Rate of extension", None))
@@ -128,7 +138,15 @@ class Docking_MainWindow(object):
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Calculated Angular velocity", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Orientation", None))
     # retranslateUi
-    
+
+    def setModes(self):
+        f = open("Assets/telecommand_modes.json")
+        json_array = json.load(f)
+
+        for item in json_array:
+            self.modes[item] = {}
+            self.modes[item]["id"] = json_array[item]["id"]
+            self.modes[item]["data"] = json_array[item]["data"]
 
     # create UI for mission modes
     def createMissionModes(self, missionModes):
@@ -156,6 +174,19 @@ class Docking_MainWindow(object):
             
         except Exception as ex:
             print("exception in creating mission modes",ex)
+
+    def initiateMission(self):
+        data = []
+        command_id = self.modes["SetMode_Mission"]["id"]
+        data.append(command_id)
+        self.parent.sendTelecommand(data)
+
+            
+    def stopMission(self):
+        data = []
+        command_id = self.modes["SetMode_Idle"]["id"]
+        data.append(command_id)
+        self.parent.sendTelecommand(data)
 
     def updateTrigger(self,data):
         try:
