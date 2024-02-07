@@ -28,7 +28,8 @@ class MainWindow(QMainWindow):
         self.imu = IMU_MainWindow()
         self.telecommand = Telecommand_MainWindow()
         self.docking = Docking_MainWindow()   
-        self.debug = Debug_MainWindow()     
+        self.debug = Debug_MainWindow()
+        self.programStatus = {"connectionStatus":False, "currentMode": 0}
 
         # self mission modes
         self.missionModes = {}
@@ -49,7 +50,6 @@ class MainWindow(QMainWindow):
         self.currentView = self.summary
 
         # connection Status checking with time interval of a second
-        self.programStatus = {"connectionStatus":False, "currentMode": 0}
         self.lastConnectedTime = 0
         self.connectionTimer = QTimer()
         self.connectionTimer.setInterval(1000)
