@@ -109,10 +109,10 @@ class Ui_MainWindow(object):
         self.temperature.setGeometry(QRect(10, 50, 121, 31))
         self.temperature.setFont(font1)
 
-        self.label_7 = QLabel(self.parameter_groupBox)
-        self.label_7.setObjectName(u"label_7")
-        self.label_7.setGeometry(QRect(10, 160, 161, 31))
-        self.label_7.setFont(font1)
+        self.motorSpeedLabel = QLabel(self.parameter_groupBox)
+        self.motorSpeedLabel.setObjectName(u"motorSpeedLabel")
+        self.motorSpeedLabel.setGeometry(QRect(10, 160, 161, 31))
+        self.motorSpeedLabel.setFont(font1)
         
         self.parameter_groupBox.raise_()
         self.orientation_groupBox.raise_()
@@ -133,11 +133,13 @@ class Ui_MainWindow(object):
         self.graphicsView.setAutoFillBackground(True)
         brush = QBrush(QColor(255, 124, 234, 255))
         brush.setStyle(Qt.NoBrush)
+
         self.graphicsView.setBackgroundBrush(brush)
         self.graphicsView_4 = QGraphicsView(self.centralwidget)
         self.graphicsView_4.setObjectName(u"graphicsView_4")
         self.graphicsView_4.setGeometry(QRect(930, 10, 271, 291))
         self.graphicsView_4.setAutoFillBackground(True)
+
         brush1 = QBrush(QColor(255, 124, 234, 255))
         brush1.setStyle(Qt.NoBrush)
         self.graphicsView_4.setBackgroundBrush(brush1)
@@ -146,6 +148,7 @@ class Ui_MainWindow(object):
         self.graphicsView_5.setGeometry(QRect(930, 320, 271, 411))
         self.graphicsView_5.setAutoFillBackground(True)
         self.graphicsView_5.setStyleSheet(u"background-color: rgb(225, 225, 225);")
+        
         brush2 = QBrush(QColor(255, 124, 234, 255))
         brush2.setStyle(Qt.NoBrush)
         self.graphicsView_5.setBackgroundBrush(brush2)
@@ -194,14 +197,6 @@ class Ui_MainWindow(object):
         self.label_9.setGeometry(QRect(20, 140, 161, 31))
         self.label_9.setFont(font1)
 
-        self.lcdNumber_6 = QTextEdit(self.groupBox_3)
-        self.lcdNumber_6.setObjectName(u"lcdNumber_6")
-        self.lcdNumber_6.setGeometry(QRect(10, 80, 201, 41))
-
-        self.lcdNumber_7 = QTextEdit(self.groupBox_3)
-        self.lcdNumber_7.setObjectName(u"lcdNumber_7")
-        self.lcdNumber_7.setGeometry(QRect(20, 180, 201, 41))
-
         self.pushButton_2 = QPushButton(self.centralwidget)
         self.pushButton_2.setObjectName(u"pushButton_2")
         self.pushButton_2.setGeometry(QRect(950, 670, 231, 41))
@@ -245,6 +240,7 @@ class Ui_MainWindow(object):
         self.shutDownButton.setGeometry(QRect(950, 240, 231, 41))
         self.shutDownButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(182, 41, 16);")
+
         self.shutDownButton.clicked.connect(self.shutDown)
         self.lcdVoltage = QLCDNumber(self.centralwidget)
         self.lcdVoltage.setObjectName(u"lcdNumber_9")
@@ -289,7 +285,7 @@ class Ui_MainWindow(object):
         self.orientation_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Orientation", None))
         self.parameter_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Other Parameters", None))
         self.temperature.setText(QCoreApplication.translate("MainWindow", u"Temperature", None))
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Angular Velocity", None))
+        self.motorSpeedLabel.setText(QCoreApplication.translate("MainWindow", u"Motor Speed", None))
         self.connectionOverviewLabel.setText(QCoreApplication.translate("MainWindow", u"Connection Overview", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Battery", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Connection Parameters", None))

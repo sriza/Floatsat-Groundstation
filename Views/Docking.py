@@ -200,8 +200,6 @@ class Docking_MainWindow(object):
     def updateData(self):        
         try:
             data = self.data
-            # hour = []
-            # temperature = []
 
             if "telemetryContinuous" in data.keys():
                 topicName = "telemetryContinuous"

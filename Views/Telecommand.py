@@ -141,7 +141,7 @@ class Telecommand_MainWindow(object):
         self.label_11.setObjectName(u"label_11")
         self.label_11.setGeometry(QRect(330, 20, 191, 31))
         self.label_11.setFont(font)
-        
+
         self.shutDownButton = QPushButton(self.centralwidget)
         self.shutDownButton.setObjectName(u"pushButton_3")
         self.shutDownButton.setGeometry(QRect(960, 250, 231, 41))
@@ -379,7 +379,7 @@ class Telecommand_MainWindow(object):
         for type in types:
             if type in data:
                 (types[type]["input"]).setPlaceholderText(data[type])
-                (types[type]["label"]).setPlaceholderText(data[type])
+                (types[type]["label"]).setText(data[type])
                 (types[type]["input"]).show()
                 (types[type]["label"]).show()
                 continue
@@ -402,7 +402,6 @@ class Telecommand_MainWindow(object):
             value = float(types[key].toPlainText())
             data.append(value)
 
-        print("data",data)
         self.parent.sendTelecommand(data)
 
     def updateTrigger(self,data):
@@ -416,7 +415,6 @@ class Telecommand_MainWindow(object):
     def updateData(self):      
         try:
             data = self.data
-            print("data:", data)
 
             if "telemetryMessage" in data.keys():
                 topicName = "telemetryMessage"
