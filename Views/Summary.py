@@ -51,6 +51,7 @@ class Ui_MainWindow(object):
         font.setFamilies([u"Arial"])
         font.setPointSize(20)
         self.label.setFont(font)
+
         self.lcdRoll = QLCDNumber(self.frame)
         self.lcdRoll.setObjectName(u"lcdRoll")
         self.lcdRoll.setGeometry(QRect(30, 130, 201, 41))
@@ -68,9 +69,9 @@ class Ui_MainWindow(object):
         self.lcdTemperature.setObjectName(u"lcdTemperature")
         self.lcdTemperature.setGeometry(QRect(30, 510, 201, 41))
 
-        self.lcdAngVelocity = QLCDNumber(self.frame)
-        self.lcdAngVelocity.setObjectName(u"lcdAngVelocity")
-        self.lcdAngVelocity.setGeometry(QRect(30, 620, 201, 41))
+        self.lcdSpeed = QLCDNumber(self.frame)
+        self.lcdSpeed.setObjectName(u"lcdSpeed")
+        self.lcdSpeed.setGeometry(QRect(30, 620, 201, 41))
 
         self.roll_label = QLabel(self.frame)
         self.roll_label.setObjectName(u"label_3")
@@ -122,7 +123,7 @@ class Ui_MainWindow(object):
         self.lcdYaw.raise_()
         self.lcdPitch.raise_()
         self.lcdTemperature.raise_()
-        self.lcdAngVelocity.raise_()
+        self.lcdSpeed.raise_()
         self.roll_label.raise_()
         self.pitch_label.raise_()
         self.yaw_label.raise_()
@@ -337,7 +338,6 @@ class Ui_MainWindow(object):
 
                 if topicStruc["pairedData"]["U_bat"]:
                     tempData = topicStruc["pairedData"]["U_bat"]
-                    # print("tempData", tempData)
                     hour = list(tempData.keys())
                     voltage = list(tempData.values())
                 
@@ -356,13 +356,15 @@ class Ui_MainWindow(object):
                 self.lcdPitch.display(pitch)
                 self.lcdYaw.display(yaw)
                 self.lcdTemperature.display(topicData["temp"])
+                self.lcdSpeed.display(topicData["speed"])
                 self.lcdVoltage.display(topicData["U_bat"])
 
                 batterPer = (topicData["U_bat"]/max_voltage)*100
                 self.progressBar.setValue(batterPer)
 
                 # todo: update progress bar styling
-                self.graphWidget.plot(hour, voltage) 
+                self.graphWidget.plot(hour, voltage)
+
 
                 # update yaw parameter
                 print("roll, pitch, yaw",roll,pitch, yaw)

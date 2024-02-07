@@ -144,9 +144,10 @@ class Telecommand_MainWindow(object):
 
         self.shutDownButton = QPushButton(self.centralwidget)
         self.shutDownButton.setObjectName(u"pushButton_3")
-        self.shutDownButton.setGeometry(QRect(960, 250, 231, 41))
+        self.shutDownButton.setGeometry(QRect(960, 260, 231, 41))
         self.shutDownButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(182, 41, 16);")
+
         self.shutDownButton.clicked.connect(self.shutDown)
         # self.initiateCalib = QPushButton(self.centralwidget)
         # self.initiateCalib.setObjectName(u"pushButton_4")
@@ -183,26 +184,43 @@ class Telecommand_MainWindow(object):
         self.line.setGeometry(QRect(950, 310, 251, 16))
         self.line.setFrameShape(QFrame.HLine)
         self.line.setFrameShadow(QFrame.Sunken)
-        self.battery_status_text = QLabel(self.centralwidget)
-        self.battery_status_text.setObjectName(u"label_8")
-        self.battery_status_text.setGeometry(QRect(960, 90, 201, 31))
-        self.battery_status_text.setFont(font1)
-        self.battery_status_text.setStyleSheet(u"color: rgb(0, 0, 0);")
-        self.label_9 = QLabel(self.centralwidget)
-        self.label_9.setObjectName(u"label_9")
-        self.label_9.setGeometry(QRect(960, 170, 201, 31))
-        self.label_9.setFont(font1)
-        self.label_9.setStyleSheet(u"color: rgb(0, 0, 0);")
+
+        self.commandCountLabel = QLabel(self.centralwidget)
+        self.commandCountLabel.setObjectName(u"label_8")
+        self.commandCountLabel.setGeometry(QRect(960, 70, 201, 25))
+        self.commandCountLabel.setFont(font)
+        self.commandCountLabel.setStyleSheet(u"color: rgb(0, 0, 0);")
+
         self.commandCnt = QLabel(self.centralwidget)
         self.commandCnt.setObjectName(u"label_13")
-        self.commandCnt.setGeometry(QRect(960, 120, 231, 31))
+        self.commandCnt.setGeometry(QRect(960, 95, 231, 31))
         self.commandCnt.setFont(font)
         self.commandCnt.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
-        self.mode_text = QLabel(self.centralwidget)
-        self.mode_text.setObjectName(u"label_14")
-        self.mode_text.setGeometry(QRect(960, 200, 231, 31))
-        self.mode_text.setFont(font)
-        self.mode_text.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
+
+        self.modeLabel = QLabel(self.centralwidget)
+        self.modeLabel.setObjectName(u"modeLabel")
+        self.modeLabel.setGeometry(QRect(960, 130, 201, 25))
+        self.modeLabel.setFont(font)
+        self.modeLabel.setStyleSheet(u"color: rgb(0, 0, 0);")
+
+        self.modeText = QLabel(self.centralwidget)
+        self.modeText.setObjectName(u"label_14")
+        self.modeText.setGeometry(QRect(960, 165, 231, 31))
+        self.modeText.setFont(font)
+        self.modeText.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
+
+        self.motorSpeedLabel = QLabel(self.centralwidget)
+        self.motorSpeedLabel.setObjectName(u"motorSpeedLabel")
+        self.motorSpeedLabel.setGeometry(QRect(960, 195, 201, 25))
+        self.motorSpeedLabel.setFont(font)
+        self.motorSpeedLabel.setStyleSheet(u"color: rgb(0, 0, 0);")
+
+        self.motorSpeed = QLabel(self.centralwidget)
+        self.motorSpeed.setObjectName(u"label_14")
+        self.motorSpeed.setGeometry(QRect(960, 220, 231, 31))
+        self.motorSpeed.setFont(font)
+        self.motorSpeed.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
+
         self.frame_2 = QFrame(self.centralwidget)
         self.frame_2.setObjectName(u"frame_2")
         self.frame_2.setGeometry(QRect(20, 470, 881, 281))
@@ -267,6 +285,7 @@ class Telecommand_MainWindow(object):
         self.modeDropdown = QComboBox(self.groupBox_7)
         self.modes = {}
         self.addDropdownItems()
+        
         # self.plainTextEdit = QPlainTextEdit(self.groupBox_7)
         self.modeDropdown.setObjectName(u"plainTextEdit")
         self.modeDropdown.setGeometry(QRect(30, 133, 311, 51))
@@ -312,10 +331,11 @@ class Telecommand_MainWindow(object):
         # self.initiateCalib.setText(QCoreApplication.translate("MainWindow", u"Initiate Caliberation", None))
         self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Sensor Calibration Status", None))
         self.missionStartButton.setText(QCoreApplication.translate("MainWindow", u"Initiate Mission Mode", None))
-        self.battery_status_text.setText(QCoreApplication.translate("MainWindow", u"Command count :", None))
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Mode :", None))
+        self.commandCountLabel.setText(QCoreApplication.translate("MainWindow", u"Command count :", None))
+        self.modeLabel.setText(QCoreApplication.translate("MainWindow", u"Mode :", None))
+        self.motorSpeedLabel.setText(QCoreApplication.translate("MainWindow", u"Motor speed :", None))
         self.commandCnt.setText(QCoreApplication.translate("MainWindow", u"0", None))
-        self.mode_text.setText(QCoreApplication.translate("MainWindow", u"Docking", None))
+        self.modeText.setText(QCoreApplication.translate("MainWindow", u"Docking", None))
         self.x_label.setText(QCoreApplication.translate("MainWindow", u"Propertional", None))
         # self.extendedData.setText(QCoreApplication.translate("MainWindow", u"Extended data ..... .... ...", None))
         self.telecommandButton.setText(QCoreApplication.translate("MainWindow", u"Send Telecommand", None))
@@ -435,6 +455,7 @@ class Telecommand_MainWindow(object):
                 self.commandCnt.setText(str(topicData["cmdCnt"]))
 
                 mode_id = topicData["modeid"]
-                self.mode_text.setText(self.satelliteModes[mode_id]+"("+str(mode_id)+")")
+                self.modeText.setText(self.satelliteModes[mode_id]+"("+str(mode_id)+")")
+                self.motorSpeed.setText(str(topicData["speed"]))
         except Exception as expe:
             print("exception telecommand update:", expe)
