@@ -266,10 +266,9 @@ class Ui_MainWindow(object):
         self.value.value.connect(self.updateData)
 
         QMetaObject.connectSlotsByName(MainWindow)
-    
     # setupUi
     
-
+    # translation is not required, just used to seperate settext of label for now
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Satellite overview", None))
@@ -301,6 +300,7 @@ class Ui_MainWindow(object):
             self.modes[item]["id"] = json_array[item]["id"]
             self.modes[item]["data"] = json_array[item]["data"]
 
+    # shutdown of satellite
     def shutDown(self):
         data = []
         command_id = self.modes["Shutdown"]["id"]
@@ -363,27 +363,17 @@ class Ui_MainWindow(object):
                 self.pfd.update()
 
                 # update satellite visualization
-
                 # armVelocity
-                self.satAnimation.mocksatVelocity = 10 
-
-                # 
+                self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
                 self.satAnimation.floatsatAngle = yaw
+                # self.satAnimation.armTranslate =  topicData["arm_extension"]%10+1
+                self.satAnimation.armTranslate = yaw%10
 
+                # mockup
+                self.satAnimation.mocksatDistance= topicData["mockupDistance"]
+                self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
 
-                # if self.i>5:
-                    # print("---------i is greater than 5------")
-                self.satAnimation.mocksatDistance=90
-                self.i-=6
-                # else : 
-                    # self./satAnimation.mocksatDistance = 0
-                    # self.i+=1
-                # armExtension
-                self.satAnimation.armExtension += 4 
-
-                self.satAnimation.armTranslate+=15
                 self.satAnimation.update()
-                # self.satAnimation.mocksatDistance = 0
 
         except Exception as ex:
             print("exception summary update:", ex)

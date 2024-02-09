@@ -2,7 +2,7 @@
     "telemetryContinuous": {
         "name" : "telemetryContinuous",
         "topicId": 40,
-        "structure": "=3i19f",
+        "structure": "=3i23f",
         "data": {
             "modeid": "modeid",
             "cmdCnt": "cmdCnt",
@@ -24,6 +24,10 @@
             "q3": "q3",
             "speed": "speed",
             "arm_extension": "arm_extension",
+            "armVelocity": "armVelocity",
+            "mockupAngularVelocity": "mockupAngularVelocity",
+            "mockupDistance": "mockupDistance",
+            "mockupYaw": "mockupYaw",
             "U_bat": "U_bat",
             "I_total": "I_total"
         }

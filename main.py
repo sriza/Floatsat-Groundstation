@@ -192,7 +192,7 @@ class MainWindow(QMainWindow):
 
             self.currentView.updateTrigger(self.telemetry)
         except Exception as ex:
-            # print("set and update exception:",ex)
+            print("set and update exception:",ex)
             self.currentView.updateTrigger(self.telemetry)
     #setAndUpdate
             

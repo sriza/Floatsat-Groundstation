@@ -22,9 +22,9 @@ class SatelliteAnimation(QWidget):
         self.armExtension = 0
 
         # scaling factor for animation, based on actual satellite arm width
-        self.satArmLength = 190
+        self.satArmLength = 10
         self.armWidth = 140
-        self.scalingFactor = self.armWidth/self.satArmLength
+        self.scalingFactor = (self.armWidth/2)/(self.satArmLength)
 
         # floatsat pos x, y
         self.pos_x = 350
@@ -55,7 +55,6 @@ class SatelliteAnimation(QWidget):
             self.drawMockSat()
 
         self.drawFloatSat()
-
         self.painter.end()
     
     def drawFloatSat(self):
@@ -85,7 +84,10 @@ class SatelliteAnimation(QWidget):
         hand_height = self.hand_height
 
         # scale translation of arm in real sat to animation 
+        print("arm Translate:",self.armTranslate)
         self.armTranslate *=self.scalingFactor
+        print("arm Translate:",self.armTranslate)
+        print("-----------------------------------------------------")
 
         # if translation is greater or equal to armtranslate, reset translation to arm width
         # limiting condition
@@ -124,15 +126,13 @@ class SatelliteAnimation(QWidget):
 
         painter.resetTransform()
 
+    # draw mocksat
     def drawMockSat(self):
-        # print()
         self.mocksatAngle = self.mocksatVelocity
         sat_width = self.sat_width
         sat_height = self.sat_height
-        armFactor = self.hand_width*2 + 60
+        armFactor = self.hand_width*2 + 20
         pos_x = self.pos_x - self.mocksatDistance* self.scalingFactor- armFactor- sat_width
-        # pos_x = 150 
-        # pos_x = self.pos_x - self.mocksatDistance*self.scalingFactor
         pos_y = self.pos_y
 
         painter = self.painter
