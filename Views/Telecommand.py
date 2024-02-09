@@ -447,18 +447,14 @@ class Telecommand_MainWindow(object):
 
             if "telemetryMessage" in data.keys():
                 topicName = "telemetryMessage"
-                # print(data[topicName])
                 topicData = data[topicName]["data"]
-                print(topicData, topicData["message"])
                 self.messageText.setText(str(topicData["message"])[2:-1])
 
             if "telemetryCalibIMU" in data.keys():
-                print("telemetrycalib")
                 topicName = "telemetryCalibIMU"
                 topicData = data[topicName]["data"]
 
             if "telemetryContinuous" in data.keys():
-                print("telemetryContinuous")
                 topicName = "telemetryContinuous"
                 topicData = data[topicName]["data"]
                 self.commandCnt.setText(str(topicData["cmdCnt"]))

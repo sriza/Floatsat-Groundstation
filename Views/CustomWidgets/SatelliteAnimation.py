@@ -22,8 +22,8 @@ class SatelliteAnimation(QWidget):
         self.armExtension = 0
 
         # scaling factor for animation, based on actual satellite arm width
-        self.satArmLength = 10
-        self.armWidth = 140
+        self.satArmLength = 100 #10 cm = 100 mm , this is only the length of extension that can be made
+        self.armWidth = 140 # this is length of full arm
         self.scalingFactor = (self.armWidth/2)/(self.satArmLength)
 
         # floatsat pos x, y
@@ -128,16 +128,18 @@ class SatelliteAnimation(QWidget):
 
     # draw mocksat
     def drawMockSat(self):
-        self.mocksatAngle = self.mocksatVelocity
+        # self.mocksatAngle = self.mocksatVeloc
+        self.mocksatAngle = self.mocksatAngle*360/3.14
         sat_width = self.sat_width
         sat_height = self.sat_height
-        armFactor = self.hand_width*2 + 20
+        armFactor = self.hand_width*2
         pos_x = self.pos_x - self.mocksatDistance* self.scalingFactor- armFactor- sat_width
         pos_y = self.pos_y
 
         painter = self.painter
         trans = QTransform()
         trans.translate(pos_x+sat_height/2,pos_y+sat_width/2)
+        print("mocksatangle:", self.mocksatAngle)
         trans.rotate(self.mocksatAngle)
         trans.translate(-(pos_x+sat_height/2),-(pos_y+sat_width/2))
         painter.setTransform(trans)

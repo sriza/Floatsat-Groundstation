@@ -76,9 +76,9 @@ try:
         # sendData = struct.pack("f", 65.0)
         # print("sendData:", sendData)
         # rodos2stm.publish(sendData)
-        print("publishing:", sendData)
+        # print("publishing:", sendData)
         echo2rodos.publish(sendData)
-        print("published")
+        # print("published")
         # msg = liUart.messageQueue.get()
         # print(msg)
 

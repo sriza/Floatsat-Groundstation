@@ -16,8 +16,9 @@ class LinkinterfaceUDP(LinkinterfaceI):
 
 
     UDP_PORT = 50000
+    UDP_IP =  ""
     # UDP_IP =  "127.0.0.1"
-    UDP_IP = "192.168.137.36"
+    # UDP_IP = "192.168.137.36"
     # UDP_IP =  "192.168.137.77"
 
     messageQueue = queue.Queue()

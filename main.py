@@ -30,6 +30,7 @@ class MainWindow(QMainWindow):
         self.docking = Docking_MainWindow()   
         self.debug = Debug_MainWindow()
         self.programStatus = {"connectionStatus":False, "currentMode": 0}
+        self.lastTelecommand = {"id":0, "data":[], "count":0, "resend": False, "lastId": 0}
 
         # self mission modes
         self.missionModes = {}
@@ -165,6 +166,8 @@ class MainWindow(QMainWindow):
             self.lastConnectedTime = time.time()
             self.programStatus["connectionStatus"]= True
 
+
+            print("data to unpack",data)
             #unpacks data
             unpackedData = struct.unpack(self.telemetry[topicName]["structure"],data)
             i = 0
@@ -182,6 +185,26 @@ class MainWindow(QMainWindow):
                     # print("the data:", datum)
                     satTime = telemetryData["time"]
                     self.pairedData[datum][satTime] = dataInIndex
+                
+                # resend telecommand if not same
+                if datum == "lastcmdid":
+                    commandId = dataInIndex
+
+                    if self.lastTelecommand["id"] != dataInIndex and self.lastTelecommand["count"] <3 and self.lastTelecommand["resend"] == True:
+                        print("resending")
+                        self.sendTelecommand(self.lastTelecommand["data"])
+                        self.lastTelecommand["count"]+=1
+
+                    if self.lastTelecommand["count"] >=5 or self.lastTelecommand["lastId"] != commandId:
+                        self.lastTelecommand["id"] = commandId
+                        self.lastTelecommand["data"] = []
+                        self.lastTelecommand["count"] = 0
+                        self.lastTelecommand["resend"] = False
+                    
+                    # if self.lastTelecommand["lastId"] != commandCount:
+                    #     self.lastTelecommand["resend"] = False
+                    # print("here")
+                    
 
                 telemetryData[datum] = dataInIndex
                 i+=1
@@ -204,11 +227,16 @@ class MainWindow(QMainWindow):
             while i<3:
                 data.append(0.0)
                 i+=1
+            print("resending data",data)
 
             dataStruct = struct.pack("=i3f",*tuple(data))
-            print(self.telecommandTopic["TelecommandTopicId"]["topicId"])
+            # print(self.telecommandTopic["TelecommandTopicId"]["topicId"])
             (self.telecommandTopicID).publish(dataStruct)
-            print("published data", dataStruct, tuple(data))
+            # print("published data", dataStruct, tuple(data))
+            self.lastTelecommand["id"] = data[0]
+            self.lastTelecommand["data"] = data
+            self.lastTelecommand["count"] = 0
+            self.lastTelecommand["resend"] = True
         except Exception as ex:
             print("exception in sending telecommand:", ex)
     #sendTelecommand

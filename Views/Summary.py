@@ -366,12 +366,13 @@ class Ui_MainWindow(object):
                 # armVelocity
                 self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
                 self.satAnimation.floatsatAngle = yaw
-                # self.satAnimation.armTranslate =  topicData["arm_extension"]%10+1
-                self.satAnimation.armTranslate = yaw%10
+                self.satAnimation.armTranslate = topicData["arm_extension"]
 
                 # mockup
                 self.satAnimation.mocksatDistance= topicData["mockupDistance"]
                 self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
+
+                # print(topicData)
 
                 self.satAnimation.update()
 

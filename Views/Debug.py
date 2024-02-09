@@ -61,7 +61,7 @@ class Debug_MainWindow(object):
     # retranslateUi
         
     def createDebugList(self):
-        max_height = 800
+        max_height = 700
         max_width = 1200
 
         # keep track of the length of table
@@ -121,7 +121,7 @@ class Debug_MainWindow(object):
                 (self.debugUI[topic][key]["data_ui"]).setWordWrap(True)
                 (self.debugUI[topic][key]["data_ui"]).setGeometry(QRect(x_pos, y_pos+15, segment_width-10, data_height-15))
                 (self.debugUI[topic][key]["data_ui"]).setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
-
+                (self.debugUI[topic][key]["data_ui"]).setText(str(topicData[key]))
                 print(key, topicData[key])
                 y_pos +=data_height 
 

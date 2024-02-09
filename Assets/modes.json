@@ -49,7 +49,12 @@
         "type": "mission",
         "type_count" : 4
     },
+    "Mission_Pull_back": {
+        "id": 14,
+        "type": "mission",
+        "type_count" : 4
+    },
     "Standby": {
-        "id": 14
+        "id": 15
     }
 }
