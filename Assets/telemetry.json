@@ -98,7 +98,7 @@
         }
     },
     "docking" : {
-        "name" : "Docking",
+        "name" : "docking",
         "topicId" : 44,
         "structure":"=4f",
         "data": {

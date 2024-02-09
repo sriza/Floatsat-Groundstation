@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGraphicsView,
     QGroupBox, QLabel, QMainWindow, QMenu,
     QMenuBar, QPlainTextEdit, QPushButton, QSizePolicy, QComboBox,
     QStatusBar, QWidget)
+from Views.CustomWidgets.SatelliteAnimation import SatelliteAnimation
 import json
 
 class TeleCommandSignal(QObject):
@@ -112,9 +113,11 @@ class Telecommand_MainWindow(object):
         brush1 = QBrush(QColor(255, 124, 234, 255))
         brush1.setStyle(Qt.NoBrush)
         self.graphicsView_5.setBackgroundBrush(brush1)
-        self.satelliteVisualization = QOpenGLWidget(self.centralwidget)
+
+        self.satelliteVisualization = SatelliteAnimation(self.centralwidget)
         self.satelliteVisualization.setObjectName(u"satelliteVisualization")
-        self.satelliteVisualization.setGeometry(QRect(320, 10, 591, 441))
+        self.satelliteVisualization.setGeometry(QRect(320, 10, 580, 400))
+
         self.Connection = QWidget(self.centralwidget)
         self.Connection.setObjectName(u"Connection")
         self.Connection.setGeometry(QRect(940, 10, 271, 51))
@@ -314,6 +317,7 @@ class Telecommand_MainWindow(object):
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
+    # add text to ui, no translation
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Motor Telecommand", None))
@@ -344,6 +348,7 @@ class Telecommand_MainWindow(object):
         self.label_23.setText(QCoreApplication.translate("MainWindow", u"Telecommand mode", None))
         self.label_21.setText(QCoreApplication.translate("MainWindow", u"Tuning Parameters", None))
     
+    # add dropdown in telecommand type combobox
     def addDropdownItems(self):
         f = open("Assets/telecommand_modes.json")
         json_array = json.load(f)
@@ -354,28 +359,29 @@ class Telecommand_MainWindow(object):
             self.modes[item]["id"] = json_array[item]["id"]
             self.modes[item]["data"] = json_array[item]["data"]
     
+    # set satellite mode
     def setSatelliteModes(self):
         f = open("Assets/modes.json")
         json_array = json.load(f)
 
         for item in json_array:
-            # self.modeDropdown.addItem(item)
             self.satelliteModes[json_array[item]["id"]] = item
-            # self.modes[item]["id"] = json_array[item]["id"]
-            # self.modes[item]["data"] = json_array[item]["data"]
-
+    
+    # initiate docking mission
     def initiateMission(self):
         data = []
         command_id = self.modes["SetMode_Mission"]["id"]
         data.append(command_id)
         self.parent.sendTelecommand(data)
     
+    # electrical shutdown of satellite
     def shutDown(self):
         data = []
         command_id = self.modes["Shutdown"]["id"]
         data.append(command_id)
         self.parent.sendTelecommand(data)
     
+    # update the mode parameters
     def updateModeParameters(self):
         currentText= self.modeDropdown.currentText()
         print("mode has been updated to:", currentText)
@@ -407,6 +413,7 @@ class Telecommand_MainWindow(object):
             (types[type]["input"]).hide()
             (types[type]["label"]).hide()
 
+    # common platform to send all telecommands
     def mainTelecommand(self):
         data = []
         currentText= self.modeDropdown.currentText()
@@ -424,6 +431,7 @@ class Telecommand_MainWindow(object):
 
         self.parent.sendTelecommand(data)
 
+    # update the value, called when new data is received
     def updateTrigger(self,data):
         try:
             # self.value+=1
@@ -432,6 +440,7 @@ class Telecommand_MainWindow(object):
         except Exception as ex:
             print("telecommand update trigger:", ex)
         
+    # slot that actually updates the value
     def updateData(self):      
         try:
             data = self.data

@@ -10,7 +10,7 @@
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
+    QSize, QTime, QUrl, Qt, Signal, Slot)
 from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QCursor, QFont, QFontDatabase, QGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
@@ -18,20 +18,24 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QLabel,
     QMainWindow, QMenu, QMenuBar, QProgressBar,
-    QPushButton, QRadioButton, QSizePolicy, QStatusBar,
+    QPushButton, QRadioButton, QSizePolicy, QStatusBar, QLCDNumber,
     QWidget)
 import math
+
+class DebugSignal(QObject):
+    value = Signal()
 
 class Debug_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         # MainWindow.resize(1265, 820)
+        self.parent = MainWindow
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
-        self.frame.setGeometry(QRect(30, 10, 841, 471))
+        self.frame.setGeometry(QRect(30, 10, 1200, 800))
         self.frame.setAutoFillBackground(True)
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
@@ -42,8 +46,12 @@ class Debug_MainWindow(object):
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.createDebugList()
 
         self.retranslateUi(MainWindow)
+
+        self.value = DebugSignal()
+        self.value.value.connect(self.updateData)
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -52,44 +60,98 @@ class Debug_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
     # retranslateUi
         
-    def createDebugList(self, data):
-        max_height = 1200
-        max_width = 800
+    def createDebugList(self):
+        max_height = 800
+        max_width = 1200
+
         # keep track of the length of table
-        segment_width = max_width/5-20
-        data_height = 15
-        i = 0
+        segment_width = max_width/8-20
+
+        # keep track of where the pen should be
+        x_pos = 0
+        y_pos = 0
+
+        # keeps track of starting point of groupbox
+        groupbox_x = 0
+        groupbox_y = 0
+
+        # debug and topic header + groupbox items
+        data = self.parent.telemetry
+        self.debugUI = {}
+        self.topicUI = {}
 
         for topic in data:
+            print(topic)
+            # data
             topicName = topic
             topicData = data[topicName]["data"]
-            topicLeft = 10+ segment_width*i
-            topicTop = 20
-            j =0 
-            #create topic header
 
-            for key in data.keys():
-                self.pitch_label = QLabel(self.frame)
-                self.pitch_label.setObjectName(u"label_4")
-                self.pitch_label.setGeometry(QRect(topicLeft, topicTop, 50, 20))
-                # self.pitch_label.setFont(font1)
-                # create data key label
-                # create data value label
+            # update pointer in the screen
+            y_pos = 0
+            data_height = 35
+
+
+            #create topic header
+            self.topicUI[topic] = {}
+            self.topicUI[topic]["topic"]= QLabel(self.frame)
+            self.topicUI[topic]["topic"].setGeometry(QRect(x_pos, y_pos, segment_width-10, 45))
+            self.topicUI[topic]["topic"].setText(topic+":")
+            y_pos = 35
+
+            self.debugUI[topic] = {}
+
+            # update height of message if it is topic telemetry message
+            if topic == "telemetryMessage":
+                data_height = 200
+
+            for key in topicData.keys():
+                print("y_pos:", y_pos+data_height,":", max_height)
+                if y_pos+data_height > max_height:
+                    x_pos+=segment_width+10
+                    groupbox_y = y_pos+10
+                    y_pos = 35
+
+                self.debugUI[topic][key] = {}
+                self.debugUI[topic][key]["label_ui"] = QLabel(self.frame)
+                self.debugUI[topic][key]["label_ui"].setWordWrap(True)
+                (self.debugUI[topic][key]["label_ui"]).setGeometry(QRect(x_pos, y_pos, segment_width-10, 15))
+                (self.debugUI[topic][key]["label_ui"]).setText(key+":")
+
+                self.debugUI[topic][key]["data_ui"] = QLabel(self.frame)
+                (self.debugUI[topic][key]["data_ui"]).setWordWrap(True)
+                (self.debugUI[topic][key]["data_ui"]).setGeometry(QRect(x_pos, y_pos+15, segment_width-10, data_height-15))
+                (self.debugUI[topic][key]["data_ui"]).setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
+
                 print(key, topicData[key])
-        # keep track of both the top and left value
-        # update the top and left on each data addition
-        # restart from last value if the (count of terms* height) is smaller than remaining height
+                y_pos +=data_height 
+
+            self.topicUI[topic]["groupBox"]= QGroupBox(self.frame)
+            self.topicUI[topic]["groupBox"].setGeometry(QRect(groupbox_x, 0, x_pos-groupbox_x+3+segment_width, groupbox_y+10))
+            # self.topicUI[topic]["topic"].setText(topic+":")
+            x_pos += segment_width+10
+            groupbox_x = x_pos-5 
 
         self.label = QLabel()
     
-    def updateTrigger(self):
-        pass
+    def updateTrigger(self, data):
+        try:
+            self.data = data
+            self.value.value.emit()
+        except Exception as ex:
+            print("debug update trigger:", ex)
         
     
-    def updateData(self, data):
+    def updateData(self):
         try:
-            print("update data")
+            data = self.data
+            for topic in data:
+                topicName = topic
+                topicData = data[topicName]["data"]
 
+                for key in topicData.keys():
+                    (self.debugUI[topic][key]["data_ui"]).setText(str(topicData[key]))
+
+                print(key, topicData[key])
         except Exception as ex:
-            print("exception docking update:", ex)
+            print("exception debug update:", ex)
 

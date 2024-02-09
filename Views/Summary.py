@@ -17,8 +17,6 @@ from PySide6.QtWidgets import (QFrame, QGraphicsView, QGroupBox, QLCDNumber,
 import pyqtgraph as pg
 from Views.CustomWidgets.YawVisualizer import YawVisualizer
 from Views.CustomWidgets.SatelliteAnimation import SatelliteAnimation
-import time
-# import threading
 import math
 import json
 
@@ -131,7 +129,7 @@ class Ui_MainWindow(object):
 
         self.satAnimation = SatelliteAnimation(self.centralwidget)
         self.satAnimation.setObjectName(u"graphicsView")
-        self.satAnimation.setGeometry(QRect(330, 10, 571, 491))
+        self.satAnimation.setGeometry(QRect(330, 10, 571, 400))
         self.satAnimation.setAutoFillBackground(True)
         # self.satAnimation.setBackgroundBrush(brush)
         brush = QBrush(QColor(255, 124, 234, 255))
@@ -228,16 +226,8 @@ class Ui_MainWindow(object):
         self.graphWidget = pg.PlotWidget(self.centralwidget)
         self.graphWidget.setGeometry(QRect(630,530,270,200))
         self.graphWidget.setMinimumSize(QSize(270, 200))
-        # self.graphWidget.setMaximumSize(QSize(500, 16777215))
 
         self.graphWidget.setBackground('w')
-        # self.graphWidget.plot(hour, temperature)   
-
-
-        self.satAnimationLabel = QLabel(self.centralwidget)
-        self.satAnimationLabel.setObjectName(u"satAnimationLabel")
-        self.satAnimationLabel.setGeometry(QRect(440, 150, 191, 31))
-        self.satAnimationLabel.setFont(font1)
 
         self.shutDownButton = QPushButton(self.centralwidget)
         self.shutDownButton.setObjectName(u"shutDownButton")
@@ -298,7 +288,6 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
         self.orientation_visualizer_label.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
         self.volt_visualizer.setText(QCoreApplication.translate("MainWindow", u"Voltage Visualizer", None))
-        self.satAnimationLabel.setText(QCoreApplication.translate("MainWindow", u"View from Camera", None))
         self.shutDownButton.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Voltage", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"V", None))

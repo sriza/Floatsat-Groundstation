@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QLabel,
     QMainWindow, QMenu, QMenuBar, QProgressBar,
     QPushButton, QRadioButton, QSizePolicy, QStatusBar,QCheckBox,
     QWidget)
+from Views.CustomWidgets.SatelliteAnimation import SatelliteAnimation
 import math
 import json
 class DockingSignal(QObject):
@@ -43,9 +44,15 @@ class Docking_MainWindow(object):
         self.frame.setAutoFillBackground(True)
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
-        self.label = QLabel(self.frame)
-        self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(100, 120, 291, 51))
+
+        self.satAnimationLabel = QLabel(self.frame)
+        self.satAnimationLabel.setObjectName(u"label")
+        self.satAnimationLabel.setGeometry(QRect(50, 120, 291, 51))
+
+        self.satelliteVisualization = SatelliteAnimation(self.centralwidget)
+        self.satelliteVisualization.setObjectName(u"satelliteVisualization")
+        self.satelliteVisualization.setGeometry(QRect(30, 10, 600, 400))
+
         self.groupBox_2 = QGroupBox(self.centralwidget)
         self.groupBox_2.setObjectName(u"groupBox_2")
         self.groupBox_2.setGeometry(QRect(900, 300, 341, 171))
@@ -124,7 +131,7 @@ class Docking_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Camera view of docking", None))
+        self.satAnimationLabel.setText(QCoreApplication.translate("MainWindow", u"Camera view of docking", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"IMU Command", None))
         self.cancelMissionButton.setText(QCoreApplication.translate("MainWindow", u"Cancel Docking Mission", None))
         self.initiateDockingButton.setText(QCoreApplication.translate("MainWindow", u"Initiate Docking", None))

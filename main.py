@@ -158,8 +158,8 @@ class MainWindow(QMainWindow):
     # set data from the telemetry and update view
     def setAndUpdate(self, data, topicName):
         try:
-            print("struct data size:", struct.calcsize(self.telemetry[topicName]["structure"]));  
-            print("set and update", self.telemetry[topicName]["structure"])
+            # print("struct data size:", struct.calcsize(self.telemetry[topicName]["structure"]));  
+            # print("set and update", self.telemetry[topicName]["structure"])
 
             # updates last connected time to present time
             self.lastConnectedTime = time.time()
@@ -192,7 +192,7 @@ class MainWindow(QMainWindow):
 
             self.currentView.updateTrigger(self.telemetry)
         except Exception as ex:
-            print("set and update exception:",ex)
+            # print("set and update exception:",ex)
             self.currentView.updateTrigger(self.telemetry)
     #setAndUpdate
             
@@ -326,6 +326,7 @@ class MainWindow(QMainWindow):
     def show_new_window_debug(self):
         print("clicked telecommand")
         self.debug.setupUi(self)
+        # self.debug.createDebugList(self, self.data)
         self.currentView = self.debug
         self.currentView.updateTrigger(self.debug)
     #show_new_window_debug
@@ -352,6 +353,11 @@ class MainWindow(QMainWindow):
         
     def telemetryMessage(self, data):
         topicName = "telemetryMessage"
+        self.setAndUpdate(data,topicName)
+    #telemetryMessage
+        
+    def docking(self, data):
+        topicName = "docking"
         self.setAndUpdate(data,topicName)
     #telemetryMessage
         
