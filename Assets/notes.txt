@@ -13,5 +13,10 @@ completed
 https://github.com/isl-org/Open3D/discussions/4668
 https://towardsdatascience.com/python-libraries-for-mesh-and-point-cloud-visualization-part-1-daa2af36de30
 
+going with 2D viz instead of 3d .. facing issue with renderer
+
 ----------*-todo3-*----------------------
 - add more graphs and viz as required
+
+---------* - todo4 *-----------------
+-2d viz custom widget and integration

@@ -15,8 +15,8 @@ from PySide6.QtWidgets import (QFrame, QGraphicsView, QGroupBox, QLCDNumber,
     QLabel, QMenu, QMenuBar, QProgressBar, QPushButton, QStatusBar, QTextEdit, 
     QWidget, QHBoxLayout, QWidgetItem, )
 import pyqtgraph as pg
-from Views.CustomWidgets.QPrimaryFlightDisplay import QPrimaryFlightDisplay
 from Views.CustomWidgets.YawVisualizer import YawVisualizer
+from Views.CustomWidgets.SatelliteAnimation import SatelliteAnimation
 import time
 # import threading
 import math
@@ -26,6 +26,7 @@ class SummarySignal(QObject):
     value = Signal()
 
 class Ui_MainWindow(object):
+    i = 0
 
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -128,14 +129,14 @@ class Ui_MainWindow(object):
         self.pitch_label.raise_()
         self.yaw_label.raise_()
 
-        self.graphicsView = QGraphicsView(self.centralwidget)
-        self.graphicsView.setObjectName(u"graphicsView")
-        self.graphicsView.setGeometry(QRect(330, 10, 571, 491))
-        self.graphicsView.setAutoFillBackground(True)
+        self.satAnimation = SatelliteAnimation(self.centralwidget)
+        self.satAnimation.setObjectName(u"graphicsView")
+        self.satAnimation.setGeometry(QRect(330, 10, 571, 491))
+        self.satAnimation.setAutoFillBackground(True)
+        # self.satAnimation.setBackgroundBrush(brush)
         brush = QBrush(QColor(255, 124, 234, 255))
         brush.setStyle(Qt.NoBrush)
 
-        self.graphicsView.setBackgroundBrush(brush)
         self.graphicsView_4 = QGraphicsView(self.centralwidget)
         self.graphicsView_4.setObjectName(u"graphicsView_4")
         self.graphicsView_4.setGeometry(QRect(930, 10, 271, 291))
@@ -184,6 +185,7 @@ class Ui_MainWindow(object):
         self.label_10.setGeometry(QRect(10, 10, 231, 31))
         self.label_10.setFont(font4)
         self.label_10.setStyleSheet(u"color: rgb(0, 0, 0);")
+        
         self.groupBox_3 = QGroupBox(self.centralwidget)
         self.groupBox_3.setObjectName(u"groupBox_3")
         self.groupBox_3.setGeometry(QRect(950, 390, 231, 261))
@@ -203,6 +205,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setGeometry(QRect(950, 670, 231, 41))
         self.pushButton_2.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(50, 107, 29);")
+
         self.orientation_visualizer_label = QLabel(self.centralwidget)
         self.orientation_visualizer_label.setObjectName(u"label_11")
         self.orientation_visualizer_label.setGeometry(QRect(330, 500, 191, 31))
@@ -231,10 +234,10 @@ class Ui_MainWindow(object):
         # self.graphWidget.plot(hour, temperature)   
 
 
-        self.label_13 = QLabel(self.centralwidget)
-        self.label_13.setObjectName(u"label_13")
-        self.label_13.setGeometry(QRect(440, 150, 191, 31))
-        self.label_13.setFont(font1)
+        self.satAnimationLabel = QLabel(self.centralwidget)
+        self.satAnimationLabel.setObjectName(u"satAnimationLabel")
+        self.satAnimationLabel.setGeometry(QRect(440, 150, 191, 31))
+        self.satAnimationLabel.setFont(font1)
 
         self.shutDownButton = QPushButton(self.centralwidget)
         self.shutDownButton.setObjectName(u"shutDownButton")
@@ -295,7 +298,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
         self.orientation_visualizer_label.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
         self.volt_visualizer.setText(QCoreApplication.translate("MainWindow", u"Voltage Visualizer", None))
-        self.label_13.setText(QCoreApplication.translate("MainWindow", u"View from Camera", None))
+        self.satAnimationLabel.setText(QCoreApplication.translate("MainWindow", u"View from Camera", None))
         self.shutDownButton.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Voltage", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"V", None))
@@ -367,9 +370,31 @@ class Ui_MainWindow(object):
 
 
                 # update yaw parameter
-                print("roll, pitch, yaw",roll,pitch, yaw)
                 self.pfd.heading = yaw
                 self.pfd.update()
+
+                # update satellite visualization
+
+                # armVelocity
+                self.satAnimation.mocksatVelocity = 10 
+
+                # 
+                self.satAnimation.floatsatAngle = yaw
+
+
+                # if self.i>5:
+                    # print("---------i is greater than 5------")
+                self.satAnimation.mocksatDistance=90
+                self.i-=6
+                # else : 
+                    # self./satAnimation.mocksatDistance = 0
+                    # self.i+=1
+                # armExtension
+                self.satAnimation.armExtension += 4 
+
+                self.satAnimation.armTranslate+=15
+                self.satAnimation.update()
+                # self.satAnimation.mocksatDistance = 0
 
         except Exception as ex:
             print("exception summary update:", ex)

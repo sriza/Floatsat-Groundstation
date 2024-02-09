@@ -71,7 +71,7 @@ class Debug_MainWindow(object):
             for key in data.keys():
                 self.pitch_label = QLabel(self.frame)
                 self.pitch_label.setObjectName(u"label_4")
-                self.pitch_label.setGeometry(QRect(topicLeft, topicTop+line, 50, 20))
+                self.pitch_label.setGeometry(QRect(topicLeft, topicTop, 50, 20))
                 # self.pitch_label.setFont(font1)
                 # create data key label
                 # create data value label
@@ -81,6 +81,10 @@ class Debug_MainWindow(object):
         # restart from last value if the (count of terms* height) is smaller than remaining height
 
         self.label = QLabel()
+    
+    def updateTrigger(self):
+        pass
+        
     
     def updateData(self, data):
         try:
