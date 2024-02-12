@@ -250,42 +250,11 @@ class Docking_MainWindow(object):
                 topicName = "telemetryContinuous"
                 topicData = data[topicName]["data"]
 
-                # print(data[topicName])
-                missionData = data[topicName]["missionModes"]
-                print(missionData)
-
-                i= 0 
-                total = len(self.modesUI)
-                per = 100/total
-
-                for mode in self.modesUI:
-                    radioButton = self.modesUI[mode]["radioButton"]
-                    buttonStatus = radioButton.isChecked()
-                    missionStatus = missionData[mode]["status"]
-                    print(mode, buttonStatus, missionStatus)
-
-                    if buttonStatus != missionStatus:
-                        radioButton.toggle()
-
-                    if radioButton.isChecked():
-                        i+=per
-                
-                self.progressBar.setValue(i)
-
-                self.mockupDistance.display(topicData["mockupDistance"])
-                self.mockupOrientation.display(topicData["mockupYaw"])
-                self.mockupVelocity.display(topicData["mockupAngularVelocity"])
-                self.armLength.display(100)
-                self.extensionVelocity.display(topicData["armVelocity"])
-                self.extendedLength.display(topicData["arm_extension"])
-
                 q0 = topicData["q0"]
                 q1 = topicData["q1"]
                 q2 = topicData["q2"]
                 q3 = topicData["q3"]
-            
-                roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))
-                pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))                         
+                                  
                 yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
 
                 # update satellite visualization
@@ -306,12 +275,36 @@ class Docking_MainWindow(object):
                 # self.satAnimation.mocksatAngle =  
                 self.satAnimation.yaw2mockup = topicData["yaw2mockup"]
 
-                # # mockup
-                # self.satAnimation.mocksatDistance= topicData["mockupDistanceLabel"]
-                # self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
+                # print(data[topicName])
+                missionData = data[topicName]["missionModes"]
+                print(missionData)
 
-                # self.satAnimation.armTranslate+=15
-                # self.satAnimation.update()
+                i= 0 
+                total = len(self.modesUI)
+                per = 100/total
+
+                for mode in self.modesUI:
+                    radioButton = self.modesUI[mode]["radioButton"]
+                    buttonStatus = radioButton.isChecked()
+                    missionStatus = missionData[mode]["status"]
+                    print(mode, buttonStatus, missionStatus)
+
+                    # if mode =
+
+                    if buttonStatus != missionStatus:
+                        radioButton.toggle()
+
+                    if radioButton.isChecked():
+                        i+=per
+                
+                self.progressBar.setValue(i)
+
+                self.mockupDistance.display(topicData["mockupDistance"])
+                self.mockupOrientation.display(topicData["mockupYaw"])
+                self.mockupVelocity.display(topicData["mockupAngularVelocity"])
+                self.armLength.display(100)
+                self.extensionVelocity.display(topicData["armVelocity"])
+                self.extendedLength.display(topicData["arm_extension"])
 
         except Exception as ex:
             print("exception docking update:", ex)

@@ -23,6 +23,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGraphicsView,
     QStatusBar, QWidget)
 from Views.CustomWidgets.SatelliteAnimation import SatelliteAnimation
 import json
+import math
 
 class TeleCommandSignal(QObject):
     value = Signal()
@@ -114,9 +115,9 @@ class Telecommand_MainWindow(object):
         brush1.setStyle(Qt.NoBrush)
         self.graphicsView_5.setBackgroundBrush(brush1)
 
-        self.satelliteVisualization = SatelliteAnimation(self.centralwidget)
-        self.satelliteVisualization.setObjectName(u"satelliteVisualization")
-        self.satelliteVisualization.setGeometry(QRect(320, 10, 580, 400))
+        self.satAnimation = SatelliteAnimation(self.centralwidget)
+        self.satAnimation.setObjectName(u"satAnimation")
+        self.satAnimation.setGeometry(QRect(320, 10, 580, 400))
 
         self.Connection = QWidget(self.centralwidget)
         self.Connection.setObjectName(u"Connection")
@@ -462,5 +463,30 @@ class Telecommand_MainWindow(object):
                 mode_id = topicData["modeid"]
                 self.modeText.setText(self.satelliteModes[mode_id]+"("+str(mode_id)+")")
                 self.motorSpeed.setText(str(topicData["speed"]))
+
+                q0 = topicData["q0"]
+                q1 = topicData["q1"]
+                q2 = topicData["q2"]
+                q3 = topicData["q3"]
+
+                yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
+
+                # update satellite visualization
+                # armVelocity
+                self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
+                # self.satAnimation.mocksatVelocity += .5 
+                self.satAnimation.floatsatAngle =  yaw
+                self.satAnimation.armTranslate = topicData["arm_extension"]
+
+                # mockup
+                self.satAnimation.mocksatDistance= topicData["mockupDistance"]
+                # self.satAnimation.mocksatDistance= 44
+                self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
+                # self.satAnimation.mocksatAngle =  
+                self.satAnimation.yaw2mockup = topicData["yaw2mockup"]
+
+                # print(data[topicName])
+                missionData = data[topicName]["missionModes"]
+
         except Exception as expe:
             print("exception telecommand update:", expe)

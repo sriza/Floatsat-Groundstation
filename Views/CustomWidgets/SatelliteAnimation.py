@@ -11,6 +11,8 @@ class SatelliteAnimation(QWidget):
         super().__init__(parent)
         self.setGeometry(100, 100, 600, 400)
 
+        self.isDocked = False
+
         # mocksatData
         self.mocksatVelocity = 0
         self.mocksatAngle = 0
@@ -53,11 +55,12 @@ class SatelliteAnimation(QWidget):
         self.brush.setColor(QColor('black'))
         self.yaw2mockup = self.yaw2mockup*180/3.14
 
+        self.drawFloatSat() 
+        
         if self.mocksatDistance:
             self.drawMockSat()
             # pass
 
-        self.drawFloatSat()
         self.painter.end()
     
     def drawFloatSat(self):
@@ -75,7 +78,12 @@ class SatelliteAnimation(QWidget):
         trans = QTransform()
         # trans.translate(pos_x+sat_height/2,pos_y+sat_width/2)
         trans.translate(pos_x+23,pos_y+110/2)
-        trans.rotate(self.yaw2mockup)
+
+        if self.yaw2mockup:
+            trans.rotate(self.yaw2mockup)
+        else:
+            trans.rotate(self.floatsatAngle)
+
         trans.translate(-(pos_x+23),-(pos_y+110/2))
         # trans.translate(-(pos_x+sat_height/2),-(pos_y+sat_width/2))
         painter.setTransform(trans)
@@ -136,7 +144,9 @@ class SatelliteAnimation(QWidget):
     # draw mocksat
     def drawMockSat(self):
         # self.mocksatAngle = self.mocksatVeloc
-        self.mocksatAngle = self.mocksatAngle*180/3.14 - (180-(self.yaw2mockup-self.floatsatAngle))
+        # self.mocksatAngle = self.mocksatAngle*180/3.14 - (180-(self.yaw2mockup-self.floatsatAngle))
+        # self.mocksatAngle = self.mocksatAngle*180/3.14 - (180-(self.yaw2mockup-self.floatsatAngle))
+        self.mocksatAngle = self.mocksatAngle*180/3.14
         sat_width = self.sat_width
         sat_height = self.sat_height
         armFactor = self.hand_width
