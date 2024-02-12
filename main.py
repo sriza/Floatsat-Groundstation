@@ -193,7 +193,7 @@ class MainWindow(QMainWindow):
 
                     if self.lastTelecommand["id"] != dataInIndex and self.lastTelecommand["count"] <3 and self.lastTelecommand["resend"] == True:
                         print("resending")
-                        self.sendTelecommand(self.lastTelecommand["data"], True)
+                        # self.sendTelecommand(self.lastTelecommand["data"], True)
                         self.lastTelecommand["count"]+=1
 
                     if self.lastTelecommand["count"] >=5 or self.lastTelecommand["lastId"] != commandId:

@@ -78,17 +78,14 @@ class IMU_MainWindow(object):
         self.gyroscope_x = QLCDNumber(self.groupBox)
         self.gyroscope_x.setObjectName(u"lcdNumber")
         self.gyroscope_x.setGeometry(QRect(140, 70, 201, 41))
-        self.gyroscope_x.display(1) 
 
         self.gyroscope_y = QLCDNumber(self.groupBox)
         self.gyroscope_y.setObjectName(u"lcdNumber_4")
         self.gyroscope_y.setGeometry(QRect(350, 70, 201, 41))
-        self.gyroscope_y.display(2)
 
         self.gyroscope_z = QLCDNumber(self.groupBox)
         self.gyroscope_z.setObjectName(u"lcdNumber_5")
         self.gyroscope_z.setGeometry(QRect(560, 70, 201, 41))
-        self.gyroscope_z.display(3)
 
         self.y_label = QLabel(self.groupBox)
         self.y_label.setObjectName(u"label_6")
@@ -103,33 +100,26 @@ class IMU_MainWindow(object):
         self.accelerometer_x = QLCDNumber(self.groupBox)
         self.accelerometer_x.setObjectName(u"lcdNumber_2")
         self.accelerometer_x.setGeometry(QRect(140, 150, 201, 41))
-        self.accelerometer_x.display(4)
 
         self.accelerometer_y = QLCDNumber(self.groupBox)
         self.accelerometer_y.setObjectName(u"lcdNumber_10")
         self.accelerometer_y.setGeometry(QRect(560, 240, 201, 41))
-        self.accelerometer_y.display(5)
 
         self.accelerometer_z = QLCDNumber(self.groupBox)
         self.accelerometer_z.setObjectName(u"lcdNumber_8")
         self.accelerometer_z.setGeometry(QRect(560, 150, 201, 41))
-        self.accelerometer_z.display(6)
-
 
         self.magnetometer_x = QLCDNumber(self.groupBox)
         self.magnetometer_x.setObjectName(u"lcdNumber_3")
         self.magnetometer_x.setGeometry(QRect(140, 240, 201, 41))
-        self.magnetometer_x.display(7)
 
         self.magnetometer_y = QLCDNumber(self.groupBox)
         self.magnetometer_y.setObjectName(u"lcdNumber_12")
         self.magnetometer_y.setGeometry(QRect(350, 240, 201, 41))
-        self.magnetometer_y.display(8)
 
         self.magnetometer_z = QLCDNumber(self.groupBox)
         self.magnetometer_z.setObjectName(u"lcdNumber_11")
         self.magnetometer_z.setGeometry(QRect(350, 150, 201, 41))
-        self.magnetometer_z.display(9)
 
         self.accelerometer_label = QLabel(self.groupBox)
         self.accelerometer_label.setObjectName(u"label_4")

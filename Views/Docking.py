@@ -17,7 +17,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QLabel,
-    QMainWindow, QMenu, QMenuBar, QProgressBar,
+    QMainWindow, QMenu, QMenuBar, QProgressBar,QLCDNumber,
     QPushButton, QRadioButton, QSizePolicy, QStatusBar,QCheckBox,
     QWidget)
 from Views.CustomWidgets.SatelliteAnimation import SatelliteAnimation
@@ -49,71 +49,109 @@ class Docking_MainWindow(object):
         self.satAnimationLabel.setObjectName(u"label")
         self.satAnimationLabel.setGeometry(QRect(50, 120, 291, 51))
 
-        self.satelliteVisualization = SatelliteAnimation(self.centralwidget)
-        self.satelliteVisualization.setObjectName(u"satelliteVisualization")
-        self.satelliteVisualization.setGeometry(QRect(30, 10, 600, 400))
+        self.satAnimation = SatelliteAnimation(self.centralwidget)
+        self.satAnimation.setObjectName(u"satAnimation")
+        self.satAnimation.setGeometry(QRect(30, 10, 600, 400))
 
-        self.groupBox_2 = QGroupBox(self.centralwidget)
-        self.groupBox_2.setObjectName(u"groupBox_2")
-        self.groupBox_2.setGeometry(QRect(900, 300, 341, 171))
+        self.missionCommandGroupBox = QGroupBox(self.centralwidget)
+        self.missionCommandGroupBox.setObjectName(u"missionCommandGroupBox")
+        self.missionCommandGroupBox.setGeometry(QRect(950, 20, 300, 171))
+        # self.missionCommandGroupBox.setStyleSheet(u"background-color: rgb(255, 255, 255);")
 
-
-        self.cancelMissionButton = QPushButton(self.groupBox_2)
+        self.cancelMissionButton = QPushButton(self.missionCommandGroupBox)
         self.cancelMissionButton.setObjectName(u"pushButton")
-        self.cancelMissionButton.setGeometry(QRect(30, 100, 291, 51))
+        self.cancelMissionButton.setGeometry(QRect(30, 100, 240, 50))
         self.cancelMissionButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(255, 2, 36);\n"
 "background-color: rgb(184, 5, 14);")
         self.cancelMissionButton.clicked.connect(self.stopMission)
 
-        self.initiateDockingButton = QPushButton(self.groupBox_2)
+        self.initiateDockingButton = QPushButton(self.missionCommandGroupBox)
         self.initiateDockingButton.setObjectName(u"initiateDockingButton")
-        self.initiateDockingButton.setGeometry(QRect(30, 40, 291, 51))
+        self.initiateDockingButton.setGeometry(QRect(30, 40, 240, 50))
         self.initiateDockingButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(15, 102, 28);")
         self.initiateDockingButton.clicked.connect(self.initiateMission)
 
         self.missionGroupBox = QGroupBox(self.centralwidget)
-        self.missionGroupBox.setObjectName(u"groupBox_3")
-        self.missionGroupBox.setGeometry(QRect(900, 20, 341, 261))
+        self.missionGroupBox.setObjectName(u"armPositionGroupBox_3")
+        self.missionGroupBox.setGeometry(QRect(650, 20, 250, 261))
      
         self.progressBar = QProgressBar(self.missionGroupBox)
         self.progressBar.setObjectName(u"progressBar")
-        self.progressBar.setGeometry(QRect(30, 40, 291, 20))
+        self.progressBar.setGeometry(QRect(30, 40, 200, 30))
         self.progressBar.setValue(0)
 
         self.frame_2 = QFrame(self.centralwidget)
         self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setGeometry(QRect(30, 500, 1211, 241))
+        self.frame_2.setGeometry(QRect(30, 425, 1211, 350))
         self.frame_2.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_2.setFrameShape(QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QFrame.Raised)
-        self.groupBox = QGroupBox(self.frame_2)
-        self.groupBox.setObjectName(u"groupBox")
-        self.groupBox.setGeometry(QRect(30, 20, 301, 191))
-        self.groupBox.setStyleSheet(u"color: rgb(4, 4, 4);")
-        self.label_3 = QLabel(self.groupBox)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setGeometry(QRect(10, 50, 141, 16))
-        self.label_4 = QLabel(self.groupBox)
-        self.label_4.setObjectName(u"label_4")
-        self.label_4.setGeometry(QRect(10, 100, 141, 16))
-        self.label_5 = QLabel(self.groupBox)
-        self.label_5.setObjectName(u"label_5")
-        self.label_5.setGeometry(QRect(10, 150, 141, 16))
-        self.groupBox_4 = QGroupBox(self.frame_2)
-        self.groupBox_4.setObjectName(u"groupBox_4")
-        self.groupBox_4.setGeometry(QRect(380, 20, 361, 191))
-        self.groupBox_4.setStyleSheet(u"color: rgb(4, 4, 4);")
-        self.label_6 = QLabel(self.groupBox_4)
-        self.label_6.setObjectName(u"label_6")
-        self.label_6.setGeometry(QRect(10, 90, 141, 16))
-        self.label_7 = QLabel(self.groupBox_4)
-        self.label_7.setObjectName(u"label_7")
-        self.label_7.setGeometry(QRect(10, 130, 161, 16))
-        self.label_8 = QLabel(self.groupBox_4)
-        self.label_8.setObjectName(u"label_8")
-        self.label_8.setGeometry(QRect(10, 50, 141, 16))
+
+        # arm position group
+        self.armPositionGroupBox = QGroupBox(self.frame_2)
+        self.armPositionGroupBox.setObjectName(u"armPositionGroupBox")
+        self.armPositionGroupBox.setGeometry(QRect(30, 20, 301, 250))
+        # self.armPositionGroupBox.setStyleSheet(u"color: rgb(4, 4, 4);")
+        
+        self.extensionVelocityLabel = QLabel(self.armPositionGroupBox)
+        self.extensionVelocityLabel.setObjectName(u"extensionVelocityLabel")
+        self.extensionVelocityLabel.setGeometry(QRect(10, 30, 141, 16))
+
+        self.extensionVelocity = QLCDNumber(self.armPositionGroupBox)
+        self.extensionVelocity.setObjectName(u"extensionVelocity")
+        self.extensionVelocity.setGeometry(QRect(10, 50, 200, 40))
+        self.extensionVelocity.display(2)
+
+        self.armLengthLabel = QLabel(self.armPositionGroupBox)
+        self.armLengthLabel.setObjectName(u"armLengthLabel")
+        self.armLengthLabel.setGeometry(QRect(10, 100, 141, 16))
+
+        self.armLength = QLCDNumber(self.armPositionGroupBox)
+        self.armLength.setObjectName(u"armLength")
+        self.armLength.setGeometry(QRect(10, 120, 200, 40))
+        self.extensionVelocity.display(100)
+
+        self.extendedLengthLabel = QLabel(self.armPositionGroupBox)
+        self.extendedLengthLabel.setObjectName(u"extendedLengthLabel")
+        self.extendedLengthLabel.setGeometry(QRect(10, 170, 141, 16))
+
+        self.extendedLength = QLCDNumber(self.armPositionGroupBox)
+        self.extendedLength.setObjectName(u"extendedLength")
+        self.extendedLength.setGeometry(QRect(10, 190, 200, 40))
+        self.extensionVelocity.display(2)
+
+        # mocksat group
+        self.mockupStatusGroupBox = QGroupBox(self.frame_2)
+        self.mockupStatusGroupBox.setObjectName(u"mockupStatusGroupBox")
+        self.mockupStatusGroupBox.setGeometry(QRect(380, 20, 361, 250))
+        self.mockupStatusGroupBox.setStyleSheet(u"color: rgb(4, 4, 4);")
+
+        self.mockupDistanceLabel = QLabel(self.mockupStatusGroupBox)
+        self.mockupDistanceLabel.setObjectName(u"mockupDistanceLabel")
+        self.mockupDistanceLabel.setGeometry(QRect(10, 30, 141, 16))
+
+        self.mockupDistance = QLCDNumber(self.mockupStatusGroupBox)
+        self.mockupDistance.setObjectName(u"mockupDistance")
+        self.mockupDistance.setGeometry(QRect(10, 50, 200, 40))
+
+        self.mockupVelocityLabel = QLabel(self.mockupStatusGroupBox)
+        self.mockupVelocityLabel.setObjectName(u"mockupVelocityLabel")
+        self.mockupVelocityLabel.setGeometry(QRect(10, 100, 161, 16))
+
+        self.mockupVelocity = QLCDNumber(self.mockupStatusGroupBox)
+        self.mockupVelocity.setObjectName(u"mockupVelocity")
+        self.mockupVelocity.setGeometry(QRect(10, 120, 200, 40))
+
+        self.mockupOrientationLabel = QLabel(self.mockupStatusGroupBox)
+        self.mockupOrientationLabel.setObjectName(u"mockupOrientationLabel")
+        self.mockupOrientationLabel.setGeometry(QRect(10, 170, 141, 16))
+
+        self.mockupOrientation = QLCDNumber(self.mockupStatusGroupBox)
+        self.mockupOrientation.setObjectName(u"mockupOrientation")
+        self.mockupOrientation.setGeometry(QRect(10, 190, 200, 40))
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -132,18 +170,18 @@ class Docking_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.satAnimationLabel.setText(QCoreApplication.translate("MainWindow", u"Camera view of docking", None))
-        self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"IMU Command", None))
+        self.missionCommandGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Mission Command", None))
         self.cancelMissionButton.setText(QCoreApplication.translate("MainWindow", u"Cancel Docking Mission", None))
         self.initiateDockingButton.setText(QCoreApplication.translate("MainWindow", u"Initiate Docking", None))
         self.missionGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Mission Profile", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Arm Position", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Rate of extension", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Arm Length", None))
-        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Extended length", None))
-        self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Mockup Status", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Distance from floatsat", None))
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Calculated Angular velocity", None))
-        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Orientation", None))
+        self.armPositionGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Arm Position", None))
+        self.extensionVelocityLabel.setText(QCoreApplication.translate("MainWindow", u"Rate of extension", None))
+        self.armLengthLabel.setText(QCoreApplication.translate("MainWindow", u"Arm Length", None))
+        self.extendedLengthLabel.setText(QCoreApplication.translate("MainWindow", u"Extended length", None))
+        self.mockupStatusGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Mockup Status", None))
+        self.mockupDistanceLabel.setText(QCoreApplication.translate("MainWindow", u"Distance from floatsat", None))
+        self.mockupVelocityLabel.setText(QCoreApplication.translate("MainWindow", u"Calculated Angular velocity", None))
+        self.mockupOrientationLabel.setText(QCoreApplication.translate("MainWindow", u"Orientation", None))
     # retranslateUi
 
     def setModes(self):
@@ -234,14 +272,42 @@ class Docking_MainWindow(object):
                 
                 self.progressBar.setValue(i)
 
+                self.mockupDistance.display(topicData["mockupDistance"])
+                self.mockupOrientation.display(topicData["mockupYaw"])
+                self.mockupVelocity.display(topicData["mockupAngularVelocity"])
+                self.armLength.display(100)
+                self.extensionVelocity.display(topicData["armVelocity"])
+                self.extendedLength.display(topicData["arm_extension"])
+
+                q0 = topicData["q0"]
+                q1 = topicData["q1"]
+                q2 = topicData["q2"]
+                q3 = topicData["q3"]
+            
+                roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))
+                pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))                         
+                yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
+
                 # update satellite visualization
                 # armVelocity
                 # self.satAnimation.mocksatVelocity = topicData["mocksatAngularVelocity"] 
                 # self.satAnimation.floatsatAngle = yaw
                 # self.satAnimation.armExtension =  topicData["armExtension"]
 
+                self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
+                # self.satAnimation.mocksatVelocity += .5 
+                self.satAnimation.floatsatAngle =  yaw
+                self.satAnimation.armTranslate = topicData["arm_extension"]
+
+                # mockup
+                self.satAnimation.mocksatDistance= topicData["mockupDistance"]
+                # self.satAnimation.mocksatDistance= 44
+                self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
+                # self.satAnimation.mocksatAngle =  
+                self.satAnimation.yaw2mockup = topicData["yaw2mockup"]
+
                 # # mockup
-                # self.satAnimation.mocksatDistance= topicData["mockupDistance"]
+                # self.satAnimation.mocksatDistance= topicData["mockupDistanceLabel"]
                 # self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
 
                 # self.satAnimation.armTranslate+=15

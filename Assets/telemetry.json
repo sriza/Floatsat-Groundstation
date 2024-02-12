@@ -36,7 +36,7 @@
     "telemetryContinuousExtendedTopicID": {
         "name":"telemetryContinuousExtendedTopicID",
         "topicId": 41,
-        "structure": "=3f1?1f",
+        "structure": "=5f",
         "data": {
             "speedControlOut": "speedControlOut",
             "posControlOut": "posControlOut",
