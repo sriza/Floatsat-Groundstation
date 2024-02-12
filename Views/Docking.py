@@ -236,16 +236,16 @@ class Docking_MainWindow(object):
 
                 # update satellite visualization
                 # armVelocity
-                self.satAnimation.mocksatVelocity = topicData["mocksatAngularVelocity"] 
-                self.satAnimation.floatsatAngle = yaw
-                self.satAnimation.armExtension =  topicData["armExtension"]
+                # self.satAnimation.mocksatVelocity = topicData["mocksatAngularVelocity"] 
+                # self.satAnimation.floatsatAngle = yaw
+                # self.satAnimation.armExtension =  topicData["armExtension"]
 
-                # mockup
-                self.satAnimation.mocksatDistance= topicData["mockupDistance"]
-                self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
+                # # mockup
+                # self.satAnimation.mocksatDistance= topicData["mockupDistance"]
+                # self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
 
-                self.satAnimation.armTranslate+=15
-                self.satAnimation.update()
+                # self.satAnimation.armTranslate+=15
+                # self.satAnimation.update()
 
         except Exception as ex:
             print("exception docking update:", ex)

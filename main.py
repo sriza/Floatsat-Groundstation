@@ -36,6 +36,9 @@ class MainWindow(QMainWindow):
         self.missionModes = {}
         self.setMissionModes()
 
+        # connection status
+        self.setConnection = False
+
         #rodos
         self.pairedData = {"U_bat":{}, "speed":{}}
         self.luart = LinkinterfaceUDP()
@@ -61,7 +64,7 @@ class MainWindow(QMainWindow):
     
     def initializeTelemetryTopics(self):
         try:
-            print("initializing telemetry topics")
+            # print("initializing telemetry topics")
             f = open("Assets/telemetry.json")
             json_array = json.load(f)
 
@@ -163,7 +166,6 @@ class MainWindow(QMainWindow):
             # print("set and update", self.telemetry[topicName]["structure"])
 
             # updates last connected time to present time
-            self.lastConnectedTime = time.time()
             self.programStatus["connectionStatus"]= True
 
 
@@ -182,7 +184,6 @@ class MainWindow(QMainWindow):
                 dataInIndex = unpackedData[i]
 
                 if datum in self.pairedData.keys():
-                    # print("the data:", datum)
                     satTime = telemetryData["time"]
                     self.pairedData[datum][satTime] = dataInIndex
                 
@@ -192,7 +193,7 @@ class MainWindow(QMainWindow):
 
                     if self.lastTelecommand["id"] != dataInIndex and self.lastTelecommand["count"] <3 and self.lastTelecommand["resend"] == True:
                         print("resending")
-                        self.sendTelecommand(self.lastTelecommand["data"])
+                        self.sendTelecommand(self.lastTelecommand["data"], True)
                         self.lastTelecommand["count"]+=1
 
                     if self.lastTelecommand["count"] >=5 or self.lastTelecommand["lastId"] != commandId:
@@ -200,57 +201,60 @@ class MainWindow(QMainWindow):
                         self.lastTelecommand["data"] = []
                         self.lastTelecommand["count"] = 0
                         self.lastTelecommand["resend"] = False
-                    
-                    # if self.lastTelecommand["lastId"] != commandCount:
-                    #     self.lastTelecommand["resend"] = False
-                    # print("here")
-                    
 
                 telemetryData[datum] = dataInIndex
                 i+=1
+
 
             self.telemetry[topicName]["pairedData"] = self.pairedData
             self.telemetry[topicName]["programData"] = self.programStatus
             self.telemetry[topicName]["missionModes"] = self.missionModes
 
-            self.currentView.updateTrigger(self.telemetry)
+            if self.setConnection:
+                self.lastConnectedTime = time.time()
+                self.currentView.updateTrigger(self.telemetry)
         except Exception as ex:
             print("set and update exception:",ex)
-            self.currentView.updateTrigger(self.telemetry)
+            if self.setConnection:
+                self.currentView.updateTrigger(self.telemetry)
     #setAndUpdate
             
     # send telecommand: common interface for all child windows
-    def sendTelecommand(self, data):
+    def sendTelecommand(self, data, resend = False):
         try:
-            i = len(data)-1
+            if self.setConnection:
+                i = len(data)-1
 
-            while i<3:
-                data.append(0.0)
-                i+=1
-            print("resending data",data)
+                while i<3:
+                    data.append(0.0)
+                    i+=1
+                print("resending data",data)
 
-            dataStruct = struct.pack("=i3f",*tuple(data))
-            # print(self.telecommandTopic["TelecommandTopicId"]["topicId"])
-            (self.telecommandTopicID).publish(dataStruct)
-            # print("published data", dataStruct, tuple(data))
-            self.lastTelecommand["id"] = data[0]
-            self.lastTelecommand["data"] = data
-            self.lastTelecommand["count"] = 0
-            self.lastTelecommand["resend"] = True
+                dataStruct = struct.pack("=i3f",*tuple(data))
+                # print(self.telecommandTopic["TelecommandTopicId"]["topicId"])
+                (self.telecommandTopicID).publish(dataStruct)
+                # print("published data", dataStruct, tuple(data))
+
+                if not resend:
+                    self.lastTelecommand["id"] = data[0]
+                    self.lastTelecommand["data"] = data
+                    self.lastTelecommand["count"] = 0
+                    self.lastTelecommand["resend"] = True
         except Exception as ex:
             print("exception in sending telecommand:", ex)
     #sendTelecommand
             
     # sends echo telecommand: will be used in telecommand window only
     def sendEchoTelecommand(self, data):
-        i = len(data)-1
+        if self.setConnection:
+            i = len(data)-1
 
-        while i<4:
-            data.append(0)
-            i+=1
+            while i<4:
+                data.append(0)
+                i+=1
 
-        dataStruct = struct.pack("=3f",*tuple(data))
-        (self.telecommandTopic["TelecommandEchoTopicId"]["topic"]).publish(dataStruct)
+            dataStruct = struct.pack("=3f",*tuple(data))
+            (self.telecommandTopic["TelecommandEchoTopicId"]["topic"]).publish(dataStruct)
     #sendEchoTelecommand
         
     # checks and updates connection status
@@ -266,6 +270,9 @@ class MainWindow(QMainWindow):
         self.connectionStatus.setText(connectionStatus)
         self.connectionStatus.setStyleSheet(connectionStatusStyle)
     #checkConnectionStatus
+        
+    def setConnectionStatus(self, status):
+        self.setConnection = status
         
     # create collection of menubar
     def menubarCollection(self):

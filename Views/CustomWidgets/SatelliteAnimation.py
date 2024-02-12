@@ -15,6 +15,7 @@ class SatelliteAnimation(QWidget):
         self.mocksatVelocity = 0
         self.mocksatAngle = 0
         self.mocksatDistance = 0
+        self.yaw2mockup = 0
 
         # floatsat data
         self.floatsatAngle = 0
@@ -53,6 +54,7 @@ class SatelliteAnimation(QWidget):
 
         if self.mocksatDistance:
             self.drawMockSat()
+            # pass
 
         self.drawFloatSat()
         self.painter.end()
@@ -66,11 +68,15 @@ class SatelliteAnimation(QWidget):
         sat_width = self.sat_width 
         sat_height = self.sat_height
 
+        self.yaw2mockup = self.yaw2mockup*180/3.14
+
         painter = self.painter
         trans = QTransform()
-        trans.translate(pos_x+sat_height/2,pos_y+sat_width/2)
-        trans.rotate(self.floatsatAngle)
-        trans.translate(-(pos_x+sat_height/2),-(pos_y+sat_width/2))
+        # trans.translate(pos_x+sat_height/2,pos_y+sat_width/2)
+        trans.translate(pos_x+23,pos_y+110/2)
+        trans.rotate(self.yaw2mockup)
+        trans.translate(-(pos_x+23),-(pos_y+110/2))
+        # trans.translate(-(pos_x+sat_height/2),-(pos_y+sat_width/2))
         painter.setTransform(trans)
         painter.setBrush(Qt.black)
         painter.setOpacity(.20)
@@ -115,9 +121,9 @@ class SatelliteAnimation(QWidget):
         painter.drawRect(arm2_handx,arm2_handy, hand_width, hand_height)
 
         # floatsat
+        radius = 90
         rect = QRect(pos_x,pos_y,sat_width,sat_height)
         path = QPainterPath()
-        radius = 90
         path.moveTo(rect.topLeft())
         path.arcTo(rect.left()-radius/2, rect.top(), radius, radius+20, 90, radius*2)
         path.arcTo(rect.left(), rect.top(), radius, radius+20, -90, radius*2)
@@ -129,19 +135,21 @@ class SatelliteAnimation(QWidget):
     # draw mocksat
     def drawMockSat(self):
         # self.mocksatAngle = self.mocksatVeloc
-        self.mocksatAngle = self.mocksatAngle*360/3.14
+        self.mocksatAngle = self.mocksatAngle*180/3.14
+        self.yaw2mockup = self.yaw2mockup*180/3.14
         sat_width = self.sat_width
         sat_height = self.sat_height
-        armFactor = self.hand_width*2
-        pos_x = self.pos_x - self.mocksatDistance* self.scalingFactor- armFactor- sat_width
+        armFactor = self.hand_width
+        radius = 90
+
+        pos_x = (self.pos_x- (radius-10)*2)-armFactor-self.mocksatDistance*self.scalingFactor
         pos_y = self.pos_y
 
         painter = self.painter
         trans = QTransform()
-        trans.translate(pos_x+sat_height/2,pos_y+sat_width/2)
-        print("mocksatangle:", self.mocksatAngle)
+        trans.translate(pos_x+23,pos_y+110/2)
         trans.rotate(self.mocksatAngle)
-        trans.translate(-(pos_x+sat_height/2),-(pos_y+sat_width/2))
+        trans.translate(-(pos_x+23),-(pos_y+110/2))
         painter.setTransform(trans)
 
         painter.setBrush(Qt.black)
@@ -151,15 +159,14 @@ class SatelliteAnimation(QWidget):
         trans = QTransform()
         rect = QRect(pos_x,pos_y,sat_width,sat_height)
         path = QPainterPath()
-        radius = 90
         path.moveTo(rect.topLeft())
         path.arcTo(rect.left()-radius/2, rect.top(), radius, radius+20, 90, radius*2)
         path.arcTo(rect.left(), rect.top(), radius, radius+20, -90, radius*2)
         path.closeSubpath()
 
         # docking port
-        docking_port_x = pos_x-60
-        docking_port_y = pos_y+43
+        docking_port_x = pos_x+sat_width
+        docking_port_y = pos_y+40
 
         arm_width = self.hand_width
         arm_height = self.hand_height

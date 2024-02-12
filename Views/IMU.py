@@ -26,6 +26,7 @@ from Views.CustomWidgets.YawVisualizer import YawVisualizer
 import math
 import json
 import pyqtgraph as pg
+import numpy as np
 
 class IMUSignal(QObject):
     value = Signal()
@@ -224,7 +225,6 @@ class IMU_MainWindow(object):
         # end telecommand for IMU
         
         # visualizer section
-
         self.dynamicGraph = pg.PlotWidget(self.centralwidget) 
         # self.dynamicGraph.setObjectName(u"dynamicGraph")
         self.dynamicGraph.setGeometry(QRect(890, 520, 341, 201))
@@ -294,6 +294,7 @@ class IMU_MainWindow(object):
     def updateCommandInputField(self):
         currentText= self.command_type_dropdown.currentText()
         self.command_data_label.setText(self.modes[currentText]["data"]["x"])
+        self.currentCommand = ""
 
 
     # prepare command dropdowns
@@ -383,13 +384,19 @@ class IMU_MainWindow(object):
                 if self.currentCommand == "SetControlDesired_pos" :
                     print("yaw data")
                     tempData = self.dynamicData["yaw"]
-                    
+
+                #graph data   
                 x = list(tempData.keys())
                 y = list(tempData.values())
+                limit = self.command_data.toPlainText()
 
                 self.dynamicGraph.clear()
+                self.dynamicGraph.plot(x, y, pen='g', symbol='x',
+                         symbolPen='g', symbolBrush=0.2, name='green')
 
-                self.dynamicGraph.plot(x, y) 
+                if limit and limit !='' and self.currentCommand != '':
+                    self.dynamicGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
+                         symbolPen='b', symbolBrush=0.2, name='blue')
 
                 # todo: update roll and pitch parameters, issue with repainting
                 self.roll_pitch_viz.roll = roll

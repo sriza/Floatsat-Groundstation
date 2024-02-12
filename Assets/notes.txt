@@ -17,6 +17,8 @@ going with 2D viz instead of 3d .. facing issue with renderer
 
 ----------*-todo3-*----------------------
 - add more graphs and viz as required
+- done.. what is angular velocity of satellite?
 
 ---------* - todo4 *-----------------
 -2d viz custom widget and integration
+- done.. need to test
