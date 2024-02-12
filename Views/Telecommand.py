@@ -485,6 +485,7 @@ class Telecommand_MainWindow(object):
                 # self.satAnimation.mocksatAngle =  
                 self.satAnimation.yaw2mockup = topicData["yaw2mockup"]
 
+                self.satAnimation.update()    
                 # print(data[topicName])
                 missionData = data[topicName]["missionModes"]
 
