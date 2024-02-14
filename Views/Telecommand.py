@@ -446,7 +446,7 @@ class Telecommand_MainWindow(object):
 
                 # armVelocity
                 self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
-                self.satAnimation.floatsatAngle =  yaw
+                self.satAnimation.floatsatAngle =  math.degrees(yaw)
                 self.satAnimation.armTranslate = topicData["arm_extension"]
 
                 # mockup

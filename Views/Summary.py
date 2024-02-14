@@ -381,7 +381,7 @@ class Ui_MainWindow(object):
                 # armVelocity
                 self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
                 # self.satAnimation.mocksatVelocity += .5 
-                self.satAnimation.floatsatAngle =  yaw
+                self.satAnimation.floatsatAngle =  math.degrees(yaw)
                 self.satAnimation.armTranslate = topicData["arm_extension"]
 
                 # mockup
