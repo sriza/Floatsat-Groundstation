@@ -129,7 +129,7 @@
         "id": 15,
         "topicId": 50,
         "structure": "=3f",
-        "data_type": "radian",
+        "data_type": "",
         "data": {
             "x": "P",
             "y": "I",
@@ -142,7 +142,7 @@
         "structure": "=3f",
         "data_type": "radian",
         "data": {
-            "x": "Position Limit"
+            "x": "Position Limit [deg/s]"
         }
     },
     "SetControlParams_vel": {
@@ -160,9 +160,9 @@
         "id": 18,
         "topicId": 50,
         "structure": "=3f",
-        "data_type":"",
+        "data_type":"radian",
         "data": {
-            "x":"Limit"
+            "x":"Limit [deg/s]"
         }
     },
     "SetControlDesired_speed": {
@@ -172,7 +172,7 @@
         "data_type":"",
         "type" : "basic",
         "data": {
-            "x" :"Desired speed"
+            "x" :"Desired speed [V]"
         }
     },
     "SetControlDesired_pos": {
@@ -182,17 +182,17 @@
         "type" : "basic",
         "data_type" : "radian",
         "data": {
-            "x":"Desired position"
+            "x":"Desired position [deg]"
         }
     },
     "SetControlDesired_vel": {
         "id": 21,
         "topicId": 50,
         "structure": "=3f",
-        "data_type":"",
+        "data_type":"radian",
         "type": "basic",
         "data": {
-            "x" : "Desired Velocity"
+            "x" : "Desired Velocity [deg/s]"
         }
     },
     "SendCalibTelemetry": {
