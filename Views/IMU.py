@@ -354,9 +354,9 @@ class IMU_MainWindow(object):
                 # conversion of quaternion to roll, pitch and yaw
                 timestamp = topicData["time"]
 
-                roll = self.parent.satOrientation["roll"]
-                pitch = self.parent.satOrientation["pitch"]
-                yaw = self.parent.satOrientation["yaw"]
+                roll = math.degrees(self.parent.satOrientation["roll"])
+                pitch = math.degrees(self.parent.satOrientation["pitch"])
+                yaw = math.degrees(self.parent.satOrientation["yaw"])
 
                 # lcd data update
                 self.roll.display(roll)
@@ -398,11 +398,12 @@ class IMU_MainWindow(object):
                          symbolPen='b', symbolBrush=0.2, name='blue')
 
                 # todo: update roll and pitch parameters, issue with repainting
-                self.roll_pitch_viz.roll = roll
-                self.roll_pitch_viz.pitch = pitch
+                self.roll_pitch_viz.roll = math.radians(roll)
+                self.roll_pitch_viz.pitch = math.radians(pitch)
                 self.roll_pitch_viz.update()
-                self.dynamicGraph.roll = roll
-                self.dynamicGraph.pitch = pitch
+
+                self.dynamicGraph.roll = math.radians(roll)
+                self.dynamicGraph.pitch = math.radians(pitch)
                 self.dynamicGraph.update()
 
         except Exception as ex:

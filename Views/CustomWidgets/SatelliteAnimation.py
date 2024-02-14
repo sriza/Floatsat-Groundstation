@@ -56,11 +56,10 @@ class SatelliteAnimation(QWidget):
         self.yaw2mockup = self.yaw2mockup*180/3.14
 
         self.drawFloatSat() 
-        print("in Mission", self.inMission)
+
         if self.inMission:
-            # print("in mission")
             self.drawMockSat()
-            # pass
+
         self.drawDetail()
 
         self.painter.end()

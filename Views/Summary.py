@@ -345,9 +345,9 @@ class Ui_MainWindow(object):
                     hour = list(tempData.keys())
                     voltage = list(tempData.values())
                 
-                roll = self.parent.satOrientation["roll"]
-                pitch = self.parent.satOrientation["pitch"]
-                yaw = self.parent.satOrientation["yaw"]
+                roll = math.degrees(self.parent.satOrientation["roll"])
+                pitch = math.degrees(self.parent.satOrientation["pitch"])
+                yaw = math.degrees(self.parent.satOrientation["yaw"])
 
                 # lcd data update
                 self.lcdRoll.display(roll)

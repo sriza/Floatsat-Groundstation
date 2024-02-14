@@ -253,14 +253,14 @@ class Docking_MainWindow(object):
                 # update satellite viz
                 self.satAnimation.inMission = self.parent.programStatus["inMission"]
                 self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
-                self.satAnimation.floatsatAngle =  yaw
+                self.satAnimation.floatsatAngle =  math.degrees(yaw)
                 self.satAnimation.armTranslate = topicData["arm_extension"]
 
                 # mockup
                 # self.satAnimation.mocksatDistance= topicData["mockupDistance"]
                 self.satAnimation.mocksatDistance= 100
-                self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
-                self.satAnimation.yaw2mockup = topicData["yaw2mockup"]
+                self.satAnimation.mocksatAngle =  math.degrees(topicData["mockupYaw"])
+                self.satAnimation.yaw2mockup = math.degrees(topicData["yaw2mockup"])
                 self.satAnimation.update()
 
                 missionData = data[topicName]["missionModes"]

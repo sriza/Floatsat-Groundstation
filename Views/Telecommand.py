@@ -47,10 +47,10 @@ class Telecommand_MainWindow(object):
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
 
-        self.motorSpeedLabel = QLabel(self.frame)
-        self.motorSpeedLabel.setObjectName(u"motorSpeedLabel")
-        self.motorSpeedLabel.setGeometry(QRect(0, 0, 261, 25))
-        self.motorSpeedLabel.setText("Motor Speed")
+        self.motorSpeedGraphLabel = QLabel(self.frame)
+        self.motorSpeedGraphLabel.setObjectName(u"motorSpeedGraphLabel")
+        self.motorSpeedGraphLabel.setGeometry(QRect(0, 0, 261, 25))
+        self.motorSpeedGraphLabel.setText("Motor Speed")
 
         self.motorSpeedGraph = pg.PlotWidget(self.frame)
         self.motorSpeedGraph.setGeometry(QRect(0,30,280,200))
@@ -133,7 +133,7 @@ class Telecommand_MainWindow(object):
 
         self.shutDownButton = QPushButton(self.centralwidget)
         self.shutDownButton.setObjectName(u"pushButton_3")
-        self.shutDownButton.setGeometry(QRect(960, 260, 231, 41))
+        self.shutDownButton.setGeometry(QRect(960, 300, 231, 41))
         self.shutDownButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(182, 41, 16);")
 
@@ -158,14 +158,14 @@ class Telecommand_MainWindow(object):
 
         self.missionStartButton = QPushButton(self.centralwidget)
         self.missionStartButton.setObjectName(u"missionStartButton")
-        self.missionStartButton.setGeometry(QRect(960, 340, 231, 41))
+        self.missionStartButton.setGeometry(QRect(960, 370, 231, 41))
         self.missionStartButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(50, 107, 29);")
         self.missionStartButton.clicked.connect(self.initiateMission)
 
         self.line = QFrame(self.centralwidget)
         self.line.setObjectName(u"line")
-        self.line.setGeometry(QRect(950, 310, 251, 16))
+        self.line.setGeometry(QRect(950, 350, 251, 16))
         self.line.setFrameShape(QFrame.HLine)
         self.line.setFrameShadow(QFrame.Sunken)
 
@@ -177,31 +177,44 @@ class Telecommand_MainWindow(object):
 
         self.commandCnt = QLabel(self.centralwidget)
         self.commandCnt.setObjectName(u"label_13")
-        self.commandCnt.setGeometry(QRect(960, 95, 231, 31))
+        self.commandCnt.setGeometry(QRect(960, 95, 231, 30))
         self.commandCnt.setFont(font)
         self.commandCnt.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
 
+        self.lastCommandLabel = QLabel(self.centralwidget)
+        self.lastCommandLabel.setObjectName(u"label_8")
+        self.lastCommandLabel.setGeometry(QRect(960, 125, 201, 25))
+        self.lastCommandLabel.setFont(font)
+        self.lastCommandLabel.setStyleSheet(u"color: rgb(0, 0, 0);")
+        self.lastCommandLabel.setText("Last command")
+
+        self.lastCommand = QLabel(self.centralwidget)
+        self.lastCommand.setObjectName(u"label_13")
+        self.lastCommand.setGeometry(QRect(960, 150, 231, 30))
+        self.lastCommand.setFont(font)
+        self.lastCommand.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
+
         self.modeLabel = QLabel(self.centralwidget)
         self.modeLabel.setObjectName(u"modeLabel")
-        self.modeLabel.setGeometry(QRect(960, 130, 201, 25))
+        self.modeLabel.setGeometry(QRect(960, 180, 201, 25))
         self.modeLabel.setFont(font)
         self.modeLabel.setStyleSheet(u"color: rgb(0, 0, 0);")
 
         self.modeText = QLabel(self.centralwidget)
         self.modeText.setObjectName(u"label_14")
-        self.modeText.setGeometry(QRect(960, 160, 231, 31))
+        self.modeText.setGeometry(QRect(960, 205, 231, 30))
         self.modeText.setFont(font)
         self.modeText.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
 
         self.motorSpeedLabel = QLabel(self.centralwidget)
         self.motorSpeedLabel.setObjectName(u"motorSpeedLabel")
-        self.motorSpeedLabel.setGeometry(QRect(960, 195, 201, 25))
+        self.motorSpeedLabel.setGeometry(QRect(960, 235, 201, 25))
         self.motorSpeedLabel.setFont(font)
         self.motorSpeedLabel.setStyleSheet(u"color: rgb(0, 0, 0);")
 
         self.motorSpeed = QLabel(self.centralwidget)
         self.motorSpeed.setObjectName(u"label_14")
-        self.motorSpeed.setGeometry(QRect(960, 220, 231, 31))
+        self.motorSpeed.setGeometry(QRect(960, 260, 231, 31))
         self.motorSpeed.setFont(font)
         self.motorSpeed.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
 
@@ -301,9 +314,9 @@ class Telecommand_MainWindow(object):
         json_array = json.load(f)
 
         for item in json_array:
-            self.modeDropdown.addItem(item)
             self.modes[item] = {}
             self.modes[item]["id"] = json_array[item]["id"]
+            self.modeDropdown.addItem(str(item)+" "+"("+str(json_array[item]["id"]) +")")
             self.modes[item]["data"] = json_array[item]["data"]
             self.modes[item]["data_type"] = json_array[item]["data_type"]
     
@@ -377,7 +390,7 @@ class Telecommand_MainWindow(object):
                 value = float(types[key].toPlainText())
 
                 if currentMode["data_type"] == "radian":
-                    value = value*3.14/180
+                    value = math.radians(value)
                     
                 data.append(value)
 
@@ -419,6 +432,7 @@ class Telecommand_MainWindow(object):
                 mode_id = topicData["modeid"]
                 self.modeText.setText(self.satelliteModes[mode_id]+"("+str(mode_id)+")")
                 self.motorSpeed.setText(str(topicData["speed"]))
+                self.lastCommand.setText(str(topicData["lastcmdid"]))
 
                 q0 = topicData["q0"]
                 q1 = topicData["q1"]

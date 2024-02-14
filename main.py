@@ -168,7 +168,6 @@ class MainWindow(QMainWindow):
 
         # update mission flag
         self.programStatus["inMission"] = inMission
-        print("in mission at main:", inMission, self.programStatus["inMission"])
 
         for modeid in self.missionModes:
             if inMission and not updated:
@@ -185,7 +184,7 @@ class MainWindow(QMainWindow):
         try:
             if not self.setConnection:
                 return
-            
+                        
             # updates last connected time to present time
             self.programStatus["connectionStatus"]= True
             #unpacks data
@@ -222,8 +221,12 @@ class MainWindow(QMainWindow):
                     self.satOrientation["pitch"] = math.asin(2 * (q0 * q2 - q3 * q1))
                     self.satOrientation["yaw"] = math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3))
 
+                    if telemetryData["time"] < self.programStatus["time"] :
+                        self.pairedData["yaw"] = {}
+                        self.pairedData["velocity"] = {}
+                    
                     satTime = telemetryData["time"]
-                    self.pairedData["yaw"][satTime] = self.satOrientation["yaw"]
+                    self.pairedData["yaw"][satTime] = math.degrees(self.satOrientation["yaw"])
                     self.pairedData["velocity"][satTime] = (lastYaw-self.satOrientation["yaw"])/(lastTime-satTime)
                     self.programStatus["time"] = satTime
 

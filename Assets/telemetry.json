@@ -80,17 +80,6 @@
             "vel_lim": "vel_lim"
         }
     },
-    "docking" : {
-        "name" : "docking",
-        "topicId" : 44,
-        "structure":"=4f",
-        "data": {
-            "armVelocity": "armVelocity",
-            "armExtension": "armExtension",
-            "mockupAngularVelocity": "mockupAngularVelocity",
-            "mockupDistance": "mockupDistance"
-        }
-    },
     "telemetryMessage": {
         "name" : "telemetryMessage",
         "topicId" : 300,
