@@ -229,7 +229,6 @@ class MainWindow(QMainWindow):
                     
                     satTime = telemetryData["time"]
                     self.pairedData["yaw"][satTime] = math.degrees(self.satOrientation["yaw"])
-                    self.pairedData["velocity"][satTime] = (lastYaw-self.satOrientation["yaw"])/(lastTime-satTime)
                     self.programStatus["time"] = satTime
 
                 if datum in self.pairedData.keys():

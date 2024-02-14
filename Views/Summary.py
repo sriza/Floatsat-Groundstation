@@ -102,7 +102,7 @@ class Ui_MainWindow(object):
 
         self.parameter_groupBox = QGroupBox(self.frame)
         self.parameter_groupBox.setObjectName(u"groupBox_2")
-        self.parameter_groupBox.setGeometry(QRect(20, 340, 221, 250))
+        self.parameter_groupBox.setGeometry(QRect(20, 380, 221, 270))
         self.parameter_groupBox.setFont(font2)
 
         self.temperature = QLabel(self.parameter_groupBox)
@@ -116,7 +116,7 @@ class Ui_MainWindow(object):
 
         self.motorSpeedLabel = QLabel(self.parameter_groupBox)
         self.motorSpeedLabel.setObjectName(u"motorSpeedLabel")
-        self.motorSpeedLabel.setGeometry(QRect(10, 100, 161, 31))
+        self.motorSpeedLabel.setGeometry(QRect(10, 100, 161, 30))
         self.motorSpeedLabel.setFont(font1)
 
         self.lcdSpeed = QLCDNumber(self.parameter_groupBox)
@@ -125,8 +125,9 @@ class Ui_MainWindow(object):
 
         self.velocityLabel = QLabel(self.parameter_groupBox)
         self.velocityLabel.setObjectName(u"velocityLabel")
-        self.velocityLabel.setGeometry(QRect(10, 170, 161, 31))
+        self.velocityLabel.setGeometry(QRect(10, 170, 161, 30))
         self.velocityLabel.setFont(font1)
+        self.velocityLabel.setText("velocity")
 
         self.satelliteVelocity = QLCDNumber(self.parameter_groupBox)
         self.satelliteVelocity.setObjectName(u"satelliteVelocity")
@@ -179,7 +180,7 @@ class Ui_MainWindow(object):
         
         self.connectionOverviewLabel = QLabel(self.Connection)
         self.connectionOverviewLabel.setObjectName(u"label_2")
-        self.connectionOverviewLabel.setGeometry(QRect(10, 10, 261, 31))
+        self.connectionOverviewLabel.setGeometry(QRect(10, 10, 261, 30))
         self.connectionOverviewLabel.setFont(font4)
         self.connectionOverviewLabel.setStyleSheet(u"color: rgb(0, 0, 0);")
 
@@ -232,7 +233,6 @@ class Ui_MainWindow(object):
         self.graphWidget.setYRange(10,15)
 
         # self.graphWidget.setBackground('w')
-
         self.shutDownButton = QPushButton(self.centralwidget)
         self.shutDownButton.setObjectName(u"shutDownButton")
         self.shutDownButton.setGeometry(QRect(950, 350, 231, 50))
@@ -255,7 +255,7 @@ class Ui_MainWindow(object):
 
         self.currentLabel = QLabel(self.centralwidget)
         self.currentLabel.setObjectName(u"currentLabel")
-        self.currentLabel.setGeometry(QRect(950, 230, 121, 31))
+        self.currentLabel.setGeometry(QRect(950, 230, 121, 30))
         self.currentLabel.setFont(font1)
 
         self.lcdCurrent = QLCDNumber(self.centralwidget)
