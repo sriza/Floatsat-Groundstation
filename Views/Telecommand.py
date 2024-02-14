@@ -316,7 +316,7 @@ class Telecommand_MainWindow(object):
         for item in json_array:
             self.modes[item] = {}
             self.modes[item]["id"] = json_array[item]["id"]
-            self.modeDropdown.addItem(str(item)+" "+"("+str(json_array[item]["id"]) +")")
+            self.modeDropdown.addItem(str(item))
             self.modes[item]["data"] = json_array[item]["data"]
             self.modes[item]["data_type"] = json_array[item]["data_type"]
     
@@ -446,7 +446,7 @@ class Telecommand_MainWindow(object):
 
                 # armVelocity
                 self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
-                self.satAnimation.floatsatAngle =  math.degrees(yaw)
+                self.satAnimation.floatsatAngle =  yaw
                 self.satAnimation.armTranslate = topicData["arm_extension"]
 
                 # mockup

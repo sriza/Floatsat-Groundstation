@@ -49,7 +49,6 @@ class SatelliteAnimation(QWidget):
         
 
     def paintEvent(self,e):
-        print("updating paint event")
         self.painter = QPainter(self)
         self.brush = QBrush()
         self.brush.setColor(QColor('black'))

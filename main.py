@@ -185,6 +185,7 @@ class MainWindow(QMainWindow):
             if not self.setConnection:
                 return
                         
+            print("received:", topicName)
             # updates last connected time to present time
             self.programStatus["connectionStatus"]= True
             #unpacks data
