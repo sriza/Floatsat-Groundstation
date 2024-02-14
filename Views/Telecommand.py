@@ -392,7 +392,7 @@ class Telecommand_MainWindow(object):
                     value = math.radians(value)
 
                 if currentText in limitingMode:
-                    self.limit = float(self.xTextEdit.toPlainText())
+                    self.limit = value
                     
                 data.append(value)
 
@@ -483,7 +483,7 @@ class Telecommand_MainWindow(object):
                 self.orientationGraph.plot(x, y, pen='g', name='green')
 
                 if self.currentCommand == "SetControlDesired_pos" :
-                    limit = self.limit
+                    limit = math.degrees(self.limit)
                     self.orientationGraph.plot(x,np.full(len(x), float(limit)), pen='b',name='blue')
                 # end update orientation
                 

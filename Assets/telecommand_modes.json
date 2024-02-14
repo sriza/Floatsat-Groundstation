@@ -160,9 +160,9 @@
         "id": 18,
         "topicId": 50,
         "structure": "=3f",
-        "data_type":"radian",
+        "data_type":"",
         "data": {
-            "x":"Limit [deg/s]"
+            "x":"Limit [rad/s]"
         }
     },
     "SetControlDesired_speed": {
@@ -172,7 +172,7 @@
         "data_type":"",
         "type" : "basic",
         "data": {
-            "x" :"Desired speed [V]"
+            "x" :"Desired speed [rad/s]"
         }
     },
     "SetControlDesired_pos": {
