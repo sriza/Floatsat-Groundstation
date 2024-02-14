@@ -384,13 +384,15 @@ class Telecommand_MainWindow(object):
             
             if currentText in limitingMode:
                 self.currentCommand = currentText
-                self.limit = float(self.xTextEdit.toPlainText())
 
             for key in expectedData.keys():
                 value = float(types[key].toPlainText())
 
                 if currentMode["data_type"] == "radian":
                     value = math.radians(value)
+
+                if currentText in limitingMode:
+                    self.limit = float(self.xTextEdit.toPlainText())
                     
                 data.append(value)
 
