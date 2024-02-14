@@ -185,7 +185,7 @@ class MainWindow(QMainWindow):
             if not self.setConnection:
                 return
                         
-            print("received:", topicName)
+            print("received:", topicName,self.telemetry[topicName]["structure"])
             # updates last connected time to present time
             self.programStatus["connectionStatus"]= True
             #unpacks data
@@ -418,7 +418,7 @@ class MainWindow(QMainWindow):
     #telemetryContinuousExtendedTopicID
         
     def telemetryCalibIMU(self, data):
-        topicName = "telemetryContinuous"
+        topicName = "telemetryCalibIMU"
         self.setAndUpdate(data,topicName)
     #telemetryCalibIMU
         

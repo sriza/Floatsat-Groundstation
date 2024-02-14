@@ -47,7 +47,7 @@
     },
     "telemetryCalibIMU": {
         "name" : "telemetryCalibIMU",
-        "topicId": 42,
+        "topicId": 802,
         "structure": "=9f",
         "data": {
             "gyro_offx": "gyro_offx",
@@ -63,7 +63,7 @@
     },
     "telemetryControlParams": {
         "name":"telemetryControlParams",
-        "topicId": 43,
+        "topicId": 803,
         "structure": "=12f",
         "data": {
             "speed_P": "speed_P",
