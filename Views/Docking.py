@@ -84,7 +84,7 @@ class Docking_MainWindow(object):
 
         self.frame_2 = QFrame(self.centralwidget)
         self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setGeometry(QRect(30, 425, 1211, 350))
+        self.frame_2.setGeometry(QRect(30, 425, 1211, 300))
         self.frame_2.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_2.setFrameShape(QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QFrame.Raised)
@@ -196,13 +196,11 @@ class Docking_MainWindow(object):
     # create UI for mission modes
     def createMissionModes(self, missionModes):
         try:
-            print("in create mission modes", missionModes)
             self.modesUI = {}
             i = 0
             completedCount = 0
 
             for mode in missionModes:
-                print("mode")
                 self.modesUI[mode] = {}
                 self.modesUI[mode]["radioButton"] = QCheckBox(self.missionGroupBox)
                 (self.modesUI[mode]["radioButton"]).setObjectName("checkbox")
@@ -249,36 +247,23 @@ class Docking_MainWindow(object):
             if "telemetryContinuous" in data.keys():
                 topicName = "telemetryContinuous"
                 topicData = data[topicName]["data"]
-
-                q0 = topicData["q0"]
-                q1 = topicData["q1"]
-                q2 = topicData["q2"]
-                q3 = topicData["q3"]
                                   
-                yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
+                yaw = self.parent.satOrientation["yaw"]
 
-                # update satellite visualization
-                # armVelocity
-                # self.satAnimation.mocksatVelocity = topicData["mocksatAngularVelocity"] 
-                # self.satAnimation.floatsatAngle = yaw
-                # self.satAnimation.armExtension =  topicData["armExtension"]
-
+                # update satellite viz
+                self.satAnimation.inMission = self.parent.programStatus["inMission"]
                 self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
-                # self.satAnimation.mocksatVelocity += .5 
                 self.satAnimation.floatsatAngle =  yaw
                 self.satAnimation.armTranslate = topicData["arm_extension"]
 
                 # mockup
-                self.satAnimation.mocksatDistance= topicData["mockupDistance"]
-                # self.satAnimation.mocksatDistance= 44
+                # self.satAnimation.mocksatDistance= topicData["mockupDistance"]
+                self.satAnimation.mocksatDistance= 100
                 self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
-                # self.satAnimation.mocksatAngle =  
                 self.satAnimation.yaw2mockup = topicData["yaw2mockup"]
                 self.satAnimation.update()
 
-                # print(data[topicName])
                 missionData = data[topicName]["missionModes"]
-                print(missionData)
 
                 i= 0 
                 total = len(self.modesUI)
@@ -288,9 +273,6 @@ class Docking_MainWindow(object):
                     radioButton = self.modesUI[mode]["radioButton"]
                     buttonStatus = radioButton.isChecked()
                     missionStatus = missionData[mode]["status"]
-                    print(mode, buttonStatus, missionStatus)
-
-                    # if mode =
 
                     if buttonStatus != missionStatus:
                         radioButton.toggle()

@@ -111,7 +111,7 @@ while True:
 
     cnt += 1
     
-    if cnt==20:
+    if cnt==15:
         cnt=0
 
     time.sleep(2)

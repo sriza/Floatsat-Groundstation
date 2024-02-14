@@ -154,7 +154,6 @@ class IMU_MainWindow(object):
         self.yaw.setObjectName(u"yaw")
         self.yaw.setGeometry(QRect(510, 70, 201, 41))
 
-
         self.pitch_label = QLabel(self.groupBox_3)
         self.pitch_label.setObjectName(u"label_9")
         self.pitch_label.setGeometry(QRect(280, 40, 61, 31))
@@ -194,11 +193,11 @@ class IMU_MainWindow(object):
         self.command_data_label.setObjectName(u"label_14")
         self.command_data_label.setGeometry(QRect(260, 30, 131, 31))
         self.command_data_label.setFont(font2)
-        self.updateCommandInputField()
 
         self.command_data = QTextEdit(self.imu_command_group)
         self.command_data.setObjectName(u"command_data")
         self.command_data.setGeometry(QRect(260, 60, 201, 41))
+        self.updateCommandInputField()
 
         # error message label for telecommand input
         self.command_error_label = QLabel(self.imu_command_group)
@@ -283,8 +282,15 @@ class IMU_MainWindow(object):
     # update command label based on command type
     def updateCommandInputField(self):
         currentText= self.command_type_dropdown.currentText()
-        self.command_data_label.setText(self.modes[currentText]["data"]["x"])
-        self.currentCommand = ""
+        if "x" in self.modes[currentText]["data"]:
+            self.command_data_label.setText(self.modes[currentText]["data"]["x"])
+            self.currentCommand = ""
+            self.command_data_label.show()
+            self.command_data.show()
+        else:
+            self.command_data_label.hide()
+            self.command_data.hide()
+
 
 
     # prepare command dropdowns
@@ -306,18 +312,27 @@ class IMU_MainWindow(object):
             data = []
             currentText= self.command_type_dropdown.currentText()
             currentMode = self.modes[currentText]
+            data.append(currentMode["id"])
 
-            if currentMode !="":
-                data.append(currentMode["id"])
-            # expectedData = currentMode["data"]
-                data.append(float(self.command_data.toPlainText()))
+            # input not required for telecommand
+            if not currentMode["data"]:
+                self.parent.sendTelecommand(data)
+                return
+            
+            # telecommand needs input data from user
+            enteredData = self.command_data.toPlainText()
+            
+            if enteredData != "":
+                data.append(float(enteredData))
                 self.parent.sendTelecommand(data)
                 self.currentCommand = currentText
-            # self.command_error_label.setText("Please enter value to send telecommand")
+            else: 
+                self.command_error_label.setText("Please enter data to send telecommand")
         except Exception as ex:
+                print("exception at main telecommand imu:", ex)
                 self.command_error_label.setText("The entered data must be numeric")
 
-    # 
+    # update data within
     def updateTrigger(self,data):
         try:
             # self.value+=1
@@ -337,16 +352,11 @@ class IMU_MainWindow(object):
                 topicData = data[topicName]["data"]
                 
                 # conversion of quaternion to roll, pitch and yaw
-                q0 = topicData["q0"]
-                q1 = topicData["q1"]
-                q2 = topicData["q2"]
-                q3 = topicData["q3"]
                 timestamp = topicData["time"]
 
-            
-                roll = math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2))
-                pitch = math.asin(2 * (q0 * q2 - q3 * q1))                     
-                yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
+                roll = self.parent.satOrientation["roll"]
+                pitch = self.parent.satOrientation["pitch"]
+                yaw = self.parent.satOrientation["yaw"]
 
                 # lcd data update
                 self.roll.display(roll)
@@ -372,7 +382,6 @@ class IMU_MainWindow(object):
                 tempData = topicStruc["pairedData"]["speed"]
 
                 if self.currentCommand == "SetControlDesired_pos" :
-                    print("yaw data")
                     tempData = self.dynamicData["yaw"]
 
                 #graph data   

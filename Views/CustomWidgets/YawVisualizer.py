@@ -91,18 +91,9 @@ class YawVisualizer(WidgetClass):
         self.painter.setRenderHints(QPainter.TextAntialiasing)
         self.painter.setPen(self.fg2)
         self.painter.setFont(self.font16)
-        # self.draw_region()
         self.draw_region()
-        # self.draw_region(sky=True)
         self.draw_region(sky=True)
-        # self.draw_markers()
-        # self.draw_cursor()
-        # self.draw_skipskid()
         self.draw_heading()
-        # self.draw_airspeed()
-        # self.draw_vspeed()
-        # self.draw_altimeter()
-        # self.draw_status()
         self.painter.end()
 
 
@@ -119,16 +110,12 @@ class YawVisualizer(WidgetClass):
         self.bsbr.setAlpha(128)
         painter.setBrush(self.bsbr)
         self.bsbr.setAlpha(255)
-        # painter.drawEllipse(w / 2 - x, 17 * h / 16 - x, 2 * x, 2 * x)
-        # painter.drawEllipse(w / 2 - x, 17 * h / 16 - x, 2 * x, 2 * x)
         painter.drawEllipse(w/2-x,h/2-x,2*x,2*x)
 
         #circular units within the yaw
         for i in range(72):
             
             trans = QTransform()
-            # trans.translate(w/2-x, h/2-x)
-            # trans.translate(w, h)
             trans.translate(w/2, h/2)
             trans.rotateRadians((i / 72) * 2 * pi + hd)
             painter.setTransform(trans)

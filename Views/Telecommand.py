@@ -24,6 +24,8 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGraphicsView,
 from Views.CustomWidgets.SatelliteAnimation import SatelliteAnimation
 import json
 import math
+import pyqtgraph as pg
+import numpy as np
 
 class TeleCommandSignal(QObject):
     value = Signal()
@@ -36,69 +38,56 @@ class Telecommand_MainWindow(object):
         self.parent = MainWindow
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
+
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
-        self.frame.setGeometry(QRect(30, 10, 261, 441))
+        self.frame.setGeometry(QRect(30, 10, 280, 750))
         self.frame.setAutoFillBackground(False)
-        self.frame.setStyleSheet(u"background-color: rgb(225, 225, 225);")
+        # self.frame.setStyleSheet(u"background-color: rgb(225, 225, 225);")
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
-        self.groupBox = QGroupBox(self.frame)
-        self.groupBox.setObjectName(u"groupBox")
-        self.groupBox.setGeometry(QRect(10, 40, 231, 151))
+
+        self.motorSpeedLabel = QLabel(self.frame)
+        self.motorSpeedLabel.setObjectName(u"motorSpeedLabel")
+        self.motorSpeedLabel.setGeometry(QRect(0, 0, 261, 25))
+        self.motorSpeedLabel.setText("Motor Speed")
+
+        self.motorSpeedGraph = pg.PlotWidget(self.frame)
+        self.motorSpeedGraph.setGeometry(QRect(0,30,280,200))
+        self.motorSpeedGraph.setMinimumSize(QSize(270, 200))
+        self.motorSpeedGraph.setWindowTitle("Motor Speed")
+
+        self.orientationLabel = QLabel(self.frame)
+        self.orientationLabel.setObjectName(u"orientationLabel")
+        self.orientationLabel.setGeometry(QRect(0, 250, 261, 25))
+        self.orientationLabel.setText("Orientation")
+
+        self.orientationGraph = pg.PlotWidget(self.frame)
+        self.orientationGraph.setGeometry(QRect(0,275,280,200))
+        self.orientationGraph.setMinimumSize(QSize(270, 200))
+        self.orientationGraph.setWindowTitle("Orientation")
+
+        self.angularVelocityLabel = QLabel(self.frame)
+        self.angularVelocityLabel.setObjectName(u"angularVelocityLabel")
+        self.angularVelocityLabel.setGeometry(QRect(0, 500, 261, 25))
+        self.angularVelocityLabel.setText("Angular Velocity")
+
+        self.angularVelocityGraph = pg.PlotWidget(self.frame)
+        self.angularVelocityGraph.setGeometry(QRect(0,525,280,200))
+        self.angularVelocityGraph.setMinimumSize(QSize(270, 200))
+        self.angularVelocityGraph.setWindowTitle("Angular Velocity")
+
         font = QFont()
         font.setFamilies([u"Arial"])
         font.setPointSize(10)
-        self.groupBox.setFont(font)
-        self.groupBox.setStyleSheet(u"color: rgb(0, 0, 0);")
-        self.pushButton_7 = QPushButton(self.groupBox)
-        self.pushButton_7.setObjectName(u"pushButton_7")
-        self.pushButton_7.setGeometry(QRect(10, 100, 201, 41))
-        self.pushButton_7.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(50, 107, 29);")
-        self.label_12 = QLabel(self.groupBox)
-        self.label_12.setObjectName(u"label_12")
-        self.label_12.setGeometry(QRect(10, 20, 121, 31))
-        self.label_12.setFont(font)
-        self.plainTextEdit_7 = QPlainTextEdit(self.groupBox)
-        self.plainTextEdit_7.setObjectName(u"plainTextEdit_7")
-        self.plainTextEdit_7.setGeometry(QRect(10, 50, 201, 41))
-        self.groupBox_2 = QGroupBox(self.frame)
-        self.groupBox_2.setObjectName(u"groupBox_2")
-        self.groupBox_2.setGeometry(QRect(10, 200, 231, 231))
-        self.groupBox_2.setFont(font)
-        self.groupBox_2.setStyleSheet(u"color: rgb(9, 10, 17);")
-        self.label_6 = QLabel(self.groupBox_2)
-        self.label_6.setObjectName(u"label_6")
-        self.label_6.setGeometry(QRect(10, 20, 121, 31))
-        self.label_6.setFont(font)
-        self.label_7 = QLabel(self.groupBox_2)
-        self.label_7.setObjectName(u"label_7")
-        self.label_7.setGeometry(QRect(10, 90, 161, 31))
-        self.label_7.setFont(font)
-        self.pushButton_6 = QPushButton(self.groupBox_2)
-        self.pushButton_6.setObjectName(u"pushButton_6")
-        self.pushButton_6.setGeometry(QRect(10, 170, 201, 41))
-        self.pushButton_6.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-        "background-color: rgb(50, 107, 29);")
-        self.plainTextEdit_5 = QPlainTextEdit(self.groupBox_2)
-        self.plainTextEdit_5.setObjectName(u"plainTextEdit_5")
-        self.plainTextEdit_5.setGeometry(QRect(10, 120, 201, 41))
-        self.plainTextEdit_6 = QPlainTextEdit(self.groupBox_2)
-        self.plainTextEdit_6.setObjectName(u"plainTextEdit_6")
-        self.plainTextEdit_6.setGeometry(QRect(10, 50, 201, 41))
-        self.label_4 = QLabel(self.frame)
-        self.label_4.setObjectName(u"label_4")
-        self.label_4.setGeometry(QRect(0, 0, 261, 35))
+
         font1 = QFont()
         font1.setFamilies([u"Arial"])
         font1.setPointSize(16)
-        self.label_4.setFont(font1)
-        self.label_4.setStyleSheet(u"color: rgb(0, 0, 0);\n"
-        "background-color: rgb(211, 211, 211);")
-        self.groupBox_2.raise_()
-        self.groupBox.raise_()
-        self.label_4.raise_()
+
+        self.limit = 0
+        self.currentCommand = ""
+   
         self.graphicsView_4 = QGraphicsView(self.centralwidget)
         self.graphicsView_4.setObjectName(u"graphicsView_4")
         self.graphicsView_4.setGeometry(QRect(940, 450, 271, 270))
@@ -117,7 +106,7 @@ class Telecommand_MainWindow(object):
 
         self.satAnimation = SatelliteAnimation(self.centralwidget)
         self.satAnimation.setObjectName(u"satAnimation")
-        self.satAnimation.setGeometry(QRect(320, 10, 580, 400))
+        self.satAnimation.setGeometry(QRect(320, 10, 600, 400))
 
         self.Connection = QWidget(self.centralwidget)
         self.Connection.setObjectName(u"Connection")
@@ -141,10 +130,6 @@ class Telecommand_MainWindow(object):
         self.serverMessageLabel.setGeometry(QRect(10, 10, 231, 31))
         self.serverMessageLabel.setFont(font1)
         self.serverMessageLabel.setStyleSheet(u"color: rgb(0, 0, 0);")
-        self.label_11 = QLabel(self.centralwidget)
-        self.label_11.setObjectName(u"label_11")
-        self.label_11.setGeometry(QRect(330, 20, 191, 31))
-        self.label_11.setFont(font)
 
         self.shutDownButton = QPushButton(self.centralwidget)
         self.shutDownButton.setObjectName(u"pushButton_3")
@@ -153,11 +138,6 @@ class Telecommand_MainWindow(object):
         "background-color: rgb(182, 41, 16);")
 
         self.shutDownButton.clicked.connect(self.shutDown)
-        # self.initiateCalib = QPushButton(self.centralwidget)
-        # self.initiateCalib.setObjectName(u"pushButton_4")
-        # self.initiateCalib.setGeometry(QRect(960, 660, 231, 41))
-        # self.initiateCalib.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-        # "background-color: rgb(50, 107, 29);")
         self.groupBox_4 = QGroupBox(self.centralwidget)
         self.groupBox_4.setObjectName(u"groupBox_4")
         self.groupBox_4.setGeometry(QRect(960, 520, 231, 180))
@@ -209,7 +189,7 @@ class Telecommand_MainWindow(object):
 
         self.modeText = QLabel(self.centralwidget)
         self.modeText.setObjectName(u"label_14")
-        self.modeText.setGeometry(QRect(960, 165, 231, 31))
+        self.modeText.setGeometry(QRect(960, 160, 231, 31))
         self.modeText.setFont(font)
         self.modeText.setStyleSheet(u"background-color: rgb(26, 29, 56); color: rgb(255, 255, 255);")
 
@@ -227,63 +207,43 @@ class Telecommand_MainWindow(object):
 
         self.frame_2 = QFrame(self.centralwidget)
         self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setGeometry(QRect(20, 470, 881, 281))
+        self.frame_2.setGeometry(QRect(330, 450, 600, 281))
         self.frame_2.setAutoFillBackground(False)
         self.frame_2.setStyleSheet(u"background-color: rgb(225, 225, 225);")
         self.frame_2.setFrameShape(QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.groupBox_7 = QGroupBox(self.frame_2)
         self.groupBox_7.setObjectName(u"groupBox_7")
-        self.groupBox_7.setGeometry(QRect(20, 60, 811, 201))
+        self.groupBox_7.setGeometry(QRect(20, 60, 811, 205))
         self.groupBox_7.setFont(font)
         self.groupBox_7.setStyleSheet(u"color: rgb(9, 10, 17);")
-        self.x_label = QLabel(self.groupBox_7)
-        self.x_label.setObjectName(u"label_19")
-        self.x_label.setGeometry(QRect(30, 20, 121, 31))
-        self.x_label.setFont(font)
 
         # send telecommand button
         self.telecommandButton = QPushButton(self.groupBox_7)
         self.telecommandButton.setObjectName(u"pushButton_11")
-        self.telecommandButton.setGeometry(QRect(590, 150, 201, 41))
+        self.telecommandButton.setGeometry(QRect(10, 150, 201, 41))
         self.telecommandButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(50, 107, 29);")
         self.telecommandButton.clicked.connect(self.mainTelecommand)
-        
-        self.y_label = QLabel(self.groupBox_7)
-        self.y_label.setObjectName(u"label_20")
-        self.y_label.setGeometry(QRect(290, 20, 121, 31))
-        self.y_label.setFont(font)
-        self.z_label = QLabel(self.groupBox_7)
-        self.z_label.setObjectName(u"label_22")
-        self.z_label.setGeometry(QRect(550, 20, 121, 31))
-        self.z_label.setFont(font)
-        self.label_23 = QLabel(self.groupBox_7)
-        self.label_23.setObjectName(u"label_23")
-        self.label_23.setGeometry(QRect(30, 100, 121, 31))
-        self.label_23.setFont(font)
 
-        # tuning parameters
-        self.modeDropdown = QComboBox(self.groupBox_7)
-        # self.plainTextEdit = QPlainTextEdit(self.groupBox_7)
-        self.modeDropdown.setObjectName(u"plainTextEdit")
-        self.modeDropdown.setGeometry(QRect(30, 133, 311, 51))
-        self.modeDropdown.setPlaceholderText("Propertional")
+        self.telecommandModeLabel = QLabel(self.groupBox_7)
+        self.telecommandModeLabel.setObjectName(u"telecommandModeLabel")
+        self.telecommandModeLabel.setGeometry(QRect(10, 0, 121, 31))
+        self.telecommandModeLabel.setFont(font)
 
         self.xTextEdit = QPlainTextEdit(self.groupBox_7)
         self.xTextEdit.setObjectName(u"x")
-        self.xTextEdit.setGeometry(QRect(30, 50, 231, 41))
+        self.xTextEdit.setGeometry(QRect(10, 80, 130, 41))
         self.xTextEdit.setPlaceholderText("Propertional")
-
 
         self.yTextEdit = QPlainTextEdit(self.groupBox_7)
         self.yTextEdit.setObjectName(u"y")
-        self.yTextEdit.setGeometry(QRect(290, 50, 231, 41))
+        self.yTextEdit.setGeometry(QRect(160, 80, 130, 41))
         self.yTextEdit.setPlaceholderText("Integrator")
 
         self.zTextEdit = QPlainTextEdit(self.groupBox_7)
         self.zTextEdit.setObjectName(u"z")
-        self.zTextEdit.setGeometry(QRect(550, 50, 231, 41))
+        self.zTextEdit.setGeometry(QRect(310, 80, 130, 41))
         self.zTextEdit.setPlaceholderText("Derivative")
 
         self.modeDropdown = QComboBox(self.groupBox_7)
@@ -292,16 +252,16 @@ class Telecommand_MainWindow(object):
         
         # self.plainTextEdit = QPlainTextEdit(self.groupBox_7)
         self.modeDropdown.setObjectName(u"plainTextEdit")
-        self.modeDropdown.setGeometry(QRect(30, 133, 311, 51))
+        self.modeDropdown.setGeometry(QRect(10, 25, 311, 41))
         self.modeDropdown.setPlaceholderText("Select the mode")
         self.modeDropdown.currentTextChanged.connect(self.updateModeParameters)
 
 
-        self.label_21 = QLabel(self.frame_2)
-        self.label_21.setObjectName(u"label_21")
-        self.label_21.setGeometry(QRect(0, 0, 881, 41))
-        self.label_21.setFont(font1)
-        self.label_21.setStyleSheet(u"color: rgb(0, 0, 0);\n"
+        self.allTelecommandsLabel = QLabel(self.frame_2)
+        self.allTelecommandsLabel.setObjectName(u"allTelecommandsLabel")
+        self.allTelecommandsLabel.setGeometry(QRect(0, 0, 881, 41))
+        self.allTelecommandsLabel.setFont(font1)
+        self.allTelecommandsLabel.setStyleSheet(u"color: rgb(0, 0, 0);\n"
         "background-color: rgb(211, 211, 211);")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
@@ -321,19 +281,9 @@ class Telecommand_MainWindow(object):
     # add text to ui, no translation
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Motor Telecommand", None))
-        self.pushButton_7.setText(QCoreApplication.translate("MainWindow", u"Set Motor Parameter", None))
-        self.label_12.setText(QCoreApplication.translate("MainWindow", u"Angular Velocity", None))
-        self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Satellite Telecommand", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Orientation", None))
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Angular Velocity", None))
-        self.pushButton_6.setText(QCoreApplication.translate("MainWindow", u"Set Satellite Parameters", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Basic Telecommands", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Satellite Status ", None))
         self.serverMessageLabel.setText(QCoreApplication.translate("MainWindow", u"Message from Server", None))
-        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Orientation Visualizer", None))
         self.shutDownButton.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
-        # self.initiateCalib.setText(QCoreApplication.translate("MainWindow", u"Initiate Caliberation", None))
         self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Sensor Calibration Status", None))
         self.missionStartButton.setText(QCoreApplication.translate("MainWindow", u"Initiate Mission Mode", None))
         self.commandCountLabel.setText(QCoreApplication.translate("MainWindow", u"Command count :", None))
@@ -341,13 +291,9 @@ class Telecommand_MainWindow(object):
         self.motorSpeedLabel.setText(QCoreApplication.translate("MainWindow", u"Motor speed :", None))
         self.commandCnt.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.modeText.setText(QCoreApplication.translate("MainWindow", u"Docking", None))
-        self.x_label.setText(QCoreApplication.translate("MainWindow", u"Propertional", None))
-        # self.extendedData.setText(QCoreApplication.translate("MainWindow", u"Extended data ..... .... ...", None))
         self.telecommandButton.setText(QCoreApplication.translate("MainWindow", u"Send Telecommand", None))
-        self.y_label.setText(QCoreApplication.translate("MainWindow", u"Integral", None))
-        self.z_label.setText(QCoreApplication.translate("MainWindow", u"Derivative", None))
-        self.label_23.setText(QCoreApplication.translate("MainWindow", u"Telecommand mode", None))
-        self.label_21.setText(QCoreApplication.translate("MainWindow", u"Tuning Parameters", None))
+        self.telecommandModeLabel.setText(QCoreApplication.translate("MainWindow", u"Telecommand mode", None))
+        self.allTelecommandsLabel.setText(QCoreApplication.translate("MainWindow", u"All Telecommands", None))
     
     # add dropdown in telecommand type combobox
     def addDropdownItems(self):
@@ -359,10 +305,11 @@ class Telecommand_MainWindow(object):
             self.modes[item] = {}
             self.modes[item]["id"] = json_array[item]["id"]
             self.modes[item]["data"] = json_array[item]["data"]
+            self.modes[item]["data_type"] = json_array[item]["data_type"]
     
     # set satellite mode
     def setSatelliteModes(self):
-        f = open("Assets/modes.json")
+        f = open("Assets/satellite_modes.json")
         json_array = json.load(f)
 
         for item in json_array:
@@ -391,46 +338,54 @@ class Telecommand_MainWindow(object):
         types = {
             "x": {
                 "input":self.xTextEdit,
-                "label":self.x_label
                 },
             "y": {
                 "input":self.yTextEdit,
-                "label":self.y_label
                 },
             "z": {
                 "input":self.zTextEdit,
-                "label":self.z_label
                 }
         }
         
         for type in types:
             if type in data:
                 (types[type]["input"]).setPlaceholderText(data[type])
-                (types[type]["label"]).setText(data[type])
                 (types[type]["input"]).show()
-                (types[type]["label"]).show()
                 continue
 
             (types[type]["input"]).hide()
-            (types[type]["label"]).hide()
 
     # common platform to send all telecommands
     def mainTelecommand(self):
-        data = []
-        currentText= self.modeDropdown.currentText()
-        currentMode = self.modes[currentText]
-        data.append(currentMode["id"])
-        expectedData = currentMode["data"]
+        try:
+            data = []
+            currentText= self.modeDropdown.currentText()
+            currentMode = self.modes[currentText]
+            limitingMode = ["SetControlDesired_vel", "SetControlDesired_speed", "SetControlDesired_pos"]
+            data.append(currentMode["id"])
+            expectedData = currentMode["data"]
 
-        types = {"x": self.xTextEdit,
-                  "y": self.yTextEdit, 
-                  "z": self.zTextEdit}
-        
-        for key in expectedData.keys():
-            value = float(types[key].toPlainText())
-            data.append(value)
+            types = {"x": self.xTextEdit,
+                    "y": self.yTextEdit, 
+                    "z": self.zTextEdit}
+            
+            if currentText in limitingMode:
+                self.currentCommand = currentText
+                self.limit = float(self.xTextEdit.toPlainText())
 
-        self.parent.sendTelecommand(data)
+            for key in expectedData.keys():
+                value = float(types[key].toPlainText())
+
+                if currentMode["data_type"] == "radian":
+                    value = value*3.14/180
+                    
+                data.append(value)
+
+            self.parent.sendTelecommand(data)
+        except Exception as ex:
+            print("exception sending telecommand:", ex)
+            self.currentCommand = ""
+            self.limit = 0
 
     # update the value, called when new data is received
     def updateTrigger(self,data):
@@ -458,6 +413,7 @@ class Telecommand_MainWindow(object):
             if "telemetryContinuous" in data.keys():
                 topicName = "telemetryContinuous"
                 topicData = data[topicName]["data"]
+                topicStruc = data[topicName]
                 self.commandCnt.setText(str(topicData["cmdCnt"]))
 
                 mode_id = topicData["modeid"]
@@ -472,22 +428,68 @@ class Telecommand_MainWindow(object):
                 yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
 
                 # update satellite visualization
+                self.satAnimation.inMission = self.parent.programStatus["inMission"]
+
                 # armVelocity
                 self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
-                # self.satAnimation.mocksatVelocity += .5 
                 self.satAnimation.floatsatAngle =  yaw
                 self.satAnimation.armTranslate = topicData["arm_extension"]
 
                 # mockup
                 self.satAnimation.mocksatDistance= topicData["mockupDistance"]
-                # self.satAnimation.mocksatDistance= 44
                 self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
-                # self.satAnimation.mocksatAngle =  
                 self.satAnimation.yaw2mockup = topicData["yaw2mockup"]
 
-                self.satAnimation.update()    
-                # print(data[topicName])
-                missionData = data[topicName]["missionModes"]
+                self.satAnimation.update()
+                #end update sat vizualization    
+
+                # update motor speed graph
+                tempData = topicStruc["pairedData"]["speed"]
+
+                x = list(tempData.keys())
+                y = list(tempData.values())
+
+                self.motorSpeedGraph.clear()
+                self.motorSpeedGraph.plot(x, y, pen='g', symbol='x',
+                         symbolPen='g', symbolBrush=0.2, name='green')
+
+                if self.currentCommand == "SetControlDesired_speed" :
+                    limit = self.limit
+                    self.motorSpeedGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
+                         symbolPen='b', symbolBrush=0.2, name='blue')
+                # end update motor speed
+                
+                # update orientation graph
+                tempData = topicStruc["pairedData"]["yaw"]
+
+                x = list(tempData.keys())
+                y = list(tempData.values())
+
+                self.orientationGraph.clear()
+                self.orientationGraph.plot(x, y, pen='g', symbol='x',
+                         symbolPen='g', symbolBrush=0.2, name='green')
+
+                if self.currentCommand == "SetControlDesired_pos" :
+                    limit = self.limit
+                    self.orientationGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
+                         symbolPen='b', symbolBrush=0.2, name='blue')
+                # end update orientation
+                
+
+                # update angular velocity
+                tempData = topicStruc["pairedData"]["velocity"]
+
+                x = list(tempData.keys())
+                y = list(tempData.values())
+
+                self.angularVelocityGraph.clear()
+                self.angularVelocityGraph.plot(x, y, pen='g', symbol='x',
+                         symbolPen='g', symbolBrush=0.2, name='green')
+
+                if self.currentCommand == "SetControlDesired_vel" :
+                    limit = self.limit
+                    self.angularVelocityGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
+                         symbolPen='b', symbolBrush=0.2, name='blue')
 
         except Exception as expe:
             print("exception telecommand update:", expe)

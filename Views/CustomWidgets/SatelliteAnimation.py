@@ -11,7 +11,7 @@ class SatelliteAnimation(QWidget):
         super().__init__(parent)
         self.setGeometry(100, 100, 600, 400)
 
-        self.isDocked = False
+        self.inMission = True
 
         # mocksatData
         self.mocksatVelocity = 0
@@ -56,10 +56,12 @@ class SatelliteAnimation(QWidget):
         self.yaw2mockup = self.yaw2mockup*180/3.14
 
         self.drawFloatSat() 
-        
-        if self.mocksatDistance:
+        print("in Mission", self.inMission)
+        if self.inMission:
+            # print("in mission")
             self.drawMockSat()
             # pass
+        self.drawDetail()
 
         self.painter.end()
     
@@ -99,16 +101,12 @@ class SatelliteAnimation(QWidget):
         hand_height = self.hand_height
 
         # scale translation of arm in real sat to animation 
-        print("arm Translate:",self.armTranslate)
         self.armTranslate *=self.scalingFactor
-        print("arm Translate:",self.armTranslate)
-        print("-----------------------------------------------------")
 
         # if translation is greater or equal to armtranslate, reset translation to arm width
         # limiting condition
         # some snapping motion seen because of this.. need to test in real life
         if arm_width/2 < self.armTranslate:
-            print("arm_width:" , arm_width/2)
             self.armTranslate = arm_width/2
 
         # self.prevArmTranslate = self.armTranslate
@@ -143,9 +141,6 @@ class SatelliteAnimation(QWidget):
 
     # draw mocksat
     def drawMockSat(self):
-        # self.mocksatAngle = self.mocksatVeloc
-        # self.mocksatAngle = self.mocksatAngle*180/3.14 - (180-(self.yaw2mockup-self.floatsatAngle))
-        # self.mocksatAngle = self.mocksatAngle*180/3.14 - (180-(self.yaw2mockup-self.floatsatAngle))
         self.mocksatAngle = self.mocksatAngle*180/3.14
         sat_width = self.sat_width
         sat_height = self.sat_height
@@ -182,29 +177,38 @@ class SatelliteAnimation(QWidget):
         arm_height = self.hand_height
       
         painter.drawRect(docking_port_x,docking_port_y, arm_width,arm_height)
-        # painter.drawRect(docking_port_handx,docking_port_handy, 10, 30)
 
         painter.drawPath(path)
         painter.resetTransform()
+    
+    def drawDetail(self):
+        painter = self.painter
+        painter.setBrush(Qt.white)
+        rect = QRect(450,300, 150, 100)
+        painter.drawRect(rect)
+        painter.setBrush(Qt.black)
+        painter.drawText(460, 320 ,"Arm Extension: "+str(self.armExtension))
+        painter.drawText(460, 340 ,"Mocksat Velocity: "+ str(self.mocksatVelocity))
+        painter.drawText(460, 360 ,"Mocksat Distance: "+ str(self.mocksatDistance))
+        painter.drawText(460, 380 ,"Floatsat Yaw: "+ str(round(self.floatsatAngle,5)))
 
-# def updateSat():
+def updateSat():
     # data regarding docking
+    window.mocksatAngle +=0.5
+    window.floatsatAngle +=0.15
+    window.armTranslate+=.1
+    window.update()
 
-    # window.mocksatAngle +=0.5
-    # window.floatsatAngle +=0.15
-    # window.armTranslate+=.1
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = SatelliteAnimation()
+    window.show()
+    updatePaint = QTimer()
+
+    updatePaint.setInterval(100)
+    updatePaint.timeout.connect(updateSat)
+    updatePaint.start()
+
+
     # window.update()
-
-# if __name__ == "__main__":
-#     app = QApplication(sys.argv)
-#     window = RotatingCirclesAnimation()
-#     window.show()
-#     updatePaint = QTimer()
-
-#     updatePaint.setInterval(100)
-#     updatePaint.timeout.connect(updateSat)
-#     updatePaint.start()
-
-
-#     # window.update()
-#     sys.exit(app.exec())
+    sys.exit(app.exec())

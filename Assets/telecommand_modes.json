@@ -3,66 +3,80 @@
         "id": 0,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "SetMode_Standby":{
         "id": 1,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "SetMode_CalibGyro": {
         "id": 2,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "SetMode_CalibAccel": {
         "id": 3,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "SetMode_CalibMag": {
         "id": 4,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "SetMode_CalibArm": {
         "id": 5,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "SetMode_ControlSpeed ": {
         "id": 6,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
+        "type" : "basic",
         "data": {}
     },
     "SetMode_ControlPos": {
         "id": 7,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
+        "type" : "basic",
         "data": {}
     },
     "SetMode_ControlVel": {
         "id": 8,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
+        "type" : "basic",
         "data": {}
     },
     "SetMode_Mission": {
         "id": 9,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "SetCalibParams_gyro": {
         "id": 10,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {
             "x": "X",
             "y": "Y",
@@ -73,6 +87,7 @@
         "id": 11,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {
             "x": "X",
             "y": "Y",
@@ -83,6 +98,7 @@
         "id": 12,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {
             "x": "X",
             "y": "Y",
@@ -93,6 +109,7 @@
         "id": 13,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {
             "x": "P",
             "y": "I",
@@ -103,6 +120,7 @@
         "id": 14,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {
             "x": "Speed Limit"
         }
@@ -111,6 +129,7 @@
         "id": 15,
         "topicId": 50,
         "structure": "=3f",
+        "data_type": "radian",
         "data": {
             "x": "P",
             "y": "I",
@@ -121,6 +140,7 @@
         "id": 16,
         "topicId": 50,
         "structure": "=3f",
+        "data_type": "radian",
         "data": {
             "x": "Position Limit"
         }
@@ -129,6 +149,7 @@
         "id": 17,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {
             "x":"P",
             "y":"I",
@@ -139,6 +160,7 @@
         "id": 18,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {
             "x":"Limit"
         }
@@ -147,6 +169,7 @@
         "id": 19,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "type" : "basic",
         "data": {
             "x" :"Desired speed"
@@ -157,6 +180,7 @@
         "topicId": 50,
         "structure": "=3f",
         "type" : "basic",
+        "data_type" : "radian",
         "data": {
             "x":"Desired position"
         }
@@ -165,6 +189,7 @@
         "id": 21,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "type": "basic",
         "data": {
             "x" : "Desired Velocity"
@@ -174,36 +199,42 @@
         "id": 22,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "SendControlTelemetry": {
         "id": 23,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "ToggleExtendedTelemetry": {
         "id": 24,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "ToggleCamera": {
         "id": 25,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "ToggleVideoStreaming": {
         "id": 26,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     },
     "Shutdown": {
         "id": 27,
         "topicId": 50,
         "structure": "=3f",
+        "data_type":"",
         "data": {}
     }
 }

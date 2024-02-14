@@ -22,9 +22,7 @@ import json
 
 class SummarySignal(QObject):
     value = Signal()
-
 class Ui_MainWindow(object):
-
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
@@ -88,7 +86,7 @@ class Ui_MainWindow(object):
 
         self.lcdSpeed = QLCDNumber(self.frame)
         self.lcdSpeed.setObjectName(u"lcdSpeed")
-        self.lcdSpeed.setGeometry(QRect(30, 620, 201, 41))
+        self.lcdSpeed.setGeometry(QRect(30, 600, 201, 41))
 
         self.roll_label = QLabel(self.frame)
         self.roll_label.setObjectName(u"label_3")
@@ -112,7 +110,7 @@ class Ui_MainWindow(object):
 
         self.parameter_groupBox = QGroupBox(self.frame)
         self.parameter_groupBox.setObjectName(u"groupBox_2")
-        self.parameter_groupBox.setGeometry(QRect(20, 430, 221, 271))
+        self.parameter_groupBox.setGeometry(QRect(20, 430, 221, 250))
         self.parameter_groupBox.setFont(font2)
 
         self.temperature = QLabel(self.parameter_groupBox)
@@ -122,7 +120,7 @@ class Ui_MainWindow(object):
 
         self.motorSpeedLabel = QLabel(self.parameter_groupBox)
         self.motorSpeedLabel.setObjectName(u"motorSpeedLabel")
-        self.motorSpeedLabel.setGeometry(QRect(10, 160, 161, 31))
+        self.motorSpeedLabel.setGeometry(QRect(10, 140, 161, 31))
         self.motorSpeedLabel.setFont(font1)
         
         self.parameter_groupBox.raise_()
@@ -157,20 +155,16 @@ class Ui_MainWindow(object):
 
         self.graphicsView_5 = QGraphicsView(self.centralwidget)
         self.graphicsView_5.setObjectName(u"graphicsView_5")
-        self.graphicsView_5.setGeometry(QRect(930, 570, 271, 151))
+        self.graphicsView_5.setGeometry(QRect(930, 530, 271, 151))
         self.graphicsView_5.setAutoFillBackground(True)
         self.graphicsView_5.setStyleSheet(u"background-color: rgb(225, 225, 225);")
         brush2 = QBrush(QColor(255, 124, 234, 255))
         brush2.setStyle(Qt.NoBrush)
         self.graphicsView_5.setBackgroundBrush(brush2)
-
-        self.satelliteVisualization = QOpenGLWidget(self.centralwidget)
-        self.satelliteVisualization.setObjectName(u"satelliteVisualization")
-        self.satelliteVisualization.setGeometry(QRect(330, 530, 271, 200))
         
         self.Connection = QWidget(self.centralwidget)
         self.Connection.setObjectName(u"Connection")
-        self.Connection.setGeometry(QRect(930, 520, 271, 51))
+        self.Connection.setGeometry(QRect(930, 480, 271, 51))
         self.Connection.setFont(font3)
         self.Connection.setStyleSheet(u"background-color: rgb(211, 211, 211);")
         
@@ -194,39 +188,37 @@ class Ui_MainWindow(object):
 
         self.connectButton = QPushButton(self.centralwidget)
         self.connectButton.setObjectName(u"connectButton")
-        self.connectButton.setGeometry(QRect(950, 620, 231, 41))
+        self.connectButton.setGeometry(QRect(950, 550, 231, 41))
         self.connectButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(50, 107, 29);")
         self.connectButton.clicked.connect(self.startUDP)
 
         self.disconnectButton = QPushButton(self.centralwidget)
         self.disconnectButton.setObjectName(u"disconnectButton")
-        self.disconnectButton.setGeometry(QRect(950, 670, 231, 41))
+        self.disconnectButton.setGeometry(QRect(950, 600, 231, 41))
         self.disconnectButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(182, 41, 16);")
         self.disconnectButton.clicked.connect(self.stopUDP)
 
         self.orientation_visualizer_label = QLabel(self.centralwidget)
         self.orientation_visualizer_label.setObjectName(u"label_11")
-        self.orientation_visualizer_label.setGeometry(QRect(330, 500, 191, 31))
+        self.orientation_visualizer_label.setGeometry(QRect(330, 450, 191, 31))
         self.orientation_visualizer_label.setFont(font1)
 
         self.pfd = YawVisualizer(self.centralwidget) 
         self.pfd.zoom = 0.3
-        self.pfd.setGeometry(QRect(330, 530, 270, 200))
+        self.pfd.setGeometry(QRect(330, 480, 270, 200))
         self.pfd.setMinimumSize(QSize(270, 200))
         self.pfd.show()
 
-        # self.visualization = QHBoxLayout(self.centralwidget)
-
         self.volt_visualizer = QLabel(self.centralwidget)
         self.volt_visualizer.setObjectName(u"volt_visualizer")
-        self.volt_visualizer.setGeometry(QRect(630, 500, 191, 31))
+        self.volt_visualizer.setGeometry(QRect(630, 450, 191, 31))
         self.volt_visualizer.setFont(font1)
 
         # temperature graph
         self.graphWidget = pg.PlotWidget(self.centralwidget)
-        self.graphWidget.setGeometry(QRect(630,530,270,200))
+        self.graphWidget.setGeometry(QRect(630,480,270,200))
         self.graphWidget.setMinimumSize(QSize(270, 200))
         self.graphWidget.setYRange(10,15)
 
@@ -234,7 +226,7 @@ class Ui_MainWindow(object):
 
         self.shutDownButton = QPushButton(self.centralwidget)
         self.shutDownButton.setObjectName(u"shutDownButton")
-        self.shutDownButton.setGeometry(QRect(950, 350, 231, 41))
+        self.shutDownButton.setGeometry(QRect(950, 350, 231, 50))
         self.shutDownButton.setStyleSheet(u"color: rgb(255, 255, 255);\n"
         "background-color: rgb(182, 41, 16);")
         self.shutDownButton.clicked.connect(self.shutDown)
@@ -353,15 +345,9 @@ class Ui_MainWindow(object):
                     hour = list(tempData.keys())
                     voltage = list(tempData.values())
                 
-                # conversion of quaternion to roll, pitch and yaw
-                q0 = topicData["q0"]
-                q1 = topicData["q1"]
-                q2 = topicData["q2"]
-                q3 = topicData["q3"]
-            
-                roll = math.degrees(math.atan2(2 * (q0 * q1 + q2 * q3), 1 - 2 * (q1 * q1 + q2 * q2)))
-                pitch = math.degrees(math.asin(2 * (q0 * q2 - q3 * q1)))                         
-                yaw = math.degrees(math.atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3)))
+                roll = self.parent.satOrientation["roll"]
+                pitch = self.parent.satOrientation["pitch"]
+                yaw = self.parent.satOrientation["yaw"]
 
                 # lcd data update
                 self.lcdRoll.display(roll)
@@ -371,8 +357,14 @@ class Ui_MainWindow(object):
                 self.lcdSpeed.display(topicData["speed"])
                 self.lcdVoltage.display(topicData["U_bat"])
 
+                # battery percentage
                 batterPer = (topicData["U_bat"]-11.2)/(max_voltage-11.2)*100
                 self.progressBar.setValue(batterPer)
+                
+                if batterPer<0:
+                    self.progressBar.setStyleSheet(u"background-color: rgb(182, 41, 16)")
+                else:
+                    self.progressBar.setStyleSheet(u"background-color: rgb(182, 41, 16)")
 
                 # todo: update progress bar styling
                 self.graphWidget.clear()
@@ -381,10 +373,11 @@ class Ui_MainWindow(object):
 
 
                 # update yaw parameter
-                self.pfd.heading = yaw
+                self.pfd.heading = math.degrees(yaw)
                 self.pfd.update()
 
-                # update satellite visualization
+                # update satellite visualization\
+                self.satAnimation.inMission = self.parent.programStatus["inMission"]
                 # armVelocity
                 self.satAnimation.mocksatVelocity = topicData["mockupAngularVelocity"] 
                 # self.satAnimation.mocksatVelocity += .5 
@@ -398,8 +391,6 @@ class Ui_MainWindow(object):
                 # self.satAnimation.mocksatAngle =  
                 self.satAnimation.yaw2mockup = topicData["yaw2mockup"]
                 # self.satAnimation.mocksatAngle = 0
-
-                # print(topicData)
 
                 self.satAnimation.update()
 
