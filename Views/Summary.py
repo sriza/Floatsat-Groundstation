@@ -65,63 +65,72 @@ class Ui_MainWindow(object):
 
         self.label = QLabel(self.frame)
         self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(10, 10, 211, 31))
+        self.label.setGeometry(QRect(10, 10, 211, 30))
         self.label.setFont(font)
-
-        self.lcdRoll = QLCDNumber(self.frame)
-        self.lcdRoll.setObjectName(u"lcdRoll")
-        self.lcdRoll.setGeometry(QRect(30, 130, 201, 41))
-
-        self.lcdYaw = QLCDNumber(self.frame)
-        self.lcdYaw.setObjectName(u"lcdYaw")
-        self.lcdYaw.setGeometry(QRect(30, 310, 201, 41))
-    
-        self.lcdPitch = QLCDNumber(self.frame)
-        self.lcdPitch.setObjectName(u"lcdPitch")
-        self.lcdPitch.setGeometry(QRect(30, 220, 201, 41))
-
-        self.lcdTemperature = QLCDNumber(self.frame)
-        self.lcdTemperature.setObjectName(u"lcdTemperature")
-        self.lcdTemperature.setGeometry(QRect(30, 510, 201, 41))
-
-        self.lcdSpeed = QLCDNumber(self.frame)
-        self.lcdSpeed.setObjectName(u"lcdSpeed")
-        self.lcdSpeed.setGeometry(QRect(30, 600, 201, 41))
 
         self.roll_label = QLabel(self.frame)
         self.roll_label.setObjectName(u"label_3")
-        self.roll_label.setGeometry(QRect(30, 100, 121, 31))
+        self.roll_label.setGeometry(QRect(30, 100, 121, 30))
         self.roll_label.setFont(font1)
+
+        self.lcdRoll = QLCDNumber(self.frame)
+        self.lcdRoll.setObjectName(u"lcdRoll")
+        self.lcdRoll.setGeometry(QRect(30, 130, 201, 40))
 
         self.pitch_label = QLabel(self.frame)
         self.pitch_label.setObjectName(u"label_4")
-        self.pitch_label.setGeometry(QRect(30, 190, 121, 31))
+        self.pitch_label.setGeometry(QRect(30, 170, 121, 30))
         self.pitch_label.setFont(font1)
+
+        self.lcdPitch = QLCDNumber(self.frame)
+        self.lcdPitch.setObjectName(u"lcdPitch")
+        self.lcdPitch.setGeometry(QRect(30, 200, 201, 40))
 
         self.yaw_label = QLabel(self.frame)
         self.yaw_label.setObjectName(u"label_5")
-        self.yaw_label.setGeometry(QRect(30, 280, 121, 31))
+        self.yaw_label.setGeometry(QRect(30, 240, 121, 30))
         self.yaw_label.setFont(font1)
+
+        self.lcdYaw = QLCDNumber(self.frame)
+        self.lcdYaw.setObjectName(u"lcdYaw")
+        self.lcdYaw.setGeometry(QRect(30, 270, 201, 40))
 
         self.orientation_groupBox = QGroupBox(self.frame)
         self.orientation_groupBox.setObjectName(u"groupBox")
-        self.orientation_groupBox.setGeometry(QRect(20, 70, 231, 321))
+        self.orientation_groupBox.setGeometry(QRect(20, 70, 231, 270))
         self.orientation_groupBox.setFont(font2)
 
         self.parameter_groupBox = QGroupBox(self.frame)
         self.parameter_groupBox.setObjectName(u"groupBox_2")
-        self.parameter_groupBox.setGeometry(QRect(20, 430, 221, 250))
+        self.parameter_groupBox.setGeometry(QRect(20, 340, 221, 250))
         self.parameter_groupBox.setFont(font2)
 
         self.temperature = QLabel(self.parameter_groupBox)
         self.temperature.setObjectName(u"label_6")
-        self.temperature.setGeometry(QRect(10, 50, 121, 31))
+        self.temperature.setGeometry(QRect(10, 30, 121, 30))
         self.temperature.setFont(font1)
+
+        self.lcdTemperature = QLCDNumber(self.parameter_groupBox)
+        self.lcdTemperature.setObjectName(u"lcdTemperature")
+        self.lcdTemperature.setGeometry(QRect(10, 60, 201, 40))
 
         self.motorSpeedLabel = QLabel(self.parameter_groupBox)
         self.motorSpeedLabel.setObjectName(u"motorSpeedLabel")
-        self.motorSpeedLabel.setGeometry(QRect(10, 140, 161, 31))
+        self.motorSpeedLabel.setGeometry(QRect(10, 100, 161, 31))
         self.motorSpeedLabel.setFont(font1)
+
+        self.lcdSpeed = QLCDNumber(self.parameter_groupBox)
+        self.lcdSpeed.setObjectName(u"lcdSpeed")
+        self.lcdSpeed.setGeometry(QRect(10, 130, 201, 41))
+
+        self.velocityLabel = QLabel(self.parameter_groupBox)
+        self.velocityLabel.setObjectName(u"velocityLabel")
+        self.velocityLabel.setGeometry(QRect(10, 170, 161, 31))
+        self.velocityLabel.setFont(font1)
+
+        self.satelliteVelocity = QLCDNumber(self.parameter_groupBox)
+        self.satelliteVelocity.setObjectName(u"satelliteVelocity")
+        self.satelliteVelocity.setGeometry(QRect(10, 200, 201, 41))
         
         self.parameter_groupBox.raise_()
         self.orientation_groupBox.raise_()
@@ -357,6 +366,7 @@ class Ui_MainWindow(object):
                 self.lcdSpeed.display(topicData["speed"])
                 self.lcdVoltage.display(topicData["U_bat"])
                 self.lcdCurrent.display(topicData["I_total"])
+                self.satelliteVelocity.display(topicData["velocity"])
 
                 # battery percentage
                 batterPer = (topicData["U_bat"]-11.2)/(max_voltage-11.2)*100
