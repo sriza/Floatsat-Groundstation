@@ -464,13 +464,11 @@ class Telecommand_MainWindow(object):
                 y = list(tempData.values())
 
                 self.motorSpeedGraph.clear()
-                self.motorSpeedGraph.plot(x, y, pen='g', symbol='x',
-                         symbolPen='g', symbolBrush=0.2, name='green')
+                self.motorSpeedGraph.plot(x, y, pen='g', name='green')
 
                 if self.currentCommand == "SetControlDesired_speed" :
                     limit = self.limit
-                    self.motorSpeedGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
-                         symbolPen='b', symbolBrush=0.2, name='blue')
+                    self.motorSpeedGraph.plot(x,np.full(len(x), float(limit)), pen='b', name='blue')
                 # end update motor speed
                 
                 # update orientation graph
@@ -480,13 +478,11 @@ class Telecommand_MainWindow(object):
                 y = list(tempData.values())
 
                 self.orientationGraph.clear()
-                self.orientationGraph.plot(x, y, pen='g', symbol='x',
-                         symbolPen='g', symbolBrush=0.2, name='green')
+                self.orientationGraph.plot(x, y, pen='g', name='green')
 
                 if self.currentCommand == "SetControlDesired_pos" :
                     limit = self.limit
-                    self.orientationGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
-                         symbolPen='b', symbolBrush=0.2, name='blue')
+                    self.orientationGraph.plot(x,np.full(len(x), float(limit)), pen='b',name='blue')
                 # end update orientation
                 
 
@@ -497,13 +493,11 @@ class Telecommand_MainWindow(object):
                 y = list(tempData.values())
 
                 self.angularVelocityGraph.clear()
-                self.angularVelocityGraph.plot(x, y, pen='g', symbol='x',
-                         symbolPen='g', symbolBrush=0.2, name='green')
+                self.angularVelocityGraph.plot(x, y, pen='g', name='green')
 
                 if self.currentCommand == "SetControlDesired_vel" :
                     limit = self.limit
-                    self.angularVelocityGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
-                         symbolPen='b', symbolBrush=0.2, name='blue')
+                    self.angularVelocityGraph.plot(x,np.full(len(x), float(limit)), pen='b', name='blue')
 
         except Exception as expe:
             print("exception telecommand update:", expe)

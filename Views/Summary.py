@@ -278,9 +278,9 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Satellite overview", None))
-        self.roll_label.setText(QCoreApplication.translate("MainWindow", u"Roll", None))
-        self.pitch_label.setText(QCoreApplication.translate("MainWindow", u"Pitch", None))
-        self.yaw_label.setText(QCoreApplication.translate("MainWindow", u"Yaw", None))
+        self.roll_label.setText(QCoreApplication.translate("MainWindow", u"Roll (degree)", None))
+        self.pitch_label.setText(QCoreApplication.translate("MainWindow", u"Pitch (degree)", None))
+        self.yaw_label.setText(QCoreApplication.translate("MainWindow", u"Yaw (degree)", None))
         self.orientation_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Orientation", None))
         self.parameter_groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Other Parameters", None))
         self.temperature.setText(QCoreApplication.translate("MainWindow", u"Temperature", None))
@@ -293,7 +293,7 @@ class Ui_MainWindow(object):
         self.volt_visualizer.setText(QCoreApplication.translate("MainWindow", u"Voltage Visualizer", None))
         self.shutDownButton.setText(QCoreApplication.translate("MainWindow", u"Shut Down", None))
         self.voltageLabel.setText(QCoreApplication.translate("MainWindow", u"Voltage", None))
-        self.currentLabel.setText(QCoreApplication.translate("MainWindow", u"Current", None))
+        self.currentLabel.setText(QCoreApplication.translate("MainWindow", u"Current(A)", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"V", None))
     
     def setModes(self):
@@ -356,6 +356,7 @@ class Ui_MainWindow(object):
                 self.lcdTemperature.display(topicData["temp"])
                 self.lcdSpeed.display(topicData["speed"])
                 self.lcdVoltage.display(topicData["U_bat"])
+                self.lcdCurrent.display(topicData["I_total"])
 
                 # battery percentage
                 batterPer = (topicData["U_bat"]-11.2)/(max_voltage-11.2)*100
@@ -368,8 +369,7 @@ class Ui_MainWindow(object):
 
                 # todo: update progress bar styling
                 self.graphWidget.clear()
-                self.graphWidget.plot(hour, voltage,pen='g', symbol='x',
-                         symbolPen='g', symbolBrush=0.2, name='green')
+                self.graphWidget.plot(hour, voltage,pen='g', name='green')
 
 
                 # update yaw parameter

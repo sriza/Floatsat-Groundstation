@@ -220,6 +220,13 @@ class MainWindow(QMainWindow):
                         self.pairedData["speed"] = {}
                         self.pairedData["U_bat"] = {}
                     
+                    # better way is to downsample
+                    if len(self.pairedData["yaw"])>=50:
+                        del self.pairedData["yaw"][list(self.pairedData["yaw"].keys())[0]]
+                        del self.pairedData["velocity"][list(self.pairedData["velocity"].keys())[0]]
+                        del self.pairedData["speed"][list(self.pairedData["speed"].keys())[0]]
+                        del self.pairedData["U_bat"][list(self.pairedData["U_bat"].keys())[0]]
+                    
                     satTime = telemetryData["time"]
                     self.pairedData["yaw"][satTime] = math.degrees(self.satOrientation["yaw"])
                     self.pairedData["velocity"][satTime] = (lastYaw-self.satOrientation["yaw"])/(lastTime-satTime)

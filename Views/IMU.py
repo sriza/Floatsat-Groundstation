@@ -395,8 +395,7 @@ class IMU_MainWindow(object):
                 limit = self.command_data.toPlainText()
 
                 self.dynamicGraph.clear()
-                self.dynamicGraph.plot(x, y, pen='g', symbol='x',
-                         symbolPen='g', symbolBrush=0.2, name='green')
+                self.dynamicGraph.plot(x, y, pen='g', name='green')
 
                 # if limit and limit !='' and self.currentCommand != '':
                 #     self.dynamicGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
