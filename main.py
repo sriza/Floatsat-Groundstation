@@ -200,14 +200,6 @@ class MainWindow(QMainWindow):
             for datum in telemetryData:
                 dataInIndex = unpackedData[i]
 
-                if datum in self.pairedData.keys():
-                    if telemetryData["time"] < self.programStatus["time"] :
-                        self.pairedData[datum] = {}
-
-                    satTime = telemetryData["time"]
-                    # self.programStatus["time"] = satTime
-                    self.pairedData[datum][satTime] = dataInIndex
-
                 if datum == "q0":
                     # conversion of quaternion to roll, pitch and yaw
                     q0 = telemetryData["q0"]
@@ -224,11 +216,18 @@ class MainWindow(QMainWindow):
                     if telemetryData["time"] < self.programStatus["time"] :
                         self.pairedData["yaw"] = {}
                         self.pairedData["velocity"] = {}
+                        self.pairedData["speed"] = {}
+                        self.pairedData["U_bat"] = {}
                     
                     satTime = telemetryData["time"]
                     self.pairedData["yaw"][satTime] = math.degrees(self.satOrientation["yaw"])
                     self.pairedData["velocity"][satTime] = (lastYaw-self.satOrientation["yaw"])/(lastTime-satTime)
                     self.programStatus["time"] = satTime
+
+                if datum in self.pairedData.keys():
+                    satTime = telemetryData["time"]
+                    # self.programStatus["time"] = satTime
+                    self.pairedData[datum][satTime] = dataInIndex
 
                 
                 # resend telecommand if not same

@@ -304,6 +304,7 @@ class IMU_MainWindow(object):
                 self.modes[item] = {}
                 self.modes[item]["id"] = json_array[item]["id"]
                 self.modes[item]["data"] = json_array[item]["data"]
+                self.modes[item]["data_type"] = json_array[item]["data_type"]
     
     # prepare data for imu telecommand
     def mainTelecommand(self):
@@ -323,6 +324,10 @@ class IMU_MainWindow(object):
             enteredData = self.command_data.toPlainText()
             
             if enteredData != "":
+
+                if currentMode["data_type"] == "radian":
+                    enteredData = math.radians(enteredData)
+
                 data.append(float(enteredData))
                 self.parent.sendTelecommand(data)
                 self.currentCommand = currentText
@@ -381,8 +386,8 @@ class IMU_MainWindow(object):
 
                 tempData = topicStruc["pairedData"]["speed"]
 
-                if self.currentCommand == "SetControlDesired_pos" :
-                    tempData = self.dynamicData["yaw"]
+                # if self.currentCommand == "SetControlDesired_pos" :
+                #     tempData = self.dynamicData["yaw"]
 
                 #graph data   
                 x = list(tempData.keys())
@@ -393,9 +398,9 @@ class IMU_MainWindow(object):
                 self.dynamicGraph.plot(x, y, pen='g', symbol='x',
                          symbolPen='g', symbolBrush=0.2, name='green')
 
-                if limit and limit !='' and self.currentCommand != '':
-                    self.dynamicGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
-                         symbolPen='b', symbolBrush=0.2, name='blue')
+                # if limit and limit !='' and self.currentCommand != '':
+                #     self.dynamicGraph.plot(x,np.full(len(x), float(limit)), pen='b', symbol='o',
+                #          symbolPen='b', symbolBrush=0.2, name='blue')
 
                 # todo: update roll and pitch parameters, issue with repainting
                 self.roll_pitch_viz.roll = math.radians(roll)
