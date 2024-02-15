@@ -191,7 +191,7 @@ class IMU_MainWindow(object):
 
         self.command_data_label = QLabel(self.imu_command_group)
         self.command_data_label.setObjectName(u"label_14")
-        self.command_data_label.setGeometry(QRect(260, 30, 131, 31))
+        self.command_data_label.setGeometry(QRect(260, 30, 180, 31))
         self.command_data_label.setFont(font2)
 
         self.command_data = QTextEdit(self.imu_command_group)
@@ -323,19 +323,16 @@ class IMU_MainWindow(object):
             # telecommand needs input data from user
             enteredData = self.command_data.toPlainText()
             
-            if enteredData != "":
+            if currentMode["data_type"] == "radian":
+                enteredData = math.radians(float(enteredData))
 
-                if currentMode["data_type"] == "radian":
-                    enteredData = math.radians(enteredData)
-
-                data.append(float(enteredData))
-                self.parent.sendTelecommand(data)
-                self.currentCommand = currentText
-            else: 
-                self.command_error_label.setText("Please enter data to send telecommand")
+            data.append(float(enteredData))
+            self.parent.sendTelecommand(data)
+            self.currentCommand = currentText
+         
         except Exception as ex:
                 print("exception at main telecommand imu:", ex)
-                self.command_error_label.setText("The entered data must be numeric")
+                
 
     # update data within
     def updateTrigger(self,data):

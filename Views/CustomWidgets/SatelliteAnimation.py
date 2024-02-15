@@ -185,7 +185,7 @@ class SatelliteAnimation(QWidget):
         rect = QRect(450,300, 150, 100)
         painter.drawRect(rect)
         painter.setBrush(Qt.black)
-        painter.drawText(460, 320 ,"Arm Extension: "+str(self.armExtension))
+        painter.drawText(460, 320 ,"Arm Extension: "+str(self.armTranslate))
         painter.drawText(460, 340 ,"Mocksat Velocity: "+ str(self.mocksatVelocity))
         painter.drawText(460, 360 ,"Mocksat Distance: "+ str(self.mocksatDistance))
         painter.drawText(460, 380 ,"Floatsat Yaw: "+ str(round(self.floatsatAngle,5)))
