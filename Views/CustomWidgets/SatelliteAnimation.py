@@ -190,23 +190,23 @@ class SatelliteAnimation(QWidget):
         painter.drawText(460, 360 ,"Mocksat Distance: "+ str(self.mocksatDistance))
         painter.drawText(460, 380 ,"Floatsat Yaw: "+ str(round(self.floatsatAngle,5)))
 
-def updateSat():
-    # data regarding docking
-    window.mocksatAngle +=0.5
-    window.floatsatAngle +=0.15
-    window.armTranslate+=.1
-    window.update()
+# def updateSat():
+#     # data regarding docking
+#     window.mocksatAngle +=0.5
+#     window.floatsatAngle +=0.15
+#     window.armTranslate+=.1
+#     window.update()
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = SatelliteAnimation()
-    window.show()
-    updatePaint = QTimer()
+# if __name__ == "__main__":
+#     app = QApplication(sys.argv)
+#     window = SatelliteAnimation()
+#     window.show()
+#     updatePaint = QTimer()
 
-    updatePaint.setInterval(100)
-    updatePaint.timeout.connect(updateSat)
-    updatePaint.start()
+#     updatePaint.setInterval(100)
+#     updatePaint.timeout.connect(updateSat)
+#     updatePaint.start()
 
 
-    # window.update()
-    sys.exit(app.exec())
+#     # window.update()
+#     sys.exit(app.exec())

@@ -1,6 +1,6 @@
 {
     "TelecommandTopicId": {
-        "topicId": 50,
+        "topicId": 51,
         "structure": "=3f",
         "data": {}
     },

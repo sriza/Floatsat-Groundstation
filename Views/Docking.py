@@ -257,7 +257,7 @@ class Docking_MainWindow(object):
                 self.satAnimation.armTranslate = topicData["arm_extension"]
 
                 # mockup
-                self.satAnimation.mocksatDistance= 100
+                self.satAnimation.mocksatDistance= topicData["mockupDistance"]
                 self.satAnimation.mocksatAngle =  topicData["mockupYaw"]
                 self.satAnimation.yaw2mockup = topicData["yaw2mockup"]
                 self.satAnimation.update()

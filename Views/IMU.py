@@ -277,7 +277,7 @@ class IMU_MainWindow(object):
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Command", None))
         self.command_type_label.setText(QCoreApplication.translate("MainWindow", u"Orientation", None))
         self.yaw_viz_label.setText(QCoreApplication.translate("MainWindow", u"Yaw Visualizer", None))
-        self.dynamic_graph_label.setText(QCoreApplication.translate("MainWindow", u"Speed /  Orientation", None))
+        self.dynamic_graph_label.setText(QCoreApplication.translate("MainWindow", u"Speed", None))
 
     # update command label based on command type
     def updateCommandInputField(self):
