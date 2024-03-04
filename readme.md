@@ -8,6 +8,8 @@ Pyside: 6.6.1
 
 pyqtgraph: 0.13.3
 
+numpy
+
 Python package of rodos
 
 ## Setup
